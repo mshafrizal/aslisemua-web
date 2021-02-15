@@ -7,7 +7,6 @@ use Illuminate\Support\Str;
 use App\Models\CustomersModel;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
-use Exception;
 
 class CustomersController extends Controller
 {
@@ -64,23 +63,39 @@ class CustomersController extends Controller
     }
 
     public function index() {
-        $data = $this->CustomersModel->index();
+        try {
+            $data = $this->CustomersModel->index();
 
-        return response()->json([
-            'status' => 200,
-            'message' => 'Successfully Fetched',
-            'data' => $data
-        ]);
+            return response()->json([
+                'status' => 200,
+                'message' => 'Successfully Fetched',
+                'data' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Internal Server Error',
+                'error' => $e
+            ]);
+        }
     }
 
     public function show($id) {
-        $data = $this->CustomersModel->show($id);
+        try {
+            $data = $this->CustomersModel->show($id);
 
-        return response()->json([
-            'status' => 200,
-            'message' => 'Successfully Fetched',
-            'data' => $data
-        ]);
+            return response()->json([
+                'status' => 200,
+                'message' => 'Successfully Fetched',
+                'data' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Internal Server Error',
+                'error' => $e
+            ]);
+        }
     }
 
     public function update($id) {
@@ -89,7 +104,6 @@ class CustomersController extends Controller
                 'name' => 'required|max:50',
                 'email' => 'required|email:rfc,dns',
                 'gender' => 'required|max:10',
-                'password' => 'required',
                 'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:8|max:13',
                 'postal_code' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|max:10',
                 'city' => 'required',
@@ -102,7 +116,6 @@ class CustomersController extends Controller
             'name' => Request()->name,
             'email' => Request()->email,
             'gender' => Request()->gender,
-            'password' => Hash::make(Request()->password),
             'phone_number' => Request()->phone_number,
             'postal_code' => Request()->postal_code,
             'city' => Request()->city,
@@ -111,12 +124,20 @@ class CustomersController extends Controller
             'updated_at' => Carbon::now(),
         ];
 
-        $this->CustomersModel->updateUser($id, $dataValidated);
+        try {
+            $this->CustomersModel->updateUser($id, $dataValidated);
 
-        return response()->json([
-            'status' => 200,
-            'message' => 'Successfully Updated',
-        ]);
+            return response()->json([
+                'status' => 200,
+                'message' => 'Successfully Updated',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Internal Server Error',
+                'error' => $e
+            ]);
+        }
     }
 
     public function updateStatus($id) {
@@ -125,11 +146,19 @@ class CustomersController extends Controller
             'updated_at' => Carbon::now(),
         ];
 
-        $this->CustomersModel->updateUser($id, $data);
+        try {
+            $this->CustomersModel->updateUser($id, $data);
 
-        return response()->json([
-            'status' => 200,
-            'message' => 'Status Successfully Updated',
-        ]);
+            return response()->json([
+                'status' => 200,
+                'message' => 'Status Successfully Updated',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Internal Server Error',
+                'error' => $e
+            ]);
+        }
     }
 }
