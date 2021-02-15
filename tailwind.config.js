@@ -6,6 +6,10 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {},
+    fontFamily: {
+      'body': 'Open Sans',
+      'serif': ['Belleza-Regular']
+    }
   },
   variants: {
     extend: {},
