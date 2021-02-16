@@ -1840,7 +1840,50 @@ module.exports = {
   \*****************************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
+__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); // ==============================
+//
+//  PROFILE
+//
+// ==============================
+// User Menu
+
+
+var userMenu = document.getElementById('user-menu');
+var userMenuList = document.getElementById('user-menu-list');
+
+function showMenuList() {
+  userMenuList.classList.remove('hidden');
+}
+
+function hideMenuList() {
+  userMenuList.classList.add('hidden');
+}
+
+userMenu.addEventListener('click', function () {
+  if (userMenuList.classList.contains('hidden')) showMenuList();else hideMenuList();
+}); // Mobile Navigation
+
+var navMenu = document.getElementById('navigation-menu');
+var navMenuList = document.getElementById('');
+
+function showNavList() {}
+
+function hideNavList() {}
+
+navMenu.addEventListener('click', function () {
+  if (navMenuList.classList.contains('hidden')) showNavList();else hideNavList();
+}); // Alert
+
+window.closeAlert = function (id) {
+  var alertEl = document.getElementById(id);
+  alertEl.remove();
+};
+
+window.showAlert = function (id) {
+  var alertEl = document.getElementById(id);
+  alertEl.classList.remove('hidden');
+  alertEl.classList.add('flex');
+};
 
 /***/ }),
 
