@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CustomersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +17,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::prefix('v1')->group(function () {
+    Route::post('/customers/register', [CustomersController::class, 'create']);
+    Route::get('/customers', [CustomersController::class, 'index']);
+    Route::get('/customers/{id}', [CustomersController::class, 'show']);
+    Route::put('/customers/{id}', [CustomersController::class, 'update']);
+    Route::put('/customers/{id}/status', [CustomersController::class, 'updateStatus']);
 });
