@@ -7,7 +7,6 @@ use Illuminate\Support\Str;
 use App\Models\CustomersModel;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
-use PhpParser\Node\Stmt\TryCatch;
 
 class CustomersController extends Controller
 {
