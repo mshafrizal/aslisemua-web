@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomersController;
-
+use App\Http\Controllers\SignInController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,6 +14,11 @@ use App\Http\Controllers\CustomersController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+//Access-Control-Allow-Origin: *
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods:  POST, GET, OPTIONS, PUT, DELETE');
+header('Access-Control-Allow-Headers:  Content-Type, X-Auth-Token, Origin, Authorization');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
@@ -28,4 +33,6 @@ Route::prefix('v1')->group(function () {
         Route::put('/{id}/status', [CustomersController::class, 'updateStatus']);
         Route::put('/{id}/password', [CustomersController::class, 'updatePassword']);
     });
+    Route::post('/sign-in/authenticate', [SignInController::class, 'authenticate']);
+    Route::get('/sign-in/authenticate', [SignInController::class, 'authenticate'])->name('login');
 });

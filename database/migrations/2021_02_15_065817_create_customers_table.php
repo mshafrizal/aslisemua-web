@@ -27,6 +27,8 @@ class CreateCustomersTable extends Migration
             $table->enum('status', ['active', 'inactive']);
             $table->boolean('is_verified');
             $table->timestamps();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->rememberToken();
         });
     }
 
