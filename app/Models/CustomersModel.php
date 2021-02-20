@@ -17,7 +17,7 @@ class CustomersModel extends Model
     }
 
     public function show($id) {
-        return DB::table('customers')->where('id', $id)->get();
+        return DB::table('customers')->where('id', $id)->first();
     }
 
     public function updateUser($id, $dataValidated){
