@@ -25,12 +25,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::prefix('v1')->group(function () {
-    Route::post('/customers/register', [CustomersController::class, 'create']);
-    Route::get('/customers', [CustomersController::class, 'index']);
-    Route::get('/customers/{id}', [CustomersController::class, 'show']);
-    Route::put('/customers/{id}', [CustomersController::class, 'update']);
-    Route::put('/customers/{id}/status', [CustomersController::class, 'updateStatus']);
-
+    Route::prefix('customers')->group(function () {
+        Route::post('/register', [CustomersController::class, 'create']);
+        Route::get('/', [CustomersController::class, 'index']);
+        Route::get('/{id}', [CustomersController::class, 'show']);
+        Route::put('/{id}', [CustomersController::class, 'update']);
+        Route::put('/{id}/status', [CustomersController::class, 'updateStatus']);
+        Route::put('/{id}/password', [CustomersController::class, 'updatePassword']);
+    });
     Route::post('/sign-in/authenticate', [SignInController::class, 'authenticate']);
     Route::get('/sign-in/authenticate', [SignInController::class, 'authenticate'])->name('login');
 });
