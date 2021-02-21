@@ -163,7 +163,59 @@
       @yield('content')
     </div>
 
+    <footer class="w-full mt-20 bg-black text-white">
+      <div class="container mx-auto px-2 md:px-20 flex flex-col py-8">
+        <div class="flex flex-row mb-10">
+          <div class="flex flex-col w-1/6">
+            <h1 class="text-lg font-bold mb-5">Company</h1>
+            <ul>
+              <li class="mb-2 w-full"><a class="block" href="#">About Us</a></li>
+              <li class="mb-2 w-full"><a class="block" href="#">Terms of Service</a></li>
+            </ul>
+          </div>
+          <div class="flex flex-col w-1/6">
+            <h1 class="text-lg font-bold mb-5">Top Categories</h1>
+            {{-- This should render data from API --}}
+            <ul>
+              <li class="mb-2 w-full"><a class="block" href="#">Jewelry</a></li>
+              <li class="mb-2 w-full"><a class="block" href="#">Handbags</a></li>
+              <li class="mb-2 w-full"><a class="block" href="#">Shoes</a></li>
+              <li class="mb-2 w-full"><a class="block" href="#">Watches</a></li>
+              <li class="mb-2 w-full"><a class="block" href="#">Accessories</a></li>
+            </ul>
+          </div>
+          <div class="flex flex-col w-1/6">
+            <h1 class="text-lg font-bold mb-5">Customer Care</h1>
+            <ul>
+              <li class="mb-2 w-full"><a class="block" href="#">Contact Us</a></li>
+              <li class="mb-2 w-full"><a class="block" href="#">Terms & Conditions</a></li>
+              <li class="mb-2 w-full"><a class="block" href="#">Privacy</a></li>
+              <li class="mb-2 w-full"><a class="block" href="#">Consignor Terms</a></li>
+            </ul>
+          </div>
+          <div class="flex flex-col w-1/6">
+            <h1 class="text-lg font-bold mb-5">Payment Method</h1>
+            <ul class="flex flex-row flex-wrap">
+              <li>VISA</li>
+              <li>MASTERCARD</li>
+              <li>AMERICAN EXPRESS</li>
+            </ul>
+          </div>
+          <div class="flex flex-col items-center w-1/3">
+            <h1 class="text-4xl tracking-widest font-serif mb-5">ASLISEMUA</h1>
+            <ul class="flex flex-row w-1/2 justify-between mb-5">
+              <li><a href="#"><i class="fab fa-facebook text-5xl"></i></a></li>
+              <li><a href="#"><i class="fab fa-instagram text-5xl"></i></a></li>
+              <li><a href="#"><i class="fab fa-linkedin text-5xl"></i></a></li>
+            </ul>
+            <p class="text-center text-xs">&copy; 2021 Aslisemua</p>
+          </div>
+        </div>
+        <div class="text-center text-xs">All items are pre-owned and consigned to The RealReal. Trademarks are owned by their respective brand owners. No brand owner endorses or sponsors this ad or has any association and/or affiliation with Aslisemua.</div>
+      </div>
+    </footer>
     <script src="{{asset('js/app.js')}}"></script>
+    <script defer src="https://kit.fontawesome.com/8505c87347.js" crossorigin="anonymous"></script>
     @yield('script')
   </body>
 </html>
