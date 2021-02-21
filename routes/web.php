@@ -38,3 +38,11 @@ Route::prefix('profile')->group(function () {
     return view('profile.address');
   })->name('profile.address');
 });
+
+Route::get('/sign-in', function () {
+  return view('signin');
+})->name('signin');
+
+Route::get('/sign-up', function () {
+  return view('signup');
+})->name('signup');
