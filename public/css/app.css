@@ -619,6 +619,38 @@ video {
   color: rgba(255, 255, 255, var(--tw-text-opacity));
 }
 
+.input-primary {
+  --tw-border-opacity: 1;
+  border-color: rgba(156, 163, 175, var(--tw-border-opacity))
+}
+
+.input-primary:focus {
+  --tw-border-opacity: 1;
+  border-color: rgba(17, 24, 39, var(--tw-border-opacity));
+}
+
+.input-primary {
+  border-width: 1px;
+  display: block;
+  max-width: 24rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.input-primary:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgba(17, 24, 39, var(--tw-ring-opacity));
+}
+
+@media (min-width: 640px) {
+  .input-primary {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
 .space-y-0 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
   margin-top: calc(0px * calc(1 - var(--tw-space-y-reverse)));
@@ -31210,6 +31242,12 @@ video {
 
 html {
   height: 100%
+}
+
+#signInRightSide {
+  background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url(/images/bg-signin.png?75a2aa038f871139dde75127e2b72824);
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 @media (min-width: 640px) {
@@ -183911,4 +183949,3 @@ html {
             animation: bounce 1s infinite;
   }
 }
-
