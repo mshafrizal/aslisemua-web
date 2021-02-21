@@ -49,15 +49,15 @@ class CustomersController extends Controller
             $this->CustomersModel->create($dataValidated);
 
             return response()->json([
-                'status' => 200,
+                'status' => 201,
                 'message' => 'Successfully Registered',
-            ]);
+            ], 201);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 400,
+                'status' => 500,
                 'message' => 'Something Went Wrong',
-                'error' => $e
-            ]);
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -69,13 +69,13 @@ class CustomersController extends Controller
                 'status' => 200,
                 'message' => 'Successfully Fetched',
                 'data' => $data
-            ]);
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
                 'message' => 'Something Went Wrong',
-                'error' => $e
-            ]);
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -87,13 +87,13 @@ class CustomersController extends Controller
                 'status' => 200,
                 'message' => 'Successfully Fetched',
                 'data' => $data
-            ]);
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
                 'message' => 'Something Went Wrong',
-                'error' => $e
-            ]);
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -128,20 +128,20 @@ class CustomersController extends Controller
             return response()->json([
                 'status' => 200,
                 'message' => 'Successfully Updated',
-            ]);
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 400,
+                'status' => 500,
                 'message' => 'Something Went Wrong',
-                'error' => $e
-            ]);
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
     public function updateStatus($id) {
         try {
             $data = [
-                'status' => 'inactive',
+                'status' => Request()->status,
                 'updated_at' => Carbon::now(),
             ];
             $this->CustomersModel->updateUser($id, $data);
@@ -149,13 +149,13 @@ class CustomersController extends Controller
             return response()->json([
                 'status' => 200,
                 'message' => 'Status Successfully Updated',
-            ]);
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 400,
+                'status' => 500,
                 'message' => 'Something Went Wrong With Validation',
-                'error' => $e
-            ]);
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -176,19 +176,19 @@ class CustomersController extends Controller
                 return response()->json([
                     'status' => 200,
                     'message' => 'Password Successfully Updated',
-                ]);
+                ], 200);
             } else {
                 return response()->json([
                     'status' => 400,
-                    'message' => 'New Password Does Not Macth',
-                ]);
+                    'message' => 'New Password Does Not Match',
+                ], 400);
             }
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 400,
+                'status' => 500,
                 'message' => 'Something Went Wrong With Validation',
-                'error' => $e
-            ]);
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 }
