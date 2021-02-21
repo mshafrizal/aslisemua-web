@@ -141,7 +141,7 @@ class CustomersController extends Controller
     public function updateStatus($id) {
         try {
             $data = [
-                'status' => 'inactive',
+                'status' => Request()->status,
                 'updated_at' => Carbon::now(),
             ];
             $this->CustomersModel->updateUser($id, $data);

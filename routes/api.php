@@ -32,8 +32,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/register', [CustomersController::class, 'create']);
         Route::middleware('auth:api')->get('/', [CustomersController::class, 'index']);
         Route::middleware('auth:api')->get('/{id}', [CustomersController::class, 'show']);
-        Route::put('/{id}', [CustomersController::class, 'update']);
-        Route::put('/{id}/status', [CustomersController::class, 'updateStatus']);
+        Route::middleware('auth:api')->put('/{id}', [CustomersController::class, 'update']);
+        Route::middleware('auth:api')->put('/{id}/status', [CustomersController::class, 'updateStatus']);
         Route::put('/{id}/password', [CustomersController::class, 'updatePassword']);
     });
 
