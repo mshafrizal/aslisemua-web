@@ -7,7 +7,9 @@ use Illuminate\Support\Str;
 use App\Models\CustomersModel;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
-
+use App\Mail\RegisterMail;
+use Illuminate\Support\Facades\Mail;
+use URL;
 class CustomersController extends Controller
 {
     public function __construct(){
@@ -48,6 +50,14 @@ class CustomersController extends Controller
             ];
             $this->CustomersModel->create($dataValidated);
 
+            $details = [
+                'sender' => 'Asli Semua',
+                'title' => 'Please verify your email',
+                'body' => URL::to('api/v1/customers/verify/' . $dataValidated['id'])
+            ];
+
+            Mail::to(Request()->email)->send(new RegisterMail($details));
+
             return response()->json([
                 'status' => 201,
                 'message' => 'Successfully Registered',
@@ -59,6 +69,10 @@ class CustomersController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function verifyAccount ($id) {
+        // Tinggal buat verify account
     }
 
     public function index() {
