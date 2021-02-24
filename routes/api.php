@@ -30,6 +30,7 @@ Route::prefix('v1')->group(function () {
      */
     Route::prefix('customers')->group(function () {
         Route::post('/register', [CustomersController::class, 'create']);
+        Route::put('/verify/{id}', [CustomersController::class, 'verifyAccount']);
         Route::middleware('auth:api')->get('/', [CustomersController::class, 'index']);
         Route::middleware('auth:api')->get('/{id}', [CustomersController::class, 'show']);
         Route::middleware('auth:api')->put('/{id}', [CustomersController::class, 'update']);
