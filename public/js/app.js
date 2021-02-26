@@ -1859,9 +1859,12 @@ function hideMenuList() {
   userMenuList.classList.add('hidden');
 }
 
-userMenu.addEventListener('click', function () {
-  if (userMenuList.classList.contains('hidden')) showMenuList();else hideMenuList();
-}); // Mobile Navigation
+if (userMenu) {
+  userMenu.addEventListener('click', function () {
+    if (userMenuList.classList.contains('hidden')) showMenuList();else hideMenuList();
+  });
+} // Mobile Navigation
+
 
 var navMenu = document.getElementById('navigation-menu');
 var navMenuList = document.getElementById('');
@@ -1870,19 +1873,45 @@ function showNavList() {}
 
 function hideNavList() {}
 
-navMenu.addEventListener('click', function () {
-  if (navMenuList.classList.contains('hidden')) showNavList();else hideNavList();
-}); // Alert
+if (navMenu) {
+  navMenu.addEventListener('click', function () {
+    if (navMenuList.classList.contains('hidden')) showNavList();else hideNavList();
+  });
+} // Alert
+
 
 window.closeAlert = function (id) {
   var alertEl = document.getElementById(id);
-  alertEl.remove();
+  alertEl.classList.remove('flex');
+  alertEl.classList.add('hidden');
+  clearTimeout();
 };
 
-window.showAlert = function (id) {
+window.showAlert = function (id, payload) {
   var alertEl = document.getElementById(id);
+  var messageEl = document.getElementById('snackbarMessage') || null;
+
+  if (messageEl) {
+    if (payload) {
+      messageEl.textContent = payload.message;
+
+      if (payload.type === 'warning') {
+        alertEl.classList.add('bg-white', 'border', 'border-yellow-500', 'text-yellow-500', 'absolute', 'top-4', 'left-0', 'right-0', 'ml-auto', 'mr-auto');
+      } else if (payload.type === 'error') {
+        alertEl.classList.add('bg-white', 'border', 'border-red-500', 'text-red-500', 'absolute', 'top-4', 'left-0', 'right-0', 'ml-auto', 'mr-auto');
+      } else if (payload.type === 'success') {
+        alertEl.classList.add('bg-white', 'border', 'border-green-500', 'text-green-500', 'absolute', 'top-4', 'left-0', 'right-0', 'ml-auto', 'mr-auto');
+      } else {
+        alertEl.classList.add('bg-white', 'border', 'border-gray-500', 'text-gray-500', 'absolute', 'top-4', 'left-0', 'right-0', 'ml-auto', 'mr-auto');
+      }
+    }
+  }
+
   alertEl.classList.remove('hidden');
   alertEl.classList.add('flex');
+  setTimeout(function () {
+    closeAlert(id);
+  }, 10000);
 };
 
 /***/ }),

@@ -66,41 +66,41 @@
 
           <div class="flex flex-col">
             <label for="name" class="mb-3 text-sm">Name</label>
-            <input value="" id="name" disabled type="text" class="max-w-smpx-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
+            <input value="" id="name" disabled type="text" class="max-w-sm px-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
           </div>
           <div class="flex flex-col">
             <label for="email" class="mb-3 text-sm">Email</label>
-            <input value="" id="email" disabled type="text" class="max-w-smpx-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
+            <input value="" id="email" disabled type="text" class="max-w-sm px-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
           </div>
           <div class="flex flex-col">
             <label for="gender" class="mb-3 text-sm">Gender</label>
-            <input value="" id="gender" disabled type="text" class="max-w-smpx-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
+            <input value="" id="gender" disabled type="text" class="max-w-sm px-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
           </div>
           <div class="flex flex-col">
             <label for="password" class="mb-3 text-sm">Password</label>
-            <input value="" id="password" disabled type="text" value="********" class="max-w-smpx-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
+            <input value="" id="password" disabled type="text" value="********" class="max-w-sm px-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
           </div>
           <div class="flex flex-col">
             <label for="phone" class="mb-3 text-sm">Phone Number</label>
-            <input value="" id="phone" disabled type="text" class="max-w-smpx-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
+            <input value="" id="phone" disabled type="text" class="max-w-sm px-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
           </div>
           <div class="flex flex-col">
             <label for="postal" class="mb-3 text-sm">Postal Code</label>
-            <input value="" id="postal" disabled type="text" class="max-w-smpx-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
+            <input value="" id="postal" disabled type="text" class="max-w-sm px-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
           </div>
           <div class="flex flex-col">
             <label for="city" class="mb-3 text-sm">City</label>
-            <input value="" id="city" disabled type="text" class="max-w-smpx-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
+            <input value="" id="city" disabled type="text" class="max-w-sm px-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
           </div>
           <div class="flex flex-col">
             <label for="district" class="mb-3 text-sm">District</label>
-            <input value="" id="district" disabled type="text" class="max-w-smpx-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
+            <input value="" id="district" disabled type="text" class="max-w-sm px-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
           </div>
           <div class="flex flex-col col-span-2">
             <label for="address" class="mb-3 text-sm">Address</label>
             <textarea id="address" disabled class="w-full px-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border"></textarea>
           </div>
-          <button class="bg-gray-900 text-white uppercase px-5 py-2 col-span-2 md:col-span-1">
+          <button id="editInfoButton" class="bg-gray-900 text-white uppercase px-5 py-2 col-span-2 md:col-span-1">
             Edit Info
           </button>
         </div>
@@ -111,6 +111,9 @@
 
 @section('script')
     <script>
+      document.getElementById('editInfoButton').addEventListener('click', () => {
+        window.location.href = '{{route('profile.edit-personal-info')}}';
+      });
       async function getData(url = "") {
         const response = await fetch(url, {
           method: 'GET',
