@@ -44,8 +44,15 @@
     document.getElementById('signInForm').addEventListener('submit', signIn, true);
     function signIn(e) {
       e.preventDefault();
-      alert('submitted');
-      document.signInForm.submit();
+      const data = {
+        email: 
+      }
+      axios.get('{{ route('login')}}', data).then(result => {
+        console.log(result)
+      }).catch(error => {
+        throw new Error(error)
+      })
+      
     }
   </script>
 </body>

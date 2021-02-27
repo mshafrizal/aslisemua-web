@@ -15,5 +15,8 @@
         "lodash": "^4.17.19",
         "postcss": "^8.2.4",
         "tailwindcss": "^2.0.2"
+    },
+    "dependencies": {
+        "axios": "^0.21.1"
     }
 }
