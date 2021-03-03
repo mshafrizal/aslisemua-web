@@ -23,4 +23,12 @@ class CustomersModel extends Model
     public function updateUser($id, $dataValidated){
         DB::table('customers')->where('id', $id)->update($dataValidated);
     }
+
+    public function verifyAccount($id, $dataVerification) {
+        DB::table('customers')->where('id', $id)->update($dataValidated);
+    }
+
+    public function forgotPassword($email) {
+        return DB::table('customers')->where('email', $email)->first();
+    }
 }

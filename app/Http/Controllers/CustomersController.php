@@ -8,6 +8,7 @@ use App\Models\CustomersModel;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\Mail\RegisterMail;
+use App\Mail\ForgotPasswordMail;
 use Illuminate\Support\Facades\Mail;
 use URL;
 class CustomersController extends Controller
@@ -53,7 +54,7 @@ class CustomersController extends Controller
             $details = [
                 'sender' => 'Asli Semua',
                 'title' => 'Please verify your email',
-                'body' => URL::to('api/v1/customers/verify/' . $dataValidated['id'])
+                'body' => URL::to('registration/verify-account/' . $dataValidated['id'])
             ];
 
             Mail::to(Request()->email)->send(new RegisterMail($details));
@@ -71,8 +72,72 @@ class CustomersController extends Controller
         }
     }
 
+    public function sendTokenAccount ($id) {
+        $result = $this->verifyAccount($id);
+        return $result; // Ini bisa diganti sama direct ke halaman login
+    }
+
     public function verifyAccount ($id) {
-        // Tinggal buat verify account
+        try {
+            $isExist = $this->CustomersModel->show($id);
+            if (!isset($isExist)) return response()->json([
+                'status' => 400,
+                'message' => `Your account doesn't registered`,
+            ], 400);
+
+            if (isset($isExist->email_verified_at) || $isExist->email_verified_at !== NULL) return response()->json([
+                'status' => 200,
+                'message' => 'Your account has been verified'
+            ]);
+
+            $dataVerification = [
+                'email_verified_at' => Carbon::now(),
+                'is_verified' => 1
+            ];
+            $this->CustomersModel->updateUser($id, $dataVerification);
+
+            return response()->json([
+                'status' => '200',
+                'message' => 'Your account successfully verified'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function forgotPassword() {
+        try {
+            $isExist = $this->CustomersModel->forgotPassword(Request()->email);
+            if (!isset($isExist)) return response()->json([
+                'status' => 400,
+                'message' => `Your account doesn't registered`,
+            ], 400);
+            $details = [
+                'sender' => 'Asli Semua',
+                'title' => 'Reset your Password on Asli Semua',
+                'body' => URL::to('customers/forgot-password/' . $isExist->id . '/edit')
+            ];
+
+            Mail::to(Request()->email)->send(new ForgotPasswordMail($details));
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Link of reset password has been sent to your email',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong'
+            ], 500);
+        }
+    }
+
+    public function editForgotPassword() {
+        return 'Ini halaman form forgot password';
     }
 
     public function index() {
