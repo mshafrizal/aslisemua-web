@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class RegisterMail extends Mailable
+class ForgotPasswordMail extends Mailable
 {
     use Queueable, SerializesModels;
     public $details;
@@ -29,6 +29,6 @@ class RegisterMail extends Mailable
     public function build()
     {
         // return $this->view('view.name');
-        return $this->from($address = 'noreply.payment.midtrans@gmail.com', $name = $this->details['sender'])->subject($this->details['title'])->view('emails.email-verification');
+        return $this->from($address = 'noreply.payment.midtrans@gmail.com', $name = $this->details['sender'])->subject($this->details['title'])->view('emails.forgot-password');
     }
 }

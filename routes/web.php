@@ -1,17 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+use App\Http\Controllers\CustomersController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,7 +19,7 @@ Route::prefix('profile')->group(function () {
   Route::get('/my-purchases', function () {
     return view('profile.my-purchases');
   })->name('profile.my-purchases');
-  
+
   Route::get('/track-shipment', function () {
     return view('profile.track-shipment');
   })->name('profile.track-shipment');
@@ -46,3 +36,9 @@ Route::get('/sign-in', function () {
 Route::get('/sign-up', function () {
   return view('signup');
 })->name('signup');
+
+// Verify Account
+Route::get('/registration/verify-account/{id}', [CustomersController::class, 'sendTokenAccount']);
+
+// Forgot Password Page
+Route::get('/customers/forgot-password/{id}/edit', [CustomersController::class, 'editForgotPassword']);

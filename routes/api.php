@@ -43,4 +43,7 @@ Route::prefix('v1')->group(function () {
      */
     Route::post('/sign-in/authenticate', [SignInController::class, 'authenticate']);
     Route::get('/sign-in/authenticate', [SignInController::class, 'authenticate'])->name('login');
+
+    // Forgot Password
+    Route::post('/forgot-password/email/send', [CustomersController::class, 'forgotPassword']);
 });
