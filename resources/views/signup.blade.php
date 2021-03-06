@@ -55,7 +55,6 @@
           <label for="agreement" class="mr-6  md:w-72">I agree to Aslisemua’s Terms and Conditions & Privacy Policy</label><br>
         </div>
         <button id="signUp" type="submit" class="btn-primary mb-5 md:w-72">Sign Up</button>
-        <button id="signUpGoogle" class="bg-white border border-gray-800 py-2 px-6 md:w-72"><i class="fab fa-google mr-2"></i>Sign In With Google</button>
       </div>
     </form>
   </main>

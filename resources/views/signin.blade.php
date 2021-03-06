@@ -36,7 +36,6 @@
         <p class="text-lg mb-3">Set up your profile, manage your orders, build your wishlist and more</p>
       </div>
       <a href="{{ route('signup') }}" class="mb-5 text-center btn-primary w-full md:w-72">Sign Up</a>
-      <button class="bg-white border text-gray-800 border-gray-800 py-2 px-6 w-full md:w-72"><i class="fab fa-google mr-2"></i>Sign Up With Google</button>
     </div>
   </main>
   <script defer src="https://kit.fontawesome.com/8505c87347.js" crossorigin="anonymous"></script>
