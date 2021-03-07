@@ -12,7 +12,7 @@
   @include('partials.snackbar')
   <main class="flex justify-center items-start w-full h-full">
     {{-- LEFT SIDE --}}
-    <form class="flex w-full justify-center items-center p-5" method="get" id="signUpForm" name="signUpForm">
+    <form class="flex w-full justify-center items-center p-5" method="post" id="signUpForm" name="signUpForm">
       <div class="flex flex-col p-5 border border-gray-900 ">
         @csrf
         <h1 class="text-3xl font-serif text-center mb-6">Sign Up To Aslisemua</h1>
@@ -29,12 +29,20 @@
           <input type="email" name="email" id="email" placeholder="jonathan.morningstar@email.com" required class="input-primary w-full md:w-72">
         </div>
         <div class="mb-5 flex flex-col w-full md:w-72">
-          <label for="postal_code" class="text-base mb-2">Postal Code</label>
-          <input type="number" name="postal_code" id="postal_code" placeholder="jonathan.morningstar@email.com" required class="input-primary w-full md:w-72">
+          <label for="city" class="text-base mb-2">City</label>
+          <input type="text" name="city" id="city" placeholder="city" required class="input-primary w-full md:w-72">
         </div>
         <div class="mb-5 flex flex-col w-full md:w-72">
-          <label for="email" class="text-base mb-2">Email</label>
-          
+          <label for="district" class="text-base mb-2">District</label>
+          <input type="text" name="district" id="district" placeholder="district" required class="input-primary w-full md:w-72">
+        </div>
+        <div class="mb-5 flex flex-col w-full md:w-72">
+          <label for="postal_code" class="text-base mb-2">Postal Code</label>
+          <input type="text" name="postal_code" id="postal_code" placeholder="11480" required class="input-primary w-full md:w-72">
+        </div>
+        <div class="mb-5 flex flex-col w-full md:w-72">
+          <label for="address" class="text-base mb-2">Address</label>
+          <textarea id="address" class="border border-gray-900 p-2"></textarea>
         </div>
         <div class="mb-5 flex flex-col w-full md:w-72">
           <label for="password" class="text-base mb-2">Password</label>
@@ -55,7 +63,6 @@
           <label for="agreement" class="mr-6  md:w-72">I agree to Aslisemua’s Terms and Conditions & Privacy Policy</label><br>
         </div>
         <button id="signUp" type="submit" class="btn-primary mb-5 md:w-72">Sign Up</button>
-        <button id="signUpGoogle" class="bg-white border border-gray-800 py-2 px-6 md:w-72"><i class="fab fa-google mr-2"></i>Sign In With Google</button>
       </div>
     </form>
   </main>
@@ -65,28 +72,44 @@
     document.getElementById('signUpForm').addEventListener('submit', signUp, true);
 
     async function signUp(event) {
+      event.preventDefault();
       document.getElementById('signUp').setAttribute('disabled', true);
-      document.getElementById('signUpGoogle').setAttribute('disabled', true);
+      const data = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        gender: document.querySelector('input[name="gender"]:checked').value,
+        password: document.getElementById('password').value,
+        phone_number: document.getElementById('phone_number').value,
+        postal_code: document.getElementById('postal_code').value,
+        city: document.getElementById('city').value,
+        district: document.getElementById('district').value,
+        address: document.getElementById('address').value,
+      }
       if (checkPassword()) {
-        await axios.post('/api/v1/customer/register').then(result => {
-          console.log(result);
-          window.location.href = '{{route('profile.edit-personal-info')}}';
+        await axios.post('/api/v1/customers/register', data).then(result => {
+          if (result.status === 201) {
+            document.location.href = '{{ route('profile.personal-info') }}';
+          } else {
+            throw new Error(result.message)
+          }
         }).catch(error => showAlert('snackbar', {
           type: 'warning',
           message: error
-        }))
+        })).finally(() => {
+          document.getElementById('signUp').removeAttribute('disabled');
+        })
       } else {
         showAlert('snackbar', {
           type: 'warning',
           message: 'Please check your password again'
         })
+        document.getElementById('signUp').removeAttribute('disabled');
       }
-      event.preventDefault();
     }
 
     function checkPassword () {
       console.log(document.getElementById('password').value);
-      if (document.getElementById('password').value === document.getElementById('repeatpassword')) return true
+      if (document.getElementById('password').value === document.getElementById('repeatpassword').value) return true
       else return false
     }
   </script>
