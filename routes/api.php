@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\SignInController;
+use App\Http\Controllers\BrandController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -46,4 +47,17 @@ Route::prefix('v1')->group(function () {
 
     // Forgot Password
     Route::post('/forgot-password/email/send', [CustomersController::class, 'forgotPassword']);
+
+    /**
+     * Brand
+     */
+    Route::prefix('brands')->group(function () {
+        Route::middleware('auth:api')->get('/', [BrandController::class, 'fetchBrands']);
+        Route::middleware('auth:api')->get('/{id}', [BrandController::class, 'fetchBrand']);
+        Route::middleware('auth:api')->post('/', [BrandController::class, 'createBrand']);
+    });
+
+    /**
+     * Categories
+     */
 });
