@@ -12,7 +12,7 @@ class BrandModel extends Model
     protected $table = 'brands';
     protected $primaryKey = 'id';
     public $incrementing = false;
-    protected $attributes = [
-        'id', 'name', 'associated_product', 'created_by', 'updated_by', 'created_at', 'updated_at'
+    protected $fillable = [
+        'id', 'name', 'associated_product', 'created_by', 'updated_by', 'created_at', 'updated_at', 'file_path'
     ];
 }

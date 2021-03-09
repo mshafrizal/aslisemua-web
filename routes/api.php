@@ -54,7 +54,7 @@ Route::prefix('v1')->group(function () {
     Route::prefix('brands')->group(function () {
         Route::middleware('auth:api')->get('/', [BrandController::class, 'fetchBrands']);
         Route::middleware('auth:api')->get('/{id}', [BrandController::class, 'fetchBrand']);
-        Route::post('/', [BrandController::class, 'createBrand']);
+        Route::middleware('auth:api')->post('/', [BrandController::class, 'createBrand']);
     });
 
     /**
