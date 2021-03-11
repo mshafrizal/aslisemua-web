@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta name="csrf-token" content="{{ csrf_token() }}">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
   <link href="{{ asset('css/app.css') }}" rel="stylesheet">
   <title>Aslisemua - Sign Up</title>
 </head>
@@ -68,9 +69,11 @@
   </main>
   <script src="{{asset('js/app.js')}}"></script>
   <script defer src="https://kit.fontawesome.com/8505c87347.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
   <script>
     document.getElementById('signUpForm').addEventListener('submit', signUp, true);
-
+    
     async function signUp(event) {
       event.preventDefault();
       document.getElementById('signUp').setAttribute('disabled', true);
@@ -88,27 +91,47 @@
       if (checkPassword()) {
         await axios.post('/api/v1/customers/register', data).then(result => {
           if (result.status === 201) {
-            document.location.href = '{{ route('profile.personal-info') }}';
+            Toastify({
+              text: 'Registration success',
+              duration: '3000',
+              close: true,
+              gravity: 'top',
+              position: 'center',
+              backgroundColor: '#333',
+              stopOnFocus: true
+            }).showToast();
+            setTimeout(() => {
+              document.location.href = '{{ route('profile.personal-info') }}';
+            }, 2000);
           } else {
             throw new Error(result.message)
           }
-        }).catch(error => showAlert('snackbar', {
-          type: 'warning',
-          message: error
-        })).finally(() => {
+        }).catch(error => Toastify({
+            text: error,
+            duration: '3000',
+            close: true,
+            gravity: 'top',
+            position: 'center',
+            backgroundColor: '#333',
+            stopOnFocus: true
+        }).showToast()).finally(() => {
           document.getElementById('signUp').removeAttribute('disabled');
         })
       } else {
-        showAlert('snackbar', {
-          type: 'warning',
-          message: 'Please check your password again'
-        })
+        Toastify({
+          text: 'Please check your password again',
+          duration: '3000',
+          close: true,
+          gravity: 'top',
+          position: 'center',
+          backgroundColor: '#333',
+          stopOnFocus: true
+        }).showToast();
         document.getElementById('signUp').removeAttribute('disabled');
       }
     }
 
     function checkPassword () {
-      console.log(document.getElementById('password').value);
       if (document.getElementById('password').value === document.getElementById('repeatpassword').value) return true
       else return false
     }
