@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta name="csrf-token" content="{{ csrf_token() }}">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
   <link href="{{ asset('css/app.css') }}" rel="stylesheet">
   <title>Aslisemua - Sign In</title>
 </head>
 <body class="antialiased flex flex-col h-full">
   <main class="flex justify-between flex-row flex-wrap w-full h-full">
     {{-- LEFT SIDE --}}
-    <form class="flex justify-center items-center w-full md:w-1/2 p-4" method="get" id="signInForm" name="signInForm" onsubmit="signIn(event)">
+    <form class="flex justify-center items-center w-full md:w-1/2 p-4" id="signInForm" name="signInForm">
       <div class="flex flex-col">
         @csrf
         <h1 class="text-3xl font-serif text-center mb-6">Welcome Back</h1>
@@ -38,20 +39,51 @@
       <a href="{{ route('signup') }}" class="mb-5 text-center btn-primary w-full md:w-72">Sign Up</a>
     </div>
   </main>
+  <script src="{{asset('js/app.js')}}"></script>
   <script defer src="https://kit.fontawesome.com/8505c87347.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script>
     document.getElementById('signInForm').addEventListener('submit', signIn, true);
     function signIn(e) {
       e.preventDefault();
       const data = {
-        email: 
-      }
-      axios.get('{{ route('login')}}', data).then(result => {
-        console.log(result)
-      }).catch(error => {
-        throw new Error(error)
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+      };
+      axios.post('{{ route('login')}}', data).then(result => {
+        if (result.status === 200) {
+          debugger
+          Toastify({
+            text: 'Login success',
+            duration: '3000',
+            close: true,
+            gravity: 'top',
+            position: 'center',
+            backgroundColor: '#333',
+            stopOnFocus: true
+          }).showToast();
+          saveDataInLocalStorage(result.data);
+          setTimeout(() => {
+            document.location.href = '{{ route('profile.personal-info') }}';
+          }, 2000);
+        } else {
+          throw new Error(result.message);
+        }
+      }).catch(error => {      
+          Toastify({
+            text: error,
+            duration: '3000',
+            close: true,
+            gravity: 'top',
+            position: 'center',
+            backgroundColor: '#333',
+            stopOnFocus: true
+          }).showToast();  
       })
-      
+      function saveDataInLocalStorage (data) {
+        debugger
+        localStorage.setItem('token', data.token)
+      }
     }
   </script>
 </body>
