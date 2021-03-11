@@ -42,3 +42,11 @@ Route::get('/registration/verify-account/{id}', [CustomersController::class, 'se
 
 // Forgot Password Page
 Route::get('/customers/forgot-password/{id}/edit', [CustomersController::class, 'editForgotPassword']);
+
+Route::get('/forgot-password', function () {
+  return view('forgot-password');
+})->name('forgot-password');
+
+Route::get('/forgot-password/link-sent', function () {
+  return view('forgot-password-sent');
+})->name('forgot-password-sent');
