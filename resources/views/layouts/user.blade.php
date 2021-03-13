@@ -26,7 +26,7 @@
             </button>
           </div>
           <div class="flex flex-2 items-center justify-center sm:items-stretch sm:justify-center">
-            <h1 class="text-4xl tracking-widest font-serif">ASLISEMUA</h1>
+            <a href="/" class="text-4xl tracking-widest font-serif">ASLISEMUA</a>
           </div>
           <div class="inset-y-0 flex-1 right-0 flex items-center justify-end md:pr-2 sm:static sm:inset-auto sm:pr-0">
             <button class="hidden md:block text-gray-900 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-offset-gray-800 focus:ring-white">
@@ -63,8 +63,7 @@
                   To: "transform opacity-0 scale-95"
               -->
               <div id="user-menu-list" class="origin-top-right hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-10" role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Your Profile</a>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
+                <a href="{{ route('profile.personal-info') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Your Profile</a>
                 <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Sign out</a>
               </div>
             </div>
