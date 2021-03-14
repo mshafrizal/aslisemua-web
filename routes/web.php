@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomersController;
+use App\Http\Controllers\GoogleController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -50,3 +51,12 @@ Route::get('/forgot-password', function () {
 Route::get('/forgot-password/link-sent', function () {
   return view('forgot-password-sent');
 })->name('forgot-password-sent');
+
+// Google Login
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('googlesignin');
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('googlecallback');
+
+// Dashboard
+Route::get('/dashboard', function() {
+  return view('profile.edit-personal-info');
+});
