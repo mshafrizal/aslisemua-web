@@ -23,6 +23,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'google_id',
+        'level',
+        'is_verified',
+        'status',
+        'created_at',
+        'updated_at',
+        'is_first_time'
     ];
 
     protected $table = 'customers';

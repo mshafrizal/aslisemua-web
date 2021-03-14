@@ -26,7 +26,7 @@
         </div>
         <p class="text-xs mb-5">Forgot password? <a class="text-red-800 font-bold hover:underline" href="#">Click here</a></p>
         <button type="submit" class="btn-primary mb-5">Sign In</button>
-        <button class="bg-white border border-gray-800 py-2 px-6"><i class="fab fa-google mr-2"></i>Sign In With Google</button>
+        <a href="{{ route('googlesignin') }}" class="bg-white border border-gray-800 py-2 px-6 text-justify"><i class="fab fa-google mr-2"></i>Sign In With Google</a>
       </div>
     </form>
     {{-- RIGHT SIDE --}}
@@ -69,7 +69,7 @@
         } else {
           throw new Error(result.message);
         }
-      }).catch(error => {      
+      }).catch(error => {
           Toastify({
             text: error,
             duration: '3000',
@@ -78,7 +78,7 @@
             position: 'center',
             backgroundColor: '#333',
             stopOnFocus: true
-          }).showToast();  
+          }).showToast();
       })
       function saveDataInLocalStorage (data) {
         debugger
