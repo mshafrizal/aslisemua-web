@@ -1,76 +1,32 @@
+/**
+ * First we will load all of this project's JavaScript dependencies which
+ * includes Vue and other libraries. It is a great starting point when
+ * building robust, powerful web applications using Vue and Laravel.
+ */
+
 require('./bootstrap');
-import "toastify-js/src/toastify.css"
-// ==============================
-//
-//  PROFILE
-//
-// ==============================
 
+window.Vue = require('vue').default;
 
-// User Menu
-const userMenu = document.getElementById('user-menu');
-const userMenuList = document.getElementById('user-menu-list');
+/**
+ * The following block of code may be used to automatically register your
+ * Vue components. It will recursively scan this directory for the Vue
+ * components and automatically register them with their "basename".
+ *
+ * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
+ */
 
-function showMenuList () {
-  userMenuList.classList.remove('hidden');
-}
+// const files = require.context('./', true, /\.vue$/i)
+// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-function hideMenuList () {
-  userMenuList.classList.add('hidden');
-}
-if (userMenu) {
-  userMenu.addEventListener('click', function () {
-    if (userMenuList.classList.contains('hidden')) showMenuList()
-    else hideMenuList()
-  })
-}
+Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
-// Mobile Navigation
-const navMenu = document.getElementById('navigation-menu');
-const navMenuList = document.getElementById('')
-function showNavList() {
-  
-}
+/**
+ * Next, we will create a fresh Vue application instance and attach it to
+ * the page. Then, you may begin adding components to this application
+ * or customize the JavaScript scaffolding to fit your unique needs.
+ */
 
-function hideNavList() {
-
-}
-if (navMenu) {
-  navMenu.addEventListener('click', function () {
-    if (navMenuList.classList.contains('hidden')) showNavList()
-    else hideNavList()
-  })
-}
-
-// Alert
-
-window.closeAlert = (id) => {
-  const alertEl = document.getElementById(id);
-  alertEl.classList.remove('flex');
-  alertEl.classList.add('hidden');
-  clearTimeout();
-}
-
-window.showAlert = (id, payload) => {
-  const alertEl = document.getElementById(id);
-  const messageEl = document.getElementById('snackbarMessage') || null
-  if (messageEl) {
-    if (payload) {
-      messageEl.textContent = payload.message
-      if (payload.type === 'warning') {
-        alertEl.classList.add('bg-white', 'border', 'border-yellow-500', 'text-yellow-500', 'absolute', 'top-4', 'left-0', 'right-0', 'ml-auto', 'mr-auto')
-      } else if (payload.type === 'error') {
-        alertEl.classList.add('bg-white', 'border', 'border-red-500', 'text-red-500', 'absolute', 'top-4', 'left-0', 'right-0', 'ml-auto', 'mr-auto')
-      } else if (payload.type === 'success') {
-        alertEl.classList.add('bg-white', 'border', 'border-green-500', 'text-green-500', 'absolute', 'top-4', 'left-0', 'right-0', 'ml-auto', 'mr-auto')
-      } else {
-        alertEl.classList.add('bg-white', 'border', 'border-gray-500', 'text-gray-500', 'absolute', 'top-4', 'left-0', 'right-0', 'ml-auto', 'mr-auto')
-      }
-    }
-  }
-  alertEl.classList.remove('hidden');
-  alertEl.classList.add('flex');
-  setTimeout(() => {
-    closeAlert(id);
-  }, 10000);
-}
+const app = new Vue({
+    el: '#app',
+});
