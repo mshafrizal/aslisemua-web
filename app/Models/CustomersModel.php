@@ -20,8 +20,20 @@ class CustomersModel extends Model
         return DB::table('customers')->where('id', $id)->first();
     }
 
+    public function findGoogleUser($googleId) {
+        return DB::table('customers')->where('google_id', $googleId)->first();
+    }
+
+    public function findGoogleEmail($email) {
+        return DB::table('customers')->where('email', $email)->first();
+    }
+
     public function updateUser($id, $dataValidated){
         DB::table('customers')->where('id', $id)->update($dataValidated);
+    }
+
+    public function updateGoogleUser($email, $payload) {
+        DB::table('customers')->where('email', $email)->update($payload);
     }
 
     public function verifyAccount($id, $dataVerification) {

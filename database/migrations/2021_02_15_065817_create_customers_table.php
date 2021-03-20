@@ -19,12 +19,13 @@ class CreateCustomersTable extends Migration
             $table->string('email');
             $table->enum('gender', ['Male', 'Female']);
             $table->text('password');
-            $table->string('phone_number');
-            $table->string('postal_code');
-            $table->string('city');
-            $table->string('district');
-            $table->text('address');
+            $table->string('phone_number')->nullable();
+            $table->string('postal_code')->nullable();
+            $table->string('city')->nullable();
+            $table->string('district')->nullable();
+            $table->text('address')->nullable();
             $table->enum('status', ['active', 'inactive']);
+            $table->enum('is_first_time', ['yes', 'no']);
             $table->boolean('is_verified');
             $table->timestamps();
             $table->timestamp('email_verified_at')->nullable();
