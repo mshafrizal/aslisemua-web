@@ -56,7 +56,9 @@ Route::get('/forgot-password/link-sent', function () {
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('googlesignin');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('googlecallback');
 
-// Dashboard
-Route::get('/dashboard', function() {
-  return view('profile.edit-personal-info');
+// ADMIN
+// ===============
+
+Route::prefix('admin')->group(function () {
+  Route::get('/{any?}', App\Http\Controllers\AdminPagesController::class);
 });
