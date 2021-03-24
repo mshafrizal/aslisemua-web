@@ -22,6 +22,13 @@ try {
 window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common = { 'Authorization': `Bearer ${localStorage.getItem('token')}` };
+
+window.axios.interceptors.response.use(function (response) {
+    return response;
+}, function (error) {
+    return Promise.reject(error);
+});
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

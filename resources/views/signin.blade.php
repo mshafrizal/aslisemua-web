@@ -52,7 +52,6 @@
       };
       axios.post('{{ route('login')}}', data).then(result => {
         if (result.status === 200) {
-          debugger
           Toastify({
             text: 'Login success',
             duration: '3000',
@@ -81,8 +80,7 @@
           }).showToast();
       })
       function saveDataInLocalStorage (data) {
-        debugger
-        localStorage.setItem('token', data.token)
+        Object.keys(data.data).forEach(key => localStorage.setItem(key, data.data[key]));
       }
     }
   </script>

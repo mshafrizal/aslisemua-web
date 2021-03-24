@@ -57,3 +57,15 @@ const app = new Vue({
     components: { App },
     router
 });
+
+const userMenuButton = document.getElementById('user-menu');
+const userMenuDropdown = document.getElementById('user-menu-list');
+
+userMenuButton.addEventListener('click', () => {
+    if (userMenuDropdown.classList.contains('hidden')) userMenuDropdown.classList.replace('hidden', 'block');
+    else userMenuDropdown.classList.replace('block', 'hidden');
+});
+
+userMenuButton.addEventListener('focusout', () => {
+    userMenuDropdown.classList.replace('block', 'hidden');
+})
