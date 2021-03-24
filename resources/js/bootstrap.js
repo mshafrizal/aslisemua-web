@@ -21,6 +21,14 @@ try {
 
 window.axios = require('axios');
 
+if (!localStorage.getItem('token') || localStorage.getItem('token') === '') {
+    const currentRoute = window.location.href;
+
+    if (currentRoute.includes('profile')) {
+        window.location.href = '/sign-in';
+    }
+}
+
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.headers.common = { 'Authorization': `Bearer ${localStorage.getItem('token')}` };
 
