@@ -6,7 +6,10 @@
         <h1 class="text-3xl font-serif">Hello, Jonathan Morningstar</h1>
         <p class="text-lg">Member since 2020</p>
       </div>
-
+      @php
+         {{Auth::guard('api')->check();}}   
+      @endphp
+      
       <div class="flex flex-col md:flex-row md:space-x-10">
         @include('partials.profile-sidebar')
         <div class="grid grid-cols-1 md:grid-cols-2 max-w-xl flex-row flex-wrap text-gray-900 gap-5">
@@ -36,7 +39,7 @@
           </div>
           <div class="flex flex-col">
             <label for="password" class="mb-3 text-sm">Password</label>
-            <input value="" id="password" disabled type="text" value="********" class="max-w-sm px-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
+            <input value="" id="password" disabled type="text" placeholder="********" class="max-w-sm px-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border">
           </div>
           <div class="flex flex-col">
             <label for="phone" class="mb-3 text-sm">Phone Number</label>
@@ -72,43 +75,39 @@
       document.getElementById('editInfoButton').addEventListener('click', () => {
         window.location.href = '{{route('profile.edit-personal-info')}}';
       });
-      async function getData(url = "") {
-        const response = await fetch(url, {
-          method: 'GET',
-          cache: 'no-cache',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          referrerPolicy: 'no-referrer'
-        });
-        return response.json();
-      }
-
-      getData('/api/v1/customers/1').then(result => {
-        const name = document.getElementById('name');
-        const email = document.getElementById('email');
-        const gender = document.getElementById('gender');
-        const phone = document.getElementById('phone');
-        const postal = document.getElementById('postal');
-        const city = document.getElementById('city');
-        const district = document.getElementById('district');
-        const address = document.getElementById('address');
-
-        if (result.status === 200 && result.data.length > 0) {
-          let data = result.data[0];
-          name.value = data.name;
-          email.value = data.email;
-          gender.value = data.gender;
-          phone.value = data.phone;
-          postal.value = data.postal;
-          city.value = data.city;
-          district.value = data.district;
-          address.value = data.address;
+      
+      const USER_ID = localStorage.getItem('id');
+      axios.get(`/api/v1/customers/${USER_ID}`).then(result => {
+        if (result.status === 200) {
+          const name = document.getElementById('name');
+          const email = document.getElementById('email');
+          const gender = document.getElementById('gender');
+          const phone = document.getElementById('phone');
+          const postal = document.getElementById('postal');
+          const city = document.getElementById('city');
+          const district = document.getElementById('district');
+          const address = document.getElementById('address');
+          name.value = result.data.data.name;
+          email.value = result.data.data.email;
+          gender.value = result.data.data.gender;
+          phone.value = result.data.data.phone_number;
+          postal.value = result.data.data.postal_code;
+          city.value = result.data.data.city;
+          district.value = result.data.data.district;
+          address.value = result.data.data.address;
         } else {
-          throw new Error('Data not available')
+          throw new Error(result.message)
         }
       }).catch(error => {
-        showAlert('alert')
-      });
+        Toastify({
+          text: 'Failed to retrieve your information. Please try again.',
+          duration: '3000',
+          close: true,
+          gravity: 'top',
+          position: 'center',
+          backgroundColor: '#333',
+          stopOnFocus: true
+        }).showToast();
+      })
     </script>
 @endsection
