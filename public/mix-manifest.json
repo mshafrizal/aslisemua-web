@@ -1,5 +1,7 @@
 {
     "/js/app.js": "/js/app.js",
+    "/js/admin/admin.js": "/js/admin/admin.js",
+    "/css/admin/admin.css": "/css/admin/admin.css",
     "/css/app.css": "/css/app.css",
     "/fonts/Belleza-Regular.ttf": "/fonts/Belleza-Regular.ttf"
 }

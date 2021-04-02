@@ -60,5 +60,5 @@ Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallba
 // ===============
 
 Route::prefix('admin')->group(function () {
-  Route::get('/{any?}', App\Http\Controllers\AdminPagesController::class);
+  Route::get('/{any?}', App\Http\Controllers\AdminPagesController::class)->where('any','.*');
 });
