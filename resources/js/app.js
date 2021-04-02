@@ -6,6 +6,40 @@
 
 require('./bootstrap');
 
+const userMenuButton = document.getElementById('user-menu');
+const userMenuDropdown = document.getElementById('user-menu-list');
+const signOutButton = document.getElementById('sign-out-button');
+
+if (userMenuButton && userMenuDropdown) {
+    userMenuButton.addEventListener('click', () => {
+        if (userMenuDropdown.classList.contains('hidden')) userMenuDropdown.classList.replace('hidden', 'block');
+        else userMenuDropdown.classList.replace('block', 'hidden');
+    });
+}
+
+if (signOutButton) {
+    signOutButton.addEventListener('click', function () {
+        localStorage.setItem('google_id', '');
+        localStorage.setItem('gender', '');
+        localStorage.setItem('district', '');
+        localStorage.setItem('email_verified_at', '');
+        localStorage.setItem('id', '');
+        localStorage.setItem('address', '');
+        localStorage.setItem('status', '');
+        localStorage.setItem('level', '');
+        localStorage.setItem('city', '');
+        localStorage.setItem('name', '');
+        localStorage.setItem('is_verified', '');
+        localStorage.setItem('created_at', '');
+        localStorage.setItem('updated_at', '');
+        localStorage.setItem('postal_code', '');
+        localStorage.setItem('phone_number', '');
+        localStorage.setItem('is_first_time', '');
+        localStorage.setItem('email', '');
+        localStorage.setItem('token', '');
+        window.location.href = '/sign-in'
+    });
+}
 window.Vue = require('vue').default;
 import VueRouter from 'vue-router';
 
@@ -51,21 +85,10 @@ const router = new VueRouter({
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
-const app = new Vue({
-    el: '#app',
-    components: { App },
-    router
-});
-
-const userMenuButton = document.getElementById('user-menu');
-const userMenuDropdown = document.getElementById('user-menu-list');
-
-userMenuButton.addEventListener('click', () => {
-    if (userMenuDropdown.classList.contains('hidden')) userMenuDropdown.classList.replace('hidden', 'block');
-    else userMenuDropdown.classList.replace('block', 'hidden');
-});
-
-userMenuButton.addEventListener('focusout', () => {
-    userMenuDropdown.classList.replace('block', 'hidden');
-})
+if (document.location.href.includes('admin')) {
+    const app = new Vue({
+        el: '#app',
+        components: { App },
+        router
+    });
+}

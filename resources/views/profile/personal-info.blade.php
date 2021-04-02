@@ -78,6 +78,7 @@
       
       const USER_ID = localStorage.getItem('id');
       axios.get(`/api/v1/customers/${USER_ID}`).then(result => {
+        console.log(result.status)
         if (result.status === 200) {
           const name = document.getElementById('name');
           const email = document.getElementById('email');
