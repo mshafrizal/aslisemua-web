@@ -57,10 +57,10 @@ Route::prefix('v1')->group(function () {
         // Administrator
         Route::prefix('private')->group(function () {
             Route::middleware('auth:api')->get('/', [CategoryController::class, 'fetchCategories']);
-            Route::middleware('auth:api')->get('/{category}', [CategoryController::class, 'fetchCategory']);
+            Route::middleware('auth:api')->get('/{id}', [CategoryController::class, 'fetchCategory']);
             Route::middleware('auth:api')->post('/', [CategoryController::class, 'createCategory']);
             Route::middleware('auth:api')->post('/{id}', [CategoryController::class, 'updateCategory']);
-            Route::middleware('auth:api')->delete('/', [CategoryController::class, 'deleteCategory']);
+            Route::middleware('auth:api')->post('delete/{category_id}/{subcategory_id?}/{further_subcategory_id?}', [CategoryController::class, 'deleteCategory']);
         });
 
         // Users

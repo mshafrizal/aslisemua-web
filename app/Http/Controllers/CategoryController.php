@@ -38,9 +38,10 @@ class CategoryController extends Controller
         }
     }
 
-    public function fetchCategory(CategoryModel $category) {
+    public function fetchCategory($id) {
         try {
-            if (empty($category)) return response()->json([
+            $categoryExisting = CategoryModel::find($id);
+            if (empty($category) || !$categoryExisting) return response()->json([
                 'status' => 200,
                 'message' => 'No Data Found',
                 'results' => (object) []
@@ -65,8 +66,8 @@ class CategoryController extends Controller
             $user = Auth::user();
             $name = $request->name;
             $newFileName = 'CATEGORY-' . $name . '-' . time() . '.' .$request->file->extension();
-            $createdBy = $user->name;
-            $updatedBy = $user->name;
+            $createdBy = 'Pandhu Wibowo';
+            $updatedBy = 'Pandhu Wibowo';
             $createdAt = Carbon::now();
             $updatedAt = Carbon::now();
             $filePath = $request->file('file')->storeAs('categories', $newFileName, 'public');
@@ -180,8 +181,126 @@ class CategoryController extends Controller
 
     }
 
-    public function deleteCategory($id) {
+    public function deleteCategory($category_id = null, $subcategory_id = null, $further_subcategory_id = null) {
+        try {
+            if ($category_id === null || !$category_id) return response()->json([
+                'status' => 400,
+                'message' => 'Category should be non-empty string',
+                'results' => (object)[]
+            ]);
 
+            $categoryExisting = (object)[];
+
+            $categoryExisting = CategoryModel::find($category_id);
+            if (!$categoryExisting) return response()->json([
+                'status' => 400,
+                'message' => 'Category not found'
+            ]);
+
+            if ($subcategory_id !== null) {
+                $categoryExisting = SubCategoryModel::find($subcategory_id);
+                if (!$categoryExisting) return response()->json([
+                    'status' => 400,
+                    'message' => 'Subcategory not found'
+                ]);
+            }
+
+            if ($further_subcategory_id !== null) {
+                $categoryExisting = SubCategoryModel::find($subcategory_id);
+                if (!$categoryExisting) return response()->json([
+                    'status' => 400,
+                    'message' => 'Subcategory not found'
+                ]);
+
+                $categoryExisting = FurtherSubCategoryModel::find($further_subcategory_id);
+                if (!$categoryExisting) return response()->json([
+                    'status' => 400,
+                    'message' => 'Further Subcategory not found'
+                ]);
+            }
+
+            $oldFilePath = $categoryExisting->file_path;
+            $name = $categoryExisting->name;
+
+            $categoryPrefix = 'categories/';
+            $prefixLength = strlen($categoryPrefix);
+            if (is_null($subcategory_id) && is_null($further_subcategory_id)) {
+                $subCategoryByCategoryId = SubCategoryModel::where('category_id', $category_id)->get();
+
+                if ($subCategoryByCategoryId->count() > 0) {
+                    foreach ($subCategoryByCategoryId as $row) {
+                        $furtherSubCategoryBySubCategoryId = FurtherSubCategoryModel::where('subcategory_id', $row->id)->get();
+                        if ($furtherSubCategoryBySubCategoryId->count() > 0) {
+                            foreach ($furtherSubCategoryBySubCategoryId as $val) {
+                                $deleteFurtherSubCategory = FurtherSubCategoryModel::find($val->id);
+                                if ($deleteFurtherSubCategory->delete()) {
+                                    $oldFurtherSubCategoryPath = $val->file_path;
+                                    $oldName = $val->name;
+            
+                                    $oldFurtherSubCategoryFileName = '';
+            
+                                    if (substr($oldFurtherSubCategoryPath, 0, $prefixLength) === $categoryPrefix) {
+                                        $oldFurtherSubCategoryFileName = substr($oldFurtherSubCategoryPath, $prefixLength);
+                                        $this->unlinkImage($oldFurtherSubCategoryFileName);
+                                    }
+                                }
+                            }
+                        }
+
+                        $deleteSubCategory = SubCategoryModel::find($row->id);
+                        if ($deleteSubCategory->delete()) {
+                            $oldSubCategoryPath = $row->file_path;
+                            $oldName = $row->name;
+    
+                            $oldSubCategoryFileName = '';
+    
+                            if (substr($oldSubCategoryPath, 0, $prefixLength) === $categoryPrefix) {
+                                $oldSubCategoryFileName = substr($oldSubCategoryPath, $prefixLength);
+                                $this->unlinkImage($oldSubCategoryFileName);
+                            }   
+                        }
+                    }
+                }
+            } else if (!is_null($subcategory_id) && is_null($further_subcategory_id)) {
+                $furtherSubCategoryBySubCategoryId = FurtherSubCategoryModel::where('subcategory_id', $subcategory_id)->get();
+                if ($furtherSubCategoryBySubCategoryId->count() > 0) {
+                    foreach ($furtherSubCategoryBySubCategoryId as $row) {
+                        $deleteFurtherSubCategory = FurtherSubCategoryModel::find($row->id);
+                        if ($deleteFurtherSubCategory->delete()) {
+                            $oldFurtherSubCategoryPath = $row->file_path;
+                            $oldName = $row->name;
+    
+                            $oldFurtherSubCategoryFileName = '';
+    
+                            if (substr($oldFurtherSubCategoryPath, 0, $prefixLength) === $categoryPrefix) {
+                                $oldFurtherSubCategoryFileName = substr($oldFurtherSubCategoryPath, $prefixLength);
+                                $this->unlinkImage($oldFurtherSubCategoryFileName);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if ($categoryExisting->delete()) {
+                $oldFileName = '';
+                if (substr($oldFilePath, 0, $prefixLength) === $categoryPrefix) {
+                    $oldFileName = substr($oldFilePath, $prefixLength);
+                    $this->unlinkImage($oldFileName);
+                }
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => $name . ' successfully deleted'
+                ], 200);
+            }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     private function unlinkImage ($fileName) {
