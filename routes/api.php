@@ -5,16 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\SignInController;
 use App\Http\Controllers\BrandController;
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+use App\Http\Controllers\CategoryController;
 
 //Access-Control-Allow-Origin: *
 header('Access-Control-Allow-Origin: *');
@@ -62,4 +53,19 @@ Route::prefix('v1')->group(function () {
     /**
      * Categories
      */
+    Route::prefix('categories')->group(function () {
+        // Administrator
+        Route::prefix('private')->group(function () {
+            Route::middleware('auth:api')->get('/', [CategoryController::class, 'fetchCategories']);
+            Route::middleware('auth:api')->get('/{id}', [CategoryController::class, 'fetchCategory']);
+            Route::middleware('auth:api')->post('/', [CategoryController::class, 'createCategory']);
+            Route::middleware('auth:api')->post('/{id}', [CategoryController::class, 'updateCategory']);
+            Route::middleware('auth:api')->post('delete/{category_id}/{subcategory_id?}/{further_subcategory_id?}', [CategoryController::class, 'deleteCategory']);
+        });
+
+        // Users
+        Route::prefix('public')->group(function () {
+            
+        });
+    });
 });

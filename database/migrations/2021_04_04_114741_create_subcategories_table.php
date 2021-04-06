@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBrandsTable extends Migration
+class CreateSubcategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,21 @@ class CreateBrandsTable extends Migration
      */
     public function up()
     {
-        Schema::create('brands', function (Blueprint $table) {
-            $table->uuid('id');
+        Schema::create('subcategories', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->string('name');
+            $table->text('description')->nullable();
             $table->text('file_path')->nullable();
-            $table->integer('associated_product');
+            $table->string('parent');
+            $table->boolean('is_published')->default('1');
+            $table->uuid('category_id');
             $table->string('created_by');
             $table->string('updated_by');
             $table->timestamps();
-            $table->primary('id');
+        });
+
+        Schema::table('subcategories', function($table) {
+            $table->foreign('category_id')->references('id')->on('categories');
         });
     }
 
@@ -32,6 +38,6 @@ class CreateBrandsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('brands');
+        Schema::dropIfExists('subcategories');
     }
 }

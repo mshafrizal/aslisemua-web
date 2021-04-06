@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBrandsTable extends Migration
+class CreateCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,16 @@ class CreateBrandsTable extends Migration
      */
     public function up()
     {
-        Schema::create('brands', function (Blueprint $table) {
-            $table->uuid('id');
+        Schema::create('categories', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->string('name');
+            $table->text('description')->nullable();
             $table->text('file_path')->nullable();
-            $table->integer('associated_product');
+            $table->boolean('is_parent')->default('0');
+            $table->boolean('is_published')->default('1');
             $table->string('created_by');
             $table->string('updated_by');
             $table->timestamps();
-            $table->primary('id');
         });
     }
 
@@ -32,6 +33,6 @@ class CreateBrandsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('brands');
+        Schema::dropIfExists('categories');
     }
 }
