@@ -14,8 +14,11 @@ const mix = require('laravel-mix');
 mix.copyDirectory('resources/fonts', 'public/fonts');
 
 mix.js('resources/js/app.js', 'public/js')
-    .vue()
     .sass('resources/sass/app.scss', 'public/css')
     .postCss('resources/css/app.css', 'public/css', [
       require("tailwindcss"),
     ]);
+
+mix.js('resources/js/admin.js', 'public/js/admin')
+    .vue()
+    .sass('resources/sass/admin.scss', 'public/css/admin');
