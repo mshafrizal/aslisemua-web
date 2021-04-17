@@ -19,13 +19,12 @@ class CategoryResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'file_path' => $this->file_path,
-            'is_parent' => $this->is_parent,
+            'parent' => $this->parent,
             'is_published' => $this->is_published,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'subcategories' => SubCategoryResource::collection($this->whenLoaded('subCategory'))
+            'updated_at' => $this->updated_at
         ];
     }
 }

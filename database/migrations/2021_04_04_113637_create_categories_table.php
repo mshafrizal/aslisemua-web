@@ -18,7 +18,7 @@ class CreateCategoriesTable extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->text('file_path')->nullable();
-            $table->boolean('is_parent')->default('0');
+            $table->string('parent')->nullable();
             $table->boolean('is_published')->default('1');
             $table->string('created_by');
             $table->string('updated_by');
