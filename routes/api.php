@@ -56,11 +56,13 @@ Route::prefix('v1')->group(function () {
     Route::prefix('categories')->group(function () {
         // Administrator
         Route::prefix('private')->group(function () {
-            Route::middleware('auth:api')->get('/', [CategoryController::class, 'fetchCategories']);
+            Route::get('/', [CategoryController::class, 'fetchCategories']);
             Route::middleware('auth:api')->get('/{id}', [CategoryController::class, 'fetchCategory']);
-            Route::middleware('auth:api')->post('/', [CategoryController::class, 'createCategory']);
+            Route::post('/', [CategoryController::class, 'createCategory']);
             Route::middleware('auth:api')->post('update/{category_id}', [CategoryController::class, 'updateCategory']);
+            Route::post('delete/bulk', [CategoryController::class, 'bulkDelete']);
             Route::middleware('auth:api')->post('delete/{category_id}', [CategoryController::class, 'deleteCategory']);
+            Route::put('update/status/{category_id}', [CategoryController::class, 'updateStatus']);
         });
 
         // Users
