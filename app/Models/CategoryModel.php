@@ -22,17 +22,7 @@ class CategoryModel extends Model
         'created_at', 
         'updated_at', 
         'file_path',
-        'is_parent',
+        'parent',
         'is_published',
     ];
-
-    /**
-     * Get all of the subcategories for the CategoryModel
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function subCategory()
-    {
-        return $this->hasMany(SubCategoryModel::class, 'category_id', 'id');
-    }
 }
