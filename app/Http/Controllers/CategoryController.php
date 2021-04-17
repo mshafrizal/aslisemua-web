@@ -66,8 +66,8 @@ class CategoryController extends Controller
             $user = Auth::user();
             $name = $request->name;
             $newFileName = 'CATEGORY-' . $name . '-' . time() . '.' .$request->file->extension();
-            $createdBy = $user->name;
-            $updatedBy = $user->name;
+            $createdBy = 'Pandhu Wibowo';
+            $updatedBy = 'Pandhu Wibowo';
             $createdAt = Carbon::now();
             $updatedAt = Carbon::now();
             $filePath = $request->file('file')->storeAs('categories', $newFileName, 'public');
@@ -176,7 +176,47 @@ class CategoryController extends Controller
         }
     }
 
-    public function deleteCategory($category_id = null, $subcategory_id = null, $further_subcategory_id = null) {
+    function bulkDelete(Request $request) {
+        try {
+            $array = [];
+            $error = [];
+            foreach ($request->category_ids as $row) {
+                $result = $this->deleteCategory($row);
+                $realResponse = json_decode($result->getContent(), true);
+                if ($realResponse['status'] === 200) {
+                    array_push($array, $realResponse);
+                } else {
+                    array_push($error, $realResponse);
+                }
+            }
+
+            if (count($error) > 0) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Category partially deleted successfully'
+                ]);
+            } else if (count($array) === 0) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'The entire category failed to delete'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'The entire category was deleted successfully'
+                ]);
+            }
+            return response()->json($array);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteCategory($category_id = null) {
         try {
             if ($category_id === null || !$category_id) return response()->json([
                 'status' => 400,
@@ -210,6 +250,42 @@ class CategoryController extends Controller
                     'message' => $name . ' successfully deleted'
                 ], 200);
             }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateStatus($category_id, Request $request) {
+        try {
+            if ($category_id === null || !$category_id) return response()->json([
+                'status' => 400,
+                'message' => 'Category should be non-empty string',
+                'results' => (object)[]
+            ]);
+
+            $categoryExisting = CategoryModel::find($category_id);
+            if (!$categoryExisting) return response()->json([
+                'status' => 400,
+                'message' => 'Category not found'
+            ]);
+
+            $status = $request->status;
+
+            $categoryExisting->is_published = $status;
+            if ($categoryExisting->save()) return response()->json([
+                'status' => 200,
+                'message' => $categoryExisting->name . ' status successfully updated',
+            ]);
+
+            return response()->json([
+                'status' => 400,
+                'message' => $categoryExisting->name . 'status totally failed'
+            ], 400);
 
         } catch (\Exception $e) {
             return response()->json([
