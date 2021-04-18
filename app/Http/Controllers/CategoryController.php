@@ -111,7 +111,7 @@ class CategoryController extends Controller
         }
     }
 
-    public function updateCategory($category_id = null, Request $request) {
+    public function updateCategory($category_id, Request $request) {
         try {
             if ($category_id === null || !$category_id) return response()->json([
                 'status' => 400,
