@@ -20,15 +20,15 @@ class CategoryController extends Controller
                 'status' => 200,
                 'message' => 'Fetched Successfully',
             ];
-            $categories = CategoryModel::with(['subCategory.category', 'subCategory.furtherSubCategory']);
 
+            $categories = CategoryModel::paginate(10);
             if (!$categories) return response()->json([
                 'status' => 200,
                 'message' => 'No Data found',
                 'results' => []
             ]);
 
-            return CategoryResource::collection($categories->paginate(10))->additional($data)->response();
+            return CategoryResource::collection($categories)->additional($data)->response();
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
@@ -41,7 +41,7 @@ class CategoryController extends Controller
     public function fetchCategory($id) {
         try {
             $categoryExisting = CategoryModel::find($id);
-            if (empty($category) || !$categoryExisting) return response()->json([
+            if (empty($categoryExisting) || !$categoryExisting) return response()->json([
                 'status' => 200,
                 'message' => 'No Data Found',
                 'results' => (object) []
@@ -51,7 +51,7 @@ class CategoryController extends Controller
                 'status' => 200,
                 'message' => 'Fetched Successfully',
             ];
-            return (new CategoryResource($category->loadMissing('subCategory.furtherSubCategory')))->additional($data);
+            return (new CategoryResource($categoryExisting))->additional($data);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
@@ -72,87 +72,21 @@ class CategoryController extends Controller
             $updatedAt = Carbon::now();
             $filePath = $request->file('file')->storeAs('categories', $newFileName, 'public');
             $description = $request->description;
-            $parents = $request->parents;
-            $parentsArray = ($parents !== '') ? explode('|', $parents):NULL;
+            $parent = $request->parent;
             $newCategory = (object)[];
 
-            if (gettype($parents) === 'NULL') {
-                $newCategory = new CategoryModel([
-                    'id' => Str::uuid(),
-                    'name' => $name,
-                    'description' => $description,
-                    'created_at' => $createdAt,
-                    'updated_at' => $updatedAt,
-                    'file_path' => $filePath,
-                    'is_parent' => 1,
-                    'is_published' => 1,
-                    'created_by' => $createdBy,
-                    'updated_by' => $updatedAt
-                ]);    
-            } else if (count($parentsArray) === 1) {
-                $categoryExisting = CategoryModel::find($parentsArray[0]);
-                if (!$categoryExisting || empty($categoryExisting)) {
-                    $this->unlinkImage($newFileName);
-                    return response()->json([
-                        'status' => 200,
-                        'message' => 'No Data Found',
-                        'results' => (object) []
-                    ]);
-                }
-                $newCategory = new SubCategoryModel([
-                    'id' => Str::uuid(),
-                    'name' => $name,
-                    'description' => $description,
-                    'created_at' => $createdAt,
-                    'updated_at' => $updatedAt,
-                    'file_path' => $filePath,
-                    'parent' => $categoryExisting->name,
-                    'is_published' => 1,
-                    'category_id' => $categoryExisting->id,
-                    'created_by' => $createdBy,
-                    'updated_by' => $updatedAt
-                ]);
-            } else if (count($parentsArray) === 2) {
-                $categoryExisting = CategoryModel::find($parentsArray[0]);
-                if (!$categoryExisting || empty($categoryExisting)) {
-                    $this->unlinkImage($newFileName);
-                    return response()->json([
-                        'status' => 200,
-                        'message' => 'No Data Found',
-                        'results' => (object) []
-                    ]);
-                }
-
-                $subCategoryExisting = SubCategoryModel::find($parentsArray[1]);
-                if (!$categoryExisting || empty($subCategoryExisting)) {
-                    $this->unlinkImage($newFileName);
-                    return response()->json([
-                        'status' => 200,
-                        'message' => 'No Data Found',
-                        'results' => (object) []
-                    ]);
-                }
-
-                $newCategory = new FurtherSubCategoryModel([
-                    'id' => Str::uuid(),
-                    'name' => $name,
-                    'description' => $description,
-                    'created_at' => $createdAt,
-                    'updated_at' => $updatedAt,
-                    'file_path' => $filePath,
-                    'parent' => $subCategoryExisting->name,
-                    'is_published' => 1,
-                    'subcategory_id' => $subCategoryExisting->id,
-                    'created_by' => $createdBy,
-                    'updated_by' => $updatedAt
-                ]);
-            } else {
-                return response()->json([
-                    'status' => 400,
-                    'message' => 'Sorry the category level is 3 level only',
-                    'results' => (object)[]
-                ]);
-            }
+            $newCategory = new CategoryModel([
+                'id' => Str::uuid(),
+                'name' => $name,
+                'description' => $description,
+                'created_at' => $createdAt,
+                'updated_at' => $updatedAt,
+                'file_path' => $filePath,
+                'parent' => $parent,
+                'is_published' => 1,
+                'created_by' => $createdBy,
+                'updated_by' => $updatedBy
+            ]);
 
             if ($newCategory->save()) return response()->json([
                 'status' => 200,
@@ -177,11 +111,112 @@ class CategoryController extends Controller
         }
     }
 
-    public function updateCategory($id, Request $request) {
+    public function updateCategory($category_id = null, Request $request) {
+        try {
+            if ($category_id === null || !$category_id) return response()->json([
+                'status' => 400,
+                'message' => 'Category should be non-empty string',
+                'results' => (object)[]
+            ]);
 
+            $user = Auth::user();
+            $updatedBy = $user->name;
+            $name = $request->name;
+            $newFileName = 'CATEGORY-' . $name . '-' . time() . '.' .$request->file->extension();
+            $updatedAt = Carbon::now();
+            $filePath = $request->file('file')->storeAs('categories', $newFileName, 'public');
+            $description = $request->description;
+            $parents = $request->parent;
+            $categoryExisting = (object)[];
+
+            $categoryExisting = CategoryModel::find($category_id);
+            if (!$categoryExisting) return response()->json([
+                'status' => 400,
+                'message' => 'Category not found'
+            ]);
+            $oldFilePath = $categoryExisting->file_path;
+            $categoryPrefix = 'categories/';
+            $prefixLength = strlen($categoryPrefix);
+
+            $categoryExisting->updated_at = $updatedAt;
+            $categoryExisting->description = $description;
+            $categoryExisting->updated_by = $updatedBy;
+            $categoryExisting->name = $name;
+            $categoryExisting->file_path = $filePath;
+            $categoryExisting->parent = $parents;
+
+            if ($categoryExisting->save()) {
+                $oldFileName = '';
+                if (substr($oldFilePath, 0, $prefixLength) === $categoryPrefix) {
+                    $oldFileName = substr($oldFilePath, $prefixLength);
+                    $this->unlinkImage($oldFileName);
+                }
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => $name . ' successfully updated',
+                    'results' => (object)[
+                        'name' => $name,
+                        'file_path' => $filePath
+                    ]
+                ], 200);
+            }
+
+            $this->unlinkImage($newFileName);
+            return response()->json([
+                'status' => 400,
+                'message' => $name . ' totally failed'
+            ], 400);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
-    public function deleteCategory($category_id = null, $subcategory_id = null, $further_subcategory_id = null) {
+    function bulkDelete(Request $request) {
+        try {
+            $array = [];
+            $error = [];
+            foreach ($request->category_ids as $row) {
+                $result = $this->deleteCategory($row);
+                $realResponse = json_decode($result->getContent(), true);
+                if ($realResponse['status'] === 200) {
+                    array_push($array, $realResponse);
+                } else {
+                    array_push($error, $realResponse);
+                }
+            }
+
+            if (count($error) > 0) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Category partially deleted successfully'
+                ]);
+            } else if (count($array) === 0) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'The entire category failed to delete'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'The entire category was deleted successfully'
+                ]);
+            }
+            return response()->json($array);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteCategory($category_id = null) {
         try {
             if ($category_id === null || !$category_id) return response()->json([
                 'status' => 400,
@@ -197,89 +232,11 @@ class CategoryController extends Controller
                 'message' => 'Category not found'
             ]);
 
-            if ($subcategory_id !== null) {
-                $categoryExisting = SubCategoryModel::find($subcategory_id);
-                if (!$categoryExisting) return response()->json([
-                    'status' => 400,
-                    'message' => 'Subcategory not found'
-                ]);
-            }
-
-            if ($further_subcategory_id !== null) {
-                $categoryExisting = SubCategoryModel::find($subcategory_id);
-                if (!$categoryExisting) return response()->json([
-                    'status' => 400,
-                    'message' => 'Subcategory not found'
-                ]);
-
-                $categoryExisting = FurtherSubCategoryModel::find($further_subcategory_id);
-                if (!$categoryExisting) return response()->json([
-                    'status' => 400,
-                    'message' => 'Further Subcategory not found'
-                ]);
-            }
-
             $oldFilePath = $categoryExisting->file_path;
             $name = $categoryExisting->name;
 
             $categoryPrefix = 'categories/';
             $prefixLength = strlen($categoryPrefix);
-            if (is_null($subcategory_id) && is_null($further_subcategory_id)) {
-                $subCategoryByCategoryId = SubCategoryModel::where('category_id', $category_id)->get();
-
-                if ($subCategoryByCategoryId->count() > 0) {
-                    foreach ($subCategoryByCategoryId as $row) {
-                        $furtherSubCategoryBySubCategoryId = FurtherSubCategoryModel::where('subcategory_id', $row->id)->get();
-                        if ($furtherSubCategoryBySubCategoryId->count() > 0) {
-                            foreach ($furtherSubCategoryBySubCategoryId as $val) {
-                                $deleteFurtherSubCategory = FurtherSubCategoryModel::find($val->id);
-                                if ($deleteFurtherSubCategory->delete()) {
-                                    $oldFurtherSubCategoryPath = $val->file_path;
-                                    $oldName = $val->name;
-            
-                                    $oldFurtherSubCategoryFileName = '';
-            
-                                    if (substr($oldFurtherSubCategoryPath, 0, $prefixLength) === $categoryPrefix) {
-                                        $oldFurtherSubCategoryFileName = substr($oldFurtherSubCategoryPath, $prefixLength);
-                                        $this->unlinkImage($oldFurtherSubCategoryFileName);
-                                    }
-                                }
-                            }
-                        }
-
-                        $deleteSubCategory = SubCategoryModel::find($row->id);
-                        if ($deleteSubCategory->delete()) {
-                            $oldSubCategoryPath = $row->file_path;
-                            $oldName = $row->name;
-    
-                            $oldSubCategoryFileName = '';
-    
-                            if (substr($oldSubCategoryPath, 0, $prefixLength) === $categoryPrefix) {
-                                $oldSubCategoryFileName = substr($oldSubCategoryPath, $prefixLength);
-                                $this->unlinkImage($oldSubCategoryFileName);
-                            }   
-                        }
-                    }
-                }
-            } else if (!is_null($subcategory_id) && is_null($further_subcategory_id)) {
-                $furtherSubCategoryBySubCategoryId = FurtherSubCategoryModel::where('subcategory_id', $subcategory_id)->get();
-                if ($furtherSubCategoryBySubCategoryId->count() > 0) {
-                    foreach ($furtherSubCategoryBySubCategoryId as $row) {
-                        $deleteFurtherSubCategory = FurtherSubCategoryModel::find($row->id);
-                        if ($deleteFurtherSubCategory->delete()) {
-                            $oldFurtherSubCategoryPath = $row->file_path;
-                            $oldName = $row->name;
-    
-                            $oldFurtherSubCategoryFileName = '';
-    
-                            if (substr($oldFurtherSubCategoryPath, 0, $prefixLength) === $categoryPrefix) {
-                                $oldFurtherSubCategoryFileName = substr($oldFurtherSubCategoryPath, $prefixLength);
-                                $this->unlinkImage($oldFurtherSubCategoryFileName);
-                            }
-                        }
-                    }
-                }
-            }
             
             if ($categoryExisting->delete()) {
                 $oldFileName = '';
@@ -293,6 +250,42 @@ class CategoryController extends Controller
                     'message' => $name . ' successfully deleted'
                 ], 200);
             }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateStatus($category_id, Request $request) {
+        try {
+            if ($category_id === null || !$category_id) return response()->json([
+                'status' => 400,
+                'message' => 'Category should be non-empty string',
+                'results' => (object)[]
+            ]);
+
+            $categoryExisting = CategoryModel::find($category_id);
+            if (!$categoryExisting) return response()->json([
+                'status' => 400,
+                'message' => 'Category not found'
+            ]);
+
+            $status = $request->status;
+
+            $categoryExisting->is_published = $status;
+            if ($categoryExisting->save()) return response()->json([
+                'status' => 200,
+                'message' => $categoryExisting->name . ' status successfully updated',
+            ]);
+
+            return response()->json([
+                'status' => 400,
+                'message' => $categoryExisting->name . 'status totally failed'
+            ], 400);
 
         } catch (\Exception $e) {
             return response()->json([
