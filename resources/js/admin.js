@@ -2,35 +2,15 @@ require('./bootstrap');
 
 window.Vue = require('vue').default;
 import Vuetify from 'vuetify';
-import VueRouter from 'vue-router';
+import Vuex from 'vuex';
 
 Vue.use(Vuetify);
-Vue.use(VueRouter);
+Vue.use(Vuex);
+Vue.prototype.$axios = axios
 
+import store from './store/index'
 import App from './App.vue'
-import Dashboard from './views/Dashboard.vue'
-
-import CustomerList from './views/customer/CustomerList.vue'
-import CustomerDetail from './views/customer/CustomerDetail.vue'
-// import Vue from 'vue';
-
-const routes = [
-    {
-        path: '/admin/dashboard', name: 'dashboard', component: Dashboard
-    },
-    {
-        path: '/admin/customer/list', name: 'customer-list', component: CustomerList
-    },
-    {
-        path: '/admin/customer/detail', name: 'customer-detail', component: CustomerDetail
-    },
-
-]
-
-const router = new VueRouter({
-    mode: 'history',
-    routes
-})
+import router from "./router"
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -41,6 +21,7 @@ if (document.location.href.includes('admin')) {
         el: '#app',
         components: { App },
         router,
+        store,
         vuetify: new Vuetify()
     });
 }
