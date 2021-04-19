@@ -25,4 +25,14 @@ class CategoryModel extends Model
         'parent',
         'is_published',
     ];
+
+    /**
+     * Get all of the product for the CategoryModel
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function product()
+    {
+        return $this->hasMany(ProductModel::class);
+    }
 }
