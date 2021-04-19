@@ -13,7 +13,7 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods:  POST, GET, OPTIONS, PUT, DELETE');
 header('Access-Control-Allow-Headers:  Content-Type, X-Auth-Token, Origin, Authorization');
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
+// Route::middleware('modules:api')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
 
@@ -24,10 +24,10 @@ Route::prefix('v1')->group(function () {
     Route::prefix('customers')->group(function () {
         Route::post('/register', [CustomersController::class, 'create']);
         Route::put('/verify/{id}', [CustomersController::class, 'verifyAccount']);
-        Route::middleware('auth:api')->get('/', [CustomersController::class, 'index']);
-        Route::middleware('auth:api')->get('/{id}', [CustomersController::class, 'show']);
-        Route::middleware('auth:api')->put('/{id}', [CustomersController::class, 'update']);
-        Route::middleware('auth:api')->put('/{id}/status', [CustomersController::class, 'updateStatus']);
+        Route::middleware('modules:api')->get('/', [CustomersController::class, 'index']);
+        Route::middleware('modules:api')->get('/{id}', [CustomersController::class, 'show']);
+        Route::middleware('modules:api')->put('/{id}', [CustomersController::class, 'update']);
+        Route::middleware('modules:api')->put('/{id}/status', [CustomersController::class, 'updateStatus']);
         Route::put('/{id}/password', [CustomersController::class, 'updatePassword']);
     });
 
@@ -44,11 +44,11 @@ Route::prefix('v1')->group(function () {
      * Brand
      */
     Route::prefix('brands')->group(function () {
-        Route::middleware('auth:api')->get('/', [BrandController::class, 'fetchBrands']);
-        Route::middleware('auth:api')->get('/{id}', [BrandController::class, 'fetchBrand']);
-        Route::middleware('auth:api')->post('/', [BrandController::class, 'createBrand']);
-        Route::middleware('auth:api')->post('/{id}', [BrandController::class, 'updateBrand']);
-        Route::middleware('auth:api')->delete('/{id}', [BrandController::class, 'deleteBrand']);
+        Route::middleware('modules:api')->get('/', [BrandController::class, 'fetchBrands']);
+        Route::middleware('modules:api')->get('/{id}', [BrandController::class, 'fetchBrand']);
+        Route::middleware('modules:api')->post('/', [BrandController::class, 'createBrand']);
+        Route::middleware('modules:api')->post('/{id}', [BrandController::class, 'updateBrand']);
+        Route::middleware('modules:api')->delete('/{id}', [BrandController::class, 'deleteBrand']);
     });
 
     /**
@@ -68,7 +68,7 @@ Route::prefix('v1')->group(function () {
 
         // Users
         Route::prefix('public')->group(function () {
-            
+
         });
     });
 

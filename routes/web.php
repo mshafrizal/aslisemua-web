@@ -53,8 +53,8 @@ Route::get('/forgot-password/link-sent', function () {
 })->name('forgot-password-sent');
 
 // Google Login
-Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('googlesignin');
-Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('googlecallback');
+Route::get('modules/google', [GoogleController::class, 'redirectToGoogle'])->name('googlesignin');
+Route::get('modules/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('googlecallback');
 
 // ADMIN
 // ===============
