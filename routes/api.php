@@ -6,6 +6,7 @@ use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\SignInController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 
 //Access-Control-Allow-Origin: *
 header('Access-Control-Allow-Origin: *');
@@ -68,6 +69,17 @@ Route::prefix('v1')->group(function () {
         // Users
         Route::prefix('public')->group(function () {
 
+        });
+    });
+
+    /**
+     * Products
+     */
+    Route::prefix('products')->group(function () {
+        // Administrator
+        Route::prefix('private')->group(function () {
+            Route::get('/', [ProductController::class, 'getProducts']);
+            Route::get('/{product_id}', [ProductController::class, 'getProduct']);
         });
     });
 });
