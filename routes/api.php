@@ -80,6 +80,7 @@ Route::prefix('v1')->group(function () {
         Route::prefix('private')->group(function () {
             Route::get('/', [ProductController::class, 'getProducts']);
             Route::get('/{product_id}', [ProductController::class, 'getProduct']);
+            Route::post('/create', [ProductController::class, 'createProduct']);
         });
     });
 });
