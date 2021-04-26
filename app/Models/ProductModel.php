@@ -37,7 +37,8 @@ class ProductModel extends Model
         'status',
         'created_at',
         'updated_at',
-        'stock'
+        'stock',
+        'slug'
     ];
 
     /**

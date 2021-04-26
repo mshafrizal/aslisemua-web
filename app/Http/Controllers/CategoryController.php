@@ -14,14 +14,15 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    public function fetchCategories() {
+    public function fetchCategories(Request $request) {
         try {
+            $limit = $request->query('limit') === null ? 10 : (int)$request->query('limit');
             $data = [
                 'status' => 200,
                 'message' => 'Fetched Successfully',
             ];
 
-            $categories = CategoryModel::paginate(10);
+            $categories = CategoryModel::paginate($limit);
             if (!$categories) return response()->json([
                 'status' => 200,
                 'message' => 'No Data found',
@@ -85,7 +86,8 @@ class CategoryController extends Controller
                 'parent' => $parent,
                 'is_published' => 1,
                 'created_by' => $createdBy,
-                'updated_by' => $updatedBy
+                'updated_by' => $updatedBy,
+                'slug' => Str::slug($name) . '-' . time()
             ]);
 
             if ($newCategory->save()) return response()->json([
@@ -144,6 +146,7 @@ class CategoryController extends Controller
             $categoryExisting->name = $name;
             $categoryExisting->file_path = $filePath;
             $categoryExisting->parent = $parents;
+            $categoryExisting->slug = Str::slug($name) . '-' . time();
 
             if ($categoryExisting->save()) {
                 $oldFileName = '';
