@@ -84,5 +84,10 @@ Route::prefix('v1')->group(function () {
             Route::delete('/{product_id}/delete', [ProductController::class, 'deleteProduct']);
             Route::post('/{product_id}/update', [ProductController::class, 'updateProduct']);
         });
+
+        // Users
+        Route::prefix('public')->group(function () {
+            Route::get('/{slug}', [ProductController::class, 'getProductBySlug']);
+        });
     });
 });
