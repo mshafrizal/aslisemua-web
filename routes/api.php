@@ -68,7 +68,7 @@ Route::prefix('v1')->group(function () {
 
         // Users
         Route::prefix('public')->group(function () {
-
+            Route::get('/{limit?}', [CategoryController::class, 'fetchCategories']);
         });
     });
 

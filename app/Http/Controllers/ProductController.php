@@ -149,7 +149,8 @@ class ProductController extends Controller
                 'updated_by' => $user,
                 'created_at' => $now,
                 'updated_at' => $now,
-                'stock' => $stock
+                'stock' => $stock,
+                'slug' => Str::slug($name) . '-' . time()
             ]);
 
             if ($newProduct->save()) {
@@ -298,7 +299,8 @@ class ProductController extends Controller
             $productExisting->stock = $stock;
             $productExisting->updated_by = $user;
             $productExisting->updated_at = $now;
-
+            $productExisting->slug = Str::slug($name) . '-' . time();
+            
             $images = $request->file('images');
             $errors = [];
             $arrImages = [];
