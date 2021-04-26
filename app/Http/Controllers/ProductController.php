@@ -20,7 +20,7 @@ class ProductController extends Controller
                 'message' => 'Fetched Successfully',
             ];
 
-            $products = ProductModel::with('brand','category')->paginate(10);
+            $products = ProductModel::with('brand','category','productImage')->paginate(10);
             if (!$products) return response()->json([
                 'status' => 200,
                 'message' => 'No Data found',
@@ -44,7 +44,7 @@ class ProductController extends Controller
                 'message' => 'No params. Invalid!'
             ]);
 
-            $product = ProductModel::with('brand','category')->find($product_id);
+            $product = ProductModel::with('brand','category','productImage')->find($product_id);
             if (empty($product) || !$product) return response()->json([
                 'status' => 200,
                 'message' => 'No Data Found',
@@ -115,8 +115,9 @@ class ProductController extends Controller
             $altImage = $request->alt_image;
             $basePrice = $request->base_price;
             $finalPrice = $request->final_price;
-            $user = Auth::user();
-            $user = $user->name;
+            $stock = $request->stock;
+            // $user = Auth::user();
+            $user = 'Pandhu Wibowo';
             foreach($images as $image) {
                 $newFileName = 'PRODUCT'. time(). '-' . $image->getClientOriginalName();
                 $image->storeAs('products', $newFileName, 'public');
@@ -148,6 +149,7 @@ class ProductController extends Controller
                 'updated_by' => $user,
                 'created_at' => $now,
                 'updated_at' => $now,
+                'stock' => $stock
             ]);
 
             if ($newProduct->save()) {
@@ -166,9 +168,9 @@ class ProductController extends Controller
 
                 ProductImageModel::insert($newProductImage);
                 return response()->json([
-                    'status' => 200,
-                    'message' => $name . 'successfully created',
-                ]);
+                    'status' => 201,
+                    'message' => $name . ' successfully created',
+                ], 201);
             }
 
             foreach($arrImages as $image) {
@@ -179,6 +181,167 @@ class ProductController extends Controller
                 'status' => 400,
                 'message' => $name . ' totally failed'
             ], 400);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    function deleteProduct($id) {
+        try {
+            if (!$id) return response()->json([
+                'status' => 400,
+                'message' => 'Product id not found'
+            ]);
+
+            $productExisting = ProductModel::find($id);
+            if (empty($productExisting)) return response()->json([
+                'status' => 400,
+                'message' => 'Product not found'
+            ]);
+
+            $productImageExisting = ProductImageModel::where('product_id', $id)->get();
+            if (count($productImageExisting) > 0) ProductImageModel::whereIn('product_id', [$id])->delete();
+
+            if (count($productImageExisting) > 0) {
+                foreach($productImageExisting as $row) {
+                    $this->unlinkImage($row->image_name);
+                }
+            }
+            $productExisting->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => $productExisting->name . ' successfully deleted'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    function updateProduct($id, Request $request) {
+        try {
+            if (!$id) return response()->json([
+                'status' => 400,
+                'message' => 'Product id not found'
+            ]);
+            $productExisting = ProductModel::find($id);
+            if (empty($productExisting)) return response()->json([
+                'status' => 400,
+                'message' => 'Product not found'
+            ]);
+
+            $brandId = $request->brand_id;
+            $categoryId = $request->category_id;
+
+            if (!$brandId) return response()->json([
+                'status' => 400,
+                'message' => 'Brand id not found'
+            ]);
+
+            if (!$categoryId) return response()->json([
+                'status' => 400,
+                'message' => 'Category id not found'
+            ]);
+
+            $brandExisting = BrandModel::find($brandId);
+            if (empty($brandExisting)) return response()->json([
+                'status' => 400,
+                'message' => 'Brand not found'
+            ]);
+
+            $categoryExisting = CategoryModel::find($categoryId);
+            if (empty($categoryExisting)) return response()->json([
+                'status' => 400,
+                'message' => 'Category not found'
+            ]);
+
+            if (!$request->hasFile('images')) return response()->json([
+                'status' => 400,
+                'message' => 'Images not found'
+            ], 400);
+            
+            $name = $request->name;
+            $size = $request->size;
+            $gender = $request->gender;
+            $color = $request->color;
+            $condition = $request->condition;
+            $description = $request->description;
+            $detail = $request->detail;
+            $discountPrice = $request->discount_price;
+            $altImage = $request->alt_image;
+            $basePrice = $request->base_price;
+            $finalPrice = $request->final_price;
+            $stock = $request->stock;
+            // $user = Auth::user();
+            $user = 'Pandhu Wibowo';
+
+            $now = Carbon::now();
+
+            $productExisting->name = $name;
+            $productExisting->size = $size;
+            $productExisting->gender = $gender;
+            $productExisting->color = $color;
+            $productExisting->condition = $condition;
+            $productExisting->description = $description;
+            $productExisting->detail = $detail;
+            $productExisting->discount_price = $discountPrice;
+            $productExisting->alt_image = $altImage;
+            $productExisting->base_price = $basePrice;
+            $productExisting->final_price = $finalPrice;
+            $productExisting->stock = $stock;
+            $productExisting->updated_by = $user;
+            $productExisting->updated_at = $now;
+
+            $images = $request->file('images');
+            $errors = [];
+            $arrImages = [];
+
+            // Save new Images
+            foreach($images as $image) {
+                $newFileName = 'PRODUCT'. time(). '-' . $image->getClientOriginalName();
+                $image->storeAs('products', $newFileName, 'public');
+                $arrImages[] = $newFileName;
+            }
+            $productExisting->image_path = 'products/' . $arrImages[0];
+            $productExisting->image_name = $arrImages[0];
+
+            if ($productExisting->save()) {
+                $productsImages = ProductImageModel::where('product_id', $id)->get();
+                if (count($productsImages) > 0) {
+                    foreach($productsImages as $row) {
+                        $this->unlinkImage($row->image_name);
+                    }
+
+                    ProductImageModel::whereIn('product_id', [$id])->delete();
+                }
+
+                foreach($arrImages as $image) {
+                    $newProductImage = [
+                        'id' => Str::uuid(),
+                        'product_id' => $productExisting->id,
+                        'image_path' => 'products/' . $image,
+                        'image_name' => $image,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
+    
+                    $newProductsImages[] = $newProductImage;
+                }
+
+                ProductImageModel::insert($newProductsImages);
+                
+                return response()->json([
+                    'status' => 200,
+                    'message' => $name . ' successfully updated',
+                ], 200);
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,

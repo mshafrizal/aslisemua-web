@@ -81,6 +81,8 @@ Route::prefix('v1')->group(function () {
             Route::get('/', [ProductController::class, 'getProducts']);
             Route::get('/{product_id}', [ProductController::class, 'getProduct']);
             Route::post('/create', [ProductController::class, 'createProduct']);
+            Route::delete('/{product_id}/delete', [ProductController::class, 'deleteProduct']);
+            Route::post('/{product_id}/update', [ProductController::class, 'updateProduct']);
         });
     });
 });

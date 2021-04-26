@@ -24,6 +24,7 @@ class ProductResource extends JsonResource
             'discount_price' => $this->discount_price,
             'brand' => new BrandResource($brand),
             'category' => new CategoryResource($category),
+            'products_images' => ProductImageResource::collection($this->whenLoaded('productImage'))
         ];
     }
 }
