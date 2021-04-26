@@ -89,13 +89,13 @@ class CategoryController extends Controller
             ]);
 
             if ($newCategory->save()) return response()->json([
-                'status' => 200,
+                'status' => 201,
                 'message' => $name . ' successfully created',
                 'results' => (object) [
                     'name' => $name,
                     'file_path' => $filePath
                 ]
-            ]);
+            ], 201);
 
             $this->unlinkImage($newFileName);
             return response()->json([

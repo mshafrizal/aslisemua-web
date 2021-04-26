@@ -81,13 +81,13 @@ class BrandController extends Controller
             ]);
 
             if ($newBrand->save()) return response()->json([
-                'status' => 200,
+                'status' => 201,
                 'message' => $name . ' successfully created',
                 'results' => (object)[
                     'name' => $name,
                     'file_path' => $filePath
                 ]
-            ], 200);
+            ], 201);
 
             $this->unlinkImage($newFileName);
             return response()->json([

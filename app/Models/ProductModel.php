@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\BrandModel;
 use App\Models\CategoryModel;
+use App\Models\ProductImageModel;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductModel extends Model
 {
+    use SoftDeletes;
     protected $table = 'products';
     protected $primaryKey = 'id';
     public $incrementing = false;
@@ -33,7 +36,8 @@ class ProductModel extends Model
         'alt_image',
         'status',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'stock'
     ];
 
     /**
@@ -54,5 +58,15 @@ class ProductModel extends Model
     public function category()
     {
         return $this->belongsTo(CategoryModel::class, 'category_id', 'id');
+    }
+
+    /**
+     * Get all of the productImage for the ProductModel
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function productImage()
+    {
+        return $this->hasMany(ProductImageModel::class, 'product_id', 'id');
     }
 }
