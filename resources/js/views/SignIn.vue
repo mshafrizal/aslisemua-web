@@ -51,6 +51,9 @@ export default {
       valid: true
     }
   },
+  mounted () {
+    console.log()
+  },
   methods: {
     signIn () {
       this.formLogin.loading = true

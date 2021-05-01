@@ -2131,6 +2131,9 @@ __webpack_require__.r(__webpack_exports__);
       valid: true
     };
   },
+  mounted: function mounted() {
+    console.log();
+  },
   methods: {
     signIn: function signIn() {
       var _this = this;
@@ -2223,7 +2226,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "BrandCreate",
   data: function data() {
@@ -2248,22 +2250,31 @@ __webpack_require__.r(__webpack_exports__);
       return URL.createObjectURL(this.logo);
     }
   },
-  mounted: function mounted() {
-    console.log("http://localhost");
-  },
   methods: {
     handleSubmit: function handleSubmit() {
+      var _this = this;
+
       if (this.$refs.formAddBrand.validate()) {
+        this.loading = true;
         var formData = new FormData();
         formData.append('file', this.logo, this.logo.name);
         formData.append('name', this.name);
-        console.log(this.logo);
-        console.log(this.logoUrl);
-        console.log(formData.get('file'));
         this.$store.dispatch('brand/createBrand', formData).then(function (result) {
-          console.log(result);
+          if (result.status >= 400) throw new Error(result.message);
+
+          _this.$store.dispatch('showSnackbar', {
+            value: true,
+            message: result.message,
+            type: 'success'
+          });
         })["catch"](function (error) {
-          return console.log(error);
+          _this.$store.dispatch('showSnackbar', {
+            value: true,
+            message: error,
+            type: 'error'
+          });
+        })["finally"](function () {
+          return _this.loading = false;
         });
       }
     }
@@ -2295,13 +2306,156 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "BrandList",
   data: function data() {
     return {
       loading: true,
-      dataBrands: []
+      dataBrands: null,
+      dialogDelete: false,
+      headerBrands: [{
+        text: 'Logo',
+        align: 'start',
+        sortable: false,
+        value: 'file_path'
+      }, {
+        text: 'Name',
+        align: 'start',
+        sortable: true,
+        value: 'name'
+      }, {
+        text: 'Associated Product',
+        align: 'end',
+        sortable: true,
+        value: 'associated_product'
+      }, {
+        text: 'Updated At',
+        align: 'start',
+        sortable: true,
+        value: 'updated_at'
+      }, {
+        text: 'Updated By',
+        align: 'start',
+        sortable: true,
+        value: 'updated_by'
+      }, {
+        text: 'Actions',
+        align: 'center',
+        sortable: false,
+        value: 'actions'
+      }],
+      selectedBrand: null
     };
+  },
+  mounted: function mounted() {
+    this.fetchBrands();
+  },
+  methods: {
+    toggleDeleteDialog: function toggleDeleteDialog(item) {
+      this.dialogDelete = !this.dialogDelete;
+      if (!this.selectedBrand) this.selectedBrand = item;else this.selectedBrand = null;
+    },
+    deleteBrand: function deleteBrand() {
+      var _this = this;
+
+      this.loading = true;
+      this.$store.dispatch('brand/deleteBrand', {
+        brand_id: this.selectedBrand.id
+      }).then(function (result) {
+        if (result.status >= 400) throw new Error(result.message);else {
+          _this.$store.dispatch('showSnackbar', {
+            value: true,
+            type: 'success',
+            message: result.message
+          });
+
+          _this.toggleDeleteDialog();
+        }
+      })["catch"](function (error) {
+        _this.$store.dispatch('showSnackbar', {
+          value: true,
+          type: 'error',
+          message: error
+        });
+      })["finally"](function () {
+        return _this.fetchBrands();
+      });
+    },
+    fetchBrands: function fetchBrands() {
+      var _this2 = this;
+
+      this.loading = true;
+      this.$store.dispatch('brand/fetchBrands').then(function (result) {
+        if (result.status >= 400) throw new Error(result.message);else _this2.$set(_this2, 'dataBrands', result.results);
+      })["catch"](function (error) {
+        _this2.$store.dispatch('showSnackbar', {
+          value: true,
+          type: 'error',
+          message: error
+        });
+      })["finally"](function () {
+        return _this2.loading = false;
+      });
+    },
+    resolveImagePath: function resolveImagePath(path) {
+      return '../storage/' + path;
+    },
+    toAddBrand: function toAddBrand() {
+      this.$router.push('/admin/brands/create');
+    },
+    toEditBrand: function toEditBrand(id) {
+      this.$router.push("/admin/brands/edit/".concat(id));
+    },
+    toViewBrand: function toViewBrand(id) {
+      this.$router.push("/admin/brands/detail/".concat(id));
+    }
   }
 });
 
@@ -2742,15 +2896,15 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__.default({
   routes: routes
 });
 router.beforeEach(function (to, from, next) {
-  if (to.meta.requiresAuth) {
-    var isAuthenticated = _store_index__WEBPACK_IMPORTED_MODULE_0__.default.getters["auth/authLoggedIn"];
+  if (to.matched.some(function (record) {
+    return record.meta.requiresAuth;
+  })) {
+    console.log(_store_index__WEBPACK_IMPORTED_MODULE_0__.default.getters["auth/authLoggedIn"]);
 
-    if (isAuthenticated) {
-      next();
+    if (!_store_index__WEBPACK_IMPORTED_MODULE_0__.default.getters["auth/authLoggedIn"]) {
+      next('/admin/signin');
     } else {
-      next({
-        name: 'sign-in'
-      });
+      next();
     }
   } else {
     next();
@@ -2833,7 +2987,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 var state = function state() {
   return {
-    isLoggedIn: false,
+    isLoggedIn: typeof localStorage.getItem('email') === 'string',
     user: null
   };
 };
@@ -2849,13 +3003,9 @@ var getters = {
 var mutations = {
   setAuth: function setAuth(state, user) {
     state.user = user;
-    console.log(user);
     Object.keys(user).forEach(function (key) {
       localStorage.setItem(key, user[key]);
     });
-  },
-  setIsLoggedIn: function setIsLoggedIn(state, status) {
-    state.isLoggedIn = status;
   },
   removeAuth: function removeAuth(state) {
     state.user = null;
@@ -2878,7 +3028,7 @@ var actions = {
                       switch (_context.prev = _context.next) {
                         case 0:
                           if (!(response.status === 200)) {
-                            _context.next = 5;
+                            _context.next = 3;
                             break;
                           }
 
@@ -2886,13 +3036,9 @@ var actions = {
                           return commit('setAuth', response.data.data);
 
                         case 3:
-                          _context.next = 5;
-                          return commit('setIsLoggedIn', true);
-
-                        case 5:
                           return _context.abrupt("return", response.data);
 
-                        case 6:
+                        case 4:
                         case "end":
                           return _context.stop();
                       }
@@ -2949,9 +3095,36 @@ var state = function state() {
 var getters = {};
 var actions = {
   createBrand: function createBrand(context, payload) {
-    debugger;
-    return axios.post("".concat("http://localhost", "/api/v1/brands"), payload).then(function (response) {
-      return response;
+    return axios.post("".concat("http://localhost:8000", "/api/v1/brands"), payload).then(function (response) {
+      return response.data;
+    })["catch"](function (error) {
+      return error;
+    });
+  },
+  fetchBrands: function fetchBrands(context, payload) {
+    return axios.get("".concat("http://localhost:8000", "/api/v1/brands")).then(function (response) {
+      return response.data;
+    })["catch"](function (error) {
+      return error;
+    });
+  },
+  fetchBrand: function fetchBrand(context, payload) {
+    return axios.get("".concat("http://localhost:8000", "/api/v1/brands/").concat(payload.brand_id)).then(function (response) {
+      return response.data;
+    })["catch"](function (error) {
+      return error;
+    });
+  },
+  updateBrand: function updateBrand(context, payload) {
+    return axios.get("".concat("http://localhost:8000", "/api/v1/brands/").concat(payload.brand_id)).then(function (response) {
+      return response.data;
+    })["catch"](function (error) {
+      return error;
+    });
+  },
+  deleteBrand: function deleteBrand(context, payload) {
+    return axios["delete"]("".concat("http://localhost:8000", "/api/v1/brands/").concat(payload.brand_id)).then(function (response) {
+      return response.data;
     })["catch"](function (error) {
       return error;
     });
@@ -22190,7 +22363,6 @@ var render = function() {
                           clearable: "",
                           required: "",
                           rules: _vm.requiredRules,
-                          hint: "File size should be less than 2MB",
                           "show-size": "",
                           label: "Brand Logo",
                           "prepend-icon": "mdi-camera",
@@ -22253,9 +22425,17 @@ var render = function() {
                   _c(
                     "v-card-actions",
                     [
-                      _c("v-btn", { attrs: { color: "error", plain: "" } }, [
-                        _vm._v("Cancel")
-                      ]),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: {
+                            color: "error",
+                            plain: "",
+                            href: "/admin/brands"
+                          }
+                        },
+                        [_vm._v("Cancel")]
+                      ),
                       _vm._v(" "),
                       _c(
                         "v-btn",
@@ -22311,13 +22491,81 @@ var render = function() {
   return _c(
     "v-row",
     [
+      _c(
+        "v-dialog",
+        {
+          attrs: { persistent: "", "max-width": "400" },
+          model: {
+            value: _vm.dialogDelete,
+            callback: function($$v) {
+              _vm.dialogDelete = $$v
+            },
+            expression: "dialogDelete"
+          }
+        },
+        [
+          _c(
+            "v-card",
+            [
+              _c("v-card-title", { staticClass: "headline" }, [
+                _vm._v("\n        Delete Brand\n      ")
+              ]),
+              _vm._v(" "),
+              _c("v-card-text", [
+                _vm._v(
+                  "Are you sure to delete " +
+                    _vm._s(_vm.selectedBrand ? _vm.selectedBrand.name : "") +
+                    "?"
+                )
+              ]),
+              _vm._v(" "),
+              _c(
+                "v-card-actions",
+                [
+                  _c("v-spacer"),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: {
+                        color: "error",
+                        text: "",
+                        disabled: _vm.loading
+                      },
+                      on: { click: _vm.toggleDeleteDialog }
+                    },
+                    [_vm._v("\n          Cancel\n        ")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: {
+                        color: "primary",
+                        text: "",
+                        loading: _vm.loading
+                      },
+                      on: { click: _vm.deleteBrand }
+                    },
+                    [_vm._v("\n          Yes\n        ")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
       _c("v-col", { attrs: { cols: "12", sm: "10" } }, [_vm._v("Brand List")]),
       _vm._v(" "),
       _c(
         "v-col",
         { attrs: { cols: "12", sm: "2" } },
         [
-          _c("v-btn", { attrs: { href: "/admin/brands/create", block: "" } }, [
+          _c("v-btn", { attrs: { block: "" }, on: { click: _vm.toAddBrand } }, [
             _vm._v("Add Brand")
           ])
         ],
@@ -22330,7 +22578,92 @@ var render = function() {
         [
           _c("v-data-table", {
             staticClass: "elevation-1",
-            attrs: { loading: _vm.loading }
+            attrs: {
+              headers: _vm.headerBrands,
+              items: _vm.dataBrands ? _vm.dataBrands.data : [],
+              loading: _vm.loading,
+              "items-per-page": 10
+            },
+            scopedSlots: _vm._u([
+              {
+                key: "item.file_path",
+                fn: function(ref) {
+                  var item = ref.item
+                  return [
+                    _c("v-img", {
+                      attrs: {
+                        "max-height": "100",
+                        "max-width": "100",
+                        contain: "",
+                        src: _vm.resolveImagePath(item.file_path),
+                        alt: item.name + " logo"
+                      }
+                    })
+                  ]
+                }
+              },
+              {
+                key: "item.updated_at",
+                fn: function(ref) {
+                  var item = ref.item
+                  return [
+                    _vm._v(
+                      _vm._s(
+                        new Date(item.updated_at).toLocaleDateString("id-ID")
+                      )
+                    )
+                  ]
+                }
+              },
+              {
+                key: "item.actions",
+                fn: function(ref) {
+                  var item = ref.item
+                  return [
+                    _c(
+                      "v-icon",
+                      {
+                        staticClass: "mr-3",
+                        attrs: { color: "primary" },
+                        on: {
+                          click: function($event) {
+                            return _vm.toViewBrand(item.id)
+                          }
+                        }
+                      },
+                      [_vm._v("mdi-eye")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "v-icon",
+                      {
+                        staticClass: "mr-3",
+                        attrs: { color: "warning" },
+                        on: {
+                          click: function($event) {
+                            return _vm.toEditBrand(item.id)
+                          }
+                        }
+                      },
+                      [_vm._v("mdi-pencil")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "v-icon",
+                      {
+                        attrs: { color: "error" },
+                        on: {
+                          click: function($event) {
+                            return _vm.toggleDeleteDialog(item)
+                          }
+                        }
+                      },
+                      [_vm._v("mdi-delete-outline")]
+                    )
+                  ]
+                }
+              }
+            ])
           })
         ],
         1
