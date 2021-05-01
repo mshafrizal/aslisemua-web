@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '../store/index'
-
 Vue.use(VueRouter)
 
 import Dashboard from '../views/Dashboard.vue'
@@ -40,12 +39,12 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if(to.meta.requiresAuth) {
-    let isAuthenticated = store.getters['auth/authLoggedIn']
-    if (isAuthenticated) {
-      next()
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    console.log(store.getters["auth/authLoggedIn"])
+    if (!store.getters["auth/authLoggedIn"]) {
+      next('/admin/signin')
     } else {
-      next({ name: 'sign-in' })
+      next()
     }
   } else {
     next()
