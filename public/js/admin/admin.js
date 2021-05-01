@@ -1950,21 +1950,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         icon: 'mdi-cube-outline',
         title: 'Master Products',
-        link: '/admin/products',
         children: [{
           title: 'Brands',
-          link: '/admin/brands'
+          link: '/admin/brand/list'
         }, {
           title: 'Categories',
-          link: '/admin/categories'
+          link: '/admin/category/list'
         }, {
           title: 'Products',
-          link: '/admin/products'
+          link: '/admin/product/list'
         }]
       }, {
         icon: 'mdi-currency-usd-circle-outline',
         title: 'Orders',
-        link: '/admin/orders'
+        link: '/admin/order/list'
       }]
     };
   },
@@ -2274,7 +2273,9 @@ __webpack_require__.r(__webpack_exports__);
             type: 'error'
           });
         })["finally"](function () {
-          return _this.loading = false;
+          _this.loading = false;
+
+          _this.$router.push('/admin/brand/list');
         });
       }
     }
@@ -2448,13 +2449,13 @@ __webpack_require__.r(__webpack_exports__);
       return '../storage/' + path;
     },
     toAddBrand: function toAddBrand() {
-      this.$router.push('/admin/brands/create');
+      this.$router.push('/admin/brand/create');
     },
     toEditBrand: function toEditBrand(id) {
-      this.$router.push("/admin/brands/edit/".concat(id));
+      this.$router.push("/admin/brand/".concat(id, "/edit"));
     },
     toViewBrand: function toViewBrand(id) {
-      this.$router.push("/admin/brands/detail/".concat(id));
+      this.$router.push("/admin/brand/".concat(id, "/detail"));
     }
   }
 });
@@ -2685,7 +2686,7 @@ __webpack_require__.r(__webpack_exports__);
         sortable: false,
         value: 'actions'
       }],
-      customers: [],
+      customers: null,
       loading: true
     };
   },
@@ -2694,20 +2695,28 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     fetchCustomerList: function fetchCustomerList() {
-      for (var i = 0; i < 20; i++) {
-        this.customers.push({
-          id: i + 1,
-          name: 'Jonathan Morningstar',
-          email: 'jonathan@gmail.com',
-          phone: '08123881262',
-          is_active: true
-        });
-      }
+      var _this = this;
 
-      this.loading = false;
+      this.loading = true;
+      this.$store.dispatch('customer/fetchCustomers').then(function (result) {
+        if (result.status >= 400) throw new Error(result.message);else {
+          _this.customers = result.data;
+        }
+      })["catch"](function (error) {
+        _this.$store.dispatch('showSnackbar', {
+          value: true,
+          type: 'error',
+          message: error
+        });
+      })["finally"](function () {
+        return _this.loading = true;
+      });
     },
     toCustomerDetail: function toCustomerDetail(customerId) {
       this.$router.push("/admin/customer/".concat(customerId, "/detail"));
+    },
+    toEditCustomer: function toEditCustomer(customerId) {
+      this.$router.push("/admin/customer/".concat(customerId, "/edit"));
     }
   }
 });
@@ -2877,14 +2886,35 @@ var routes = [{
     requiresAuth: true
   }
 }, {
-  path: '/admin/brands',
+  path: '/admin/customer/:id/edit',
+  name: 'customer-detail',
+  component: _views_customer_CustomerDetail_vue__WEBPACK_IMPORTED_MODULE_6__.default,
+  meta: {
+    requiresAuth: true
+  }
+}, {
+  path: '/admin/brand/list',
   name: 'brand-list',
   component: _views_brand_BrandList_vue__WEBPACK_IMPORTED_MODULE_7__.default,
   meta: {
     requiresAuth: true
   }
 }, {
-  path: '/admin/brands/create',
+  path: '/admin/brand/create',
+  name: 'brand-create',
+  component: _views_brand_BrandCreate_vue__WEBPACK_IMPORTED_MODULE_8__.default,
+  meta: {
+    requiresAuth: true
+  }
+}, {
+  path: '/admin/brand/:id/detail',
+  name: 'brand-create',
+  component: _views_brand_BrandCreate_vue__WEBPACK_IMPORTED_MODULE_8__.default,
+  meta: {
+    requiresAuth: true
+  }
+}, {
+  path: '/admin/brand/:id/edit',
   name: 'brand-create',
   component: _views_brand_BrandCreate_vue__WEBPACK_IMPORTED_MODULE_8__.default,
   meta: {
@@ -2925,15 +2955,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _modules_auth__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/auth */ "./resources/js/store/modules/auth.js");
 /* harmony import */ var _modules_brand__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/brand */ "./resources/js/store/modules/brand.js");
+/* harmony import */ var _modules_customer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/customer */ "./resources/js/store/modules/customer.js");
 
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_2__.default.use(vuex__WEBPACK_IMPORTED_MODULE_3__.default);
+
+vue__WEBPACK_IMPORTED_MODULE_3__.default.use(vuex__WEBPACK_IMPORTED_MODULE_4__.default);
 var debug = "development" !== 'production';
 var state = {
   snackbar: null
@@ -2953,14 +2985,15 @@ var getters = {
     return state.snackbar;
   }
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (new vuex__WEBPACK_IMPORTED_MODULE_3__.default.Store({
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (new vuex__WEBPACK_IMPORTED_MODULE_4__.default.Store({
   state: state,
   mutations: mutations,
   getters: getters,
   actions: actions,
   modules: {
     auth: _modules_auth__WEBPACK_IMPORTED_MODULE_0__.default,
-    brand: _modules_brand__WEBPACK_IMPORTED_MODULE_1__.default
+    brand: _modules_brand__WEBPACK_IMPORTED_MODULE_1__.default,
+    customer: _modules_customer__WEBPACK_IMPORTED_MODULE_2__.default
   }
 }));
 
@@ -3124,6 +3157,63 @@ var actions = {
   },
   deleteBrand: function deleteBrand(context, payload) {
     return axios["delete"]("".concat("http://localhost:8000", "/api/v1/brands/").concat(payload.brand_id)).then(function (response) {
+      return response.data;
+    })["catch"](function (error) {
+      return error;
+    });
+  }
+};
+var mutations = {};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  namespaced: true,
+  state: state,
+  getters: getters,
+  actions: actions,
+  mutations: mutations
+});
+
+/***/ }),
+
+/***/ "./resources/js/store/modules/customer.js":
+/*!************************************************!*\
+  !*** ./resources/js/store/modules/customer.js ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+var state = function state() {
+  return {};
+};
+
+var getters = {};
+var actions = {
+  fetchCustomers: function fetchCustomers(context, payload) {
+    return axios.get("".concat("http://localhost:8000", "/api/v1/customers")).then(function (response) {
+      return response.data;
+    })["catch"](function (error) {
+      return error;
+    });
+  },
+  fetchCustomer: function fetchCustomer(context, payload) {
+    return axios.get("".concat("http://localhost:8000", "/api/v1/customers/").concat(payload.customer_id)).then(function (response) {
+      return response.data;
+    })["catch"](function (error) {
+      return error;
+    });
+  },
+  updateCustomer: function updateCustomer(context, payload) {
+    return axios.get("".concat("http://localhost:8000", "/api/v1/customers/").concat(payload.customer_id)).then(function (response) {
+      return response.data;
+    })["catch"](function (error) {
+      return error;
+    });
+  },
+  deleteCustomer: function deleteCustomer(context, payload) {
+    return axios["delete"]("".concat("http://localhost:8000", "/api/v1/customers/").concat(payload.customer_id)).then(function (response) {
       return response.data;
     })["catch"](function (error) {
       return error;
@@ -22431,7 +22521,7 @@ var render = function() {
                           attrs: {
                             color: "error",
                             plain: "",
-                            href: "/admin/brands"
+                            href: "/admin/brand/list"
                           }
                         },
                         [_vm._v("Cancel")]

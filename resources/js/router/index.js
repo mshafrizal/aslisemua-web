@@ -26,10 +26,19 @@ const routes = [
     path: '/admin/customer/:id/detail', name: 'customer-detail', component: CustomerDetail, meta: { requiresAuth: true }
   },
   {
-    path: '/admin/brands', name: 'brand-list', component: BrandList, meta: { requiresAuth: true }
+    path: '/admin/customer/:id/edit', name: 'customer-detail', component: CustomerDetail, meta: { requiresAuth: true }
   },
   {
-    path: '/admin/brands/create', name: 'brand-create', component: BrandCreate, meta: { requiresAuth: true }
+    path: '/admin/brand/list', name: 'brand-list', component: BrandList, meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/brand/create', name: 'brand-create', component: BrandCreate, meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/brand/:id/detail', name: 'brand-create', component: BrandCreate, meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/brand/:id/edit', name: 'brand-create', component: BrandCreate, meta: { requiresAuth: true }
   }
 ]
 

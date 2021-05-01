@@ -90,26 +90,25 @@ export default {
         {
           icon: 'mdi-cube-outline',
           title: 'Master Products',
-          link: '/admin/products',
           children: [
             {
               title: 'Brands',
-              link: '/admin/brands'
+              link: '/admin/brand/list'
             },
             {
               title: 'Categories',
-              link: '/admin/categories'
+              link: '/admin/category/list'
             },
             {
               title: 'Products',
-              link: '/admin/products'
+              link: '/admin/product/list'
             }
           ]
         },
         {
           icon: 'mdi-currency-usd-circle-outline',
           title: 'Orders',
-          link: '/admin/orders'
+          link: '/admin/order/list'
         },
       ]
     }

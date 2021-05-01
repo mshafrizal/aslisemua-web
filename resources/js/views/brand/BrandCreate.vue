@@ -27,7 +27,7 @@
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
-            <v-btn color="error" plain href="/admin/brands">Cancel</v-btn>
+            <v-btn color="error" plain href="/admin/brand/list">Cancel</v-btn>
             <v-btn :disabled="!valid" color="primary" depressed @click="handleSubmit">Submit</v-btn>
           </v-card-actions>
         </v-form>
@@ -81,7 +81,10 @@ export default {
             message: error,
             type: 'error'
           })
-        }).finally(() => this.loading = false)
+        }).finally(() => {
+          this.loading = false
+          this.$router.push('/admin/brand/list')
+        })
       }
     }
   }

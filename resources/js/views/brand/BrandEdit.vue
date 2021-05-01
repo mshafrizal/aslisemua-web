@@ -81,7 +81,10 @@ export default {
             message: error,
             type: 'error'
           })
-        }).finally(() => this.loading = false)
+        }).finally(() => {
+          this.loading = false
+          this.$router.push(`/admin/brand/${this.$route.params.id}`)
+        })
       }
     }
   }
