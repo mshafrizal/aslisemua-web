@@ -2674,12 +2674,12 @@ __webpack_require__.r(__webpack_exports__);
         text: 'Phone',
         align: 'start',
         sortable: false,
-        value: 'phone'
+        value: 'phone_number'
       }, {
         text: 'Status',
         align: 'start',
         sortable: false,
-        value: 'is_active'
+        value: 'status'
       }, {
         text: 'Actions',
         align: 'start',
@@ -2709,7 +2709,7 @@ __webpack_require__.r(__webpack_exports__);
           message: error
         });
       })["finally"](function () {
-        return _this.loading = true;
+        return _this.loading = false;
       });
     },
     toCustomerDetail: function toCustomerDetail(customerId) {
@@ -23231,24 +23231,26 @@ var render = function() {
             staticClass: "elevation-1",
             attrs: {
               headers: _vm.headers,
-              items: _vm.customers,
+              items: _vm.customers ? _vm.customers : [],
               loading: _vm.loading
             },
             scopedSlots: _vm._u([
               {
-                key: "item.is_active",
+                key: "item.status",
                 fn: function(ref) {
                   var item = ref.item
                   return [
                     _c(
                       "v-chip",
                       {
-                        attrs: { color: item.is_active ? "success" : "error" }
+                        attrs: {
+                          color: item.status === "active" ? "success" : "error"
+                        }
                       },
                       [
                         _vm._v(
                           "\n           " +
-                            _vm._s(item.is_active ? "Active" : "Banned") +
+                            _vm._s(item.status.toUpperCase()) +
                             "\n         "
                         )
                       ]

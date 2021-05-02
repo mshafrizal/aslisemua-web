@@ -5,12 +5,12 @@
        <v-data-table
         class="elevation-1"
         :headers="headers"
-        :items="customers"
+        :items="customers ? customers : []"
         :loading="loading"
       >
-         <template v-slot:item.is_active="{ item }">
-           <v-chip :color="item.is_active ? 'success' : 'error'">
-             {{ item.is_active ? 'Active' : 'Banned' }}
+         <template v-slot:item.status="{ item }">
+           <v-chip :color="item.status === 'active' ? 'success' : 'error'">
+             {{ item.status.toUpperCase() }}
            </v-chip>
          </template>
          <template v-slot:item.actions="{ item }">
@@ -29,11 +29,11 @@ export default {
       headers: [
         { text: 'Customer Name', align: 'start', sortable: false, value: 'name' },
         { text: 'Email', align: 'start', sortable: false, value: 'email' },
-        { text: 'Phone', align: 'start', sortable: false, value: 'phone' },
-        { text: 'Status', align: 'start', sortable: false, value: 'is_active' },
-        { text: 'Actions', align: 'start', sortable: false, value: 'actions' },
+        { text: 'Phone', align: 'start', sortable: false, value: 'phone_number' },
+        { text: 'Status', align: 'start', sortable: false, value: 'status' },
+        { text: 'Actions', align: 'start', sortable: false, value: 'actions' }
       ],
-      customers: [],
+      customers: null,
       loading: true,
     }
   },
@@ -42,19 +42,25 @@ export default {
   },
   methods: {
     fetchCustomerList () {
-      for (let i = 0; i < 20; i++) {
-        this.customers.push({
-          id: i+1,
-          name: 'Jonathan Morningstar',
-          email: 'jonathan@gmail.com',
-          phone: '08123881262',
-          is_active: true
+      this.loading = true
+      this.$store.dispatch('customer/fetchCustomers').then(result => {
+        if (result.status >= 400) throw new Error(result.message)
+        else {
+          this.customers = result.data
+        }
+      }).catch(error => {
+        this.$store.dispatch('showSnackbar', {
+          value: true,
+          type: 'error',
+          message: error
         })
-      }
-      this.loading = false
+      }).finally(() => this.loading = false)
     },
     toCustomerDetail (customerId) {
       this.$router.push(`/admin/customer/${customerId}/detail`)
+    },
+    toEditCustomer (customerId) {
+      this.$router.push(`/admin/customer/${customerId}/edit`)
     }
   }
 }
