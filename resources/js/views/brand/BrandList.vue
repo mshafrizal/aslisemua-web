@@ -13,7 +13,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="error"
+            color="grey darken-3"
             text
             @click="toggleDeleteDialog"
             :disabled="loading"
@@ -122,13 +122,13 @@ export default {
       return '../storage/' + path
     },
     toAddBrand () {
-      this.$router.push('/admin/brands/create')
+      this.$router.push('/admin/brand/create')
     },
     toEditBrand (id) {
-      this.$router.push(`/admin/brands/edit/${id}`)
+      this.$router.push(`/admin/brand/${id}/edit`)
     },
     toViewBrand (id) {
-      this.$router.push(`/admin/brands/detail/${id}`)
+      this.$router.push(`/admin/brand/${id}/detail`)
     }
   }
 }
