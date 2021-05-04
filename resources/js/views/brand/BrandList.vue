@@ -13,7 +13,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="error"
+            color="grey darken-3"
             text
             @click="toggleDeleteDialog"
             :disabled="loading"

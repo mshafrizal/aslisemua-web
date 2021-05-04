@@ -11,7 +11,11 @@ import CustomerDetail from '../views/customer/CustomerDetail.vue'
 
 import BrandList from "../views/brand/BrandList.vue"
 import BrandCreate from "../views/brand/BrandCreate.vue"
+import BrandEdit from "../views/brand/BrandEdit";
 
+import CategoryList from "../views/category/CategoryList";
+import CategoryCreate from "../views/category/CategoryCreate";
+import CategoryEdit from "../views/category/CategoryEdit";
 const routes = [
   {
     path: '/admin/signin', name: 'sign-in', component: SignIn, meta: { requiresAuth: false }
@@ -26,7 +30,7 @@ const routes = [
     path: '/admin/customer/:id/detail', name: 'customer-detail', component: CustomerDetail, meta: { requiresAuth: true }
   },
   {
-    path: '/admin/customer/:id/edit', name: 'customer-detail', component: CustomerDetail, meta: { requiresAuth: true }
+    path: '/admin/customer/:id/edit', name: 'customer-edit', component: CustomerDetail, meta: { requiresAuth: true }
   },
   {
     path: '/admin/brand/list', name: 'brand-list', component: BrandList, meta: { requiresAuth: true }
@@ -35,11 +39,20 @@ const routes = [
     path: '/admin/brand/create', name: 'brand-create', component: BrandCreate, meta: { requiresAuth: true }
   },
   {
-    path: '/admin/brand/:id/detail', name: 'brand-create', component: BrandCreate, meta: { requiresAuth: true }
+    path: '/admin/brand/:id/detail', name: 'brand-detail', component: BrandCreate, meta: { requiresAuth: true }
   },
   {
-    path: '/admin/brand/:id/edit', name: 'brand-create', component: BrandCreate, meta: { requiresAuth: true }
-  }
+    path: '/admin/brand/:id/edit', name: 'brand-edit', component: BrandCreate, meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/category/list', name: 'category-list', component: CategoryList, meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/category/create', name: 'category-create', component: CategoryCreate, meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/category/:id/edit', name: 'category-edit', component: CategoryEdit, meta: { requiresAuth: true }
+  },
 ]
 
 const router = new VueRouter({

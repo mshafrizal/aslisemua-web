@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import auth from './modules/auth'
 import brand from './modules/brand'
 import customer from "./modules/customer";
+import category from "./modules/category";
 Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
@@ -34,7 +35,8 @@ export default new Vuex.Store({
   modules: {
     auth,
     brand,
-    customer
+    customer,
+    category
   }
 })
 
