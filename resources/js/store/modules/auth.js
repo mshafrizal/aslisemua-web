@@ -1,5 +1,5 @@
 const state = () => ({
-  isLoggedIn: false,
+  isLoggedIn: typeof localStorage.getItem('email') === 'string',
   user: null
 })
 
@@ -15,13 +15,9 @@ const getters = {
 const mutations = {
   setAuth (state, user) {
     state.user = user
-    console.log(user)
     Object.keys(user).forEach(key => {
       localStorage.setItem(key, user[key])
     })
-  },
-  setIsLoggedIn (state, status) {
-    state.isLoggedIn = status
   },
   removeAuth (state) {
     state.user = null
@@ -34,7 +30,6 @@ const actions = {
     return axios.post('/api/v1/sign-in/authenticate', payload).then(async (response) => {
       if (response.status === 200) {
         await commit('setAuth', response.data.data)
-        await commit('setIsLoggedIn', true)
       }
       return response.data
     }).catch(error => {

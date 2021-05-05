@@ -3,7 +3,7 @@
     <v-col cols="12">Add Brand</v-col>
     <v-col cols="12" sm="4">
       <v-card>
-        <v-form ref="formAddBrand" v-model="valid">
+        <v-form ref="formEditBrand" v-model="valid">
           <v-card-text>
             <v-img
               max-height="297"
@@ -27,7 +27,7 @@
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
-            <v-btn color="error" plain href="/admin/brand/list">Cancel</v-btn>
+            <v-btn color="error" plain href="/admin/brands">Cancel</v-btn>
             <v-btn :disabled="!valid" color="primary" depressed @click="handleSubmit">Submit</v-btn>
           </v-card-actions>
         </v-form>
@@ -38,7 +38,7 @@
 
 <script>
 export default {
-  name: "BrandCreate",
+  name: "BrandEdit",
   data: function () {
     return {
       loading: false,
@@ -63,16 +63,16 @@ export default {
   },
   methods: {
     handleSubmit () {
-      if (this.$refs.formAddBrand.validate()) {
+      if (this.$refs.formEditBrand.validate()) {
         this.loading = true
         let formData = new FormData()
         formData.append('file', this.logo, this.logo.name)
         formData.append('name', this.name)
-        this.$store.dispatch('brand/createBrand', formData).then(result => {
+        this.$store.dispatch('brand/updateBrand', formData).then(result => {
           if (result.status >= 400) throw new Error(result.message)
           this.$store.dispatch('showSnackbar', {
             value: true,
-            message: result.message,
+            message: response.message,
             type: 'success'
           })
         }).catch(error => {
@@ -83,7 +83,7 @@ export default {
           })
         }).finally(() => {
           this.loading = false
-          this.$router.push('/admin/brand/list')
+          this.$router.push(`/admin/brand/${this.$route.params.id}`)
         })
       }
     }
