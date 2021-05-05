@@ -58,7 +58,32 @@ class ProductController extends Controller
                     'data' => $product
                 ]
             ]);
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    function getProductBySlug($slug) {
+        try {
+            $product = ProductModel::with('brand', 'category', 'productImage')->where('slug', $slug)->first();
+            if (empty($product)) return response()->json([
+                'status' => 200,
+                'message' => 'No Data Found',
+                'results' => (object) []
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Fetched Successfully',
+                'results' => [
+                    'data' => $product
+                ]
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
                 'message' => 'Something Went Wrong',
