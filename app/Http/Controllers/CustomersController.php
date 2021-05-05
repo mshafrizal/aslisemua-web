@@ -80,15 +80,15 @@ class CustomersController extends Controller
     public function verifyAccount ($id) {
         try {
             $isExist = $this->CustomersModel->show($id);
-            if (!isset($isExist)) return response()->json([
-                'status' => 400,
-                'message' => `Your account doesn't registered`,
-            ], 400);
+            if (!isset($isExist)) {
+                session()->put('empty_account','Sorry, we cannot find you account. Please register first.');
+                return view('signup');
+            }
 
-            if (isset($isExist->email_verified_at) || $isExist->email_verified_at !== NULL) return response()->json([
-                'status' => 200,
-                'message' => 'Your account has been verified'
-            ]);
+            if (isset($isExist->email_verified_at) || $isExist->email_verified_at !== NULL) {
+                session()->put('registered','Your account already been verified');
+                return view('signin');
+            }
 
             $dataVerification = [
                 'email_verified_at' => Carbon::now(),
@@ -96,10 +96,8 @@ class CustomersController extends Controller
             ];
             $this->CustomersModel->updateUser($id, $dataVerification);
 
-            return response()->json([
-                'status' => '200',
-                'message' => 'Your account successfully verified'
-            ], 200);
+            session()->put('success_verify','Congratulation! Your account has been verified');
+            return view('signin');
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
