@@ -81,12 +81,12 @@ class CustomersController extends Controller
         try {
             $isExist = $this->CustomersModel->show($id);
             if (!isset($isExist)) {
-                session()->put('empty_account','Sorry, we cannot find you account. Please register first.');
+                session()->flash('empty_account','Sorry, we cannot find you account. Please register first.');
                 return view('signup');
             }
 
             if (isset($isExist->email_verified_at) || $isExist->email_verified_at !== NULL) {
-                session()->put('registered','Your account already been verified');
+                session()->flash('registered','Your account already been verified');
                 return view('signin');
             }
 
@@ -96,7 +96,7 @@ class CustomersController extends Controller
             ];
             $this->CustomersModel->updateUser($id, $dataVerification);
 
-            session()->put('success_verify','Congratulation! Your account has been verified');
+            session()->flash('success_verify','Congratulation! Your account has been verified');
             return view('signin');
         } catch (\Exception $e) {
             return response()->json([
