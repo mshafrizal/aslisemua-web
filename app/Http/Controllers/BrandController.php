@@ -67,6 +67,7 @@ class BrandController extends Controller
             $updatedBy = $user->name;
             $createdAt = Carbon::now();
             $updatedAt = Carbon::now();
+            $status = $request->status;
             $filePath = $request->file('file')->storeAs('brands', $newFileName, 'public');
 
             $newBrand = new BrandModel([
@@ -78,7 +79,7 @@ class BrandController extends Controller
                 'created_at' => $createdAt,
                 'updated_at' => $updatedAt,
                 'file_path' => $filePath,
-                'status' => true
+                'status' => $status
             ]);
 
             if ($newBrand->save()) return response()->json([
