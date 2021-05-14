@@ -77,7 +77,8 @@ class BrandController extends Controller
                 'updated_by' => $updatedBy,
                 'created_at' => $createdAt,
                 'updated_at' => $updatedAt,
-                'file_path' => $filePath
+                'file_path' => $filePath,
+                'status' => true
             ]);
 
             if ($newBrand->save()) return response()->json([
@@ -191,5 +192,32 @@ class BrandController extends Controller
 
     private function unlinkImage ($fileName) {
         Storage::delete('/public/brands/' . $fileName);
+    }
+
+    public function updateBrandStatus($id, Request $request) {
+        try {
+            $brandExisting = BrandModel::find($id);
+            if (empty($brandExisting)) return response()->json([
+                'status' => 400,
+                'message' => 'Brand not found'
+            ], 400);
+
+            $brandExisting->status = $request->status;
+            if ($brandExisting->save()) return response()->json([
+                'status' => 200,
+                'message' => $brandExisting->name . ' status successfully updated'
+            ]);
+
+            return response()->json([
+                'status' => 400,
+                'message' => $brandExisting->name . ' status totally failed'
+            ], 400);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }
