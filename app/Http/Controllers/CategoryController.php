@@ -16,13 +16,14 @@ class CategoryController extends Controller
 {
     public function fetchCategories(Request $request) {
         try {
-            $limit = $request->query('limit') === null ? 10 : (int)$request->query('limit');
             $data = [
                 'status' => 200,
                 'message' => 'Fetched Successfully',
             ];
-
-            $categories = CategoryModel::paginate($limit);
+            $categories = [];
+            if ($request && $request->limit) $categories = CategoryModel::paginate($request->limit);
+            else $categories = CategoryModel::paginate();
+            
             if (!$categories) return response()->json([
                 'status' => 200,
                 'message' => 'No Data found',
