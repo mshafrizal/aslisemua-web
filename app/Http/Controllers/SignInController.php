@@ -33,7 +33,7 @@ class SignInController extends Controller
 
             return response()->json([
                 'status' => 400,
-                'message' => 'Bad Request'
+                'message' => 'Unauthorized'
             ], 400);
         } catch (\Exception $error) {
             return response()->json([

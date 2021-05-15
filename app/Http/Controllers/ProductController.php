@@ -99,8 +99,12 @@ class ProductController extends Controller
                 $products = $products->where('updated_at', $date); // New Arrival
             }
 
-            $products = $products->where('status', true)->paginate(16);
-                        
+            if ($request && $request->sale === 'yes') $products = $products->where('discount_price', '>', 0);
+
+            $limit = 16;
+            if ($request && (int)$request->limit > 0) $limit = $request->limit; // Set up limit
+
+            $products = $products->where('status', true)->paginate($limit);
             if ($products->count() === 0) return response()->json([
                 'status' => 200,
                 'message' => 'No Data found',
