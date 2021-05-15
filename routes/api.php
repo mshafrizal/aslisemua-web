@@ -89,18 +89,18 @@ Route::prefix('v1')->group(function () {
     Route::prefix('products')->group(function () {
         // Administrator
         Route::prefix('private')->group(function () {
-            Route::get('/', [ProductController::class, 'getProducts']);
-            Route::get('/{product_id}', [ProductController::class, 'getProduct']);
-            Route::post('/create', [ProductController::class, 'createProduct']);
-            Route::delete('/{product_id}/delete', [ProductController::class, 'deleteProduct']);
-            Route::post('/{product_id}/update', [ProductController::class, 'updateProduct']);
+            Route::middleware('modules:api')->get('/', [ProductController::class, 'getProducts']);
+            Route::middleware('modules:api')->get('/{product_id}', [ProductController::class, 'getProduct']);
+            Route::middleware('modules:api')->post('/create', [ProductController::class, 'createProduct']);
+            Route::middleware('modules:api')->delete('/{product_id}/delete', [ProductController::class, 'deleteProduct']);
+            Route::middleware('modules:api')->post('/{product_id}/update', [ProductController::class, 'updateProduct']);
         });
 
         // Users
         Route::prefix('public')->group(function () {
-            Route::get('/detail/{slug}', [ProductController::class, 'getProductBySlug']);
-            Route::get(
-                '/main/{start_price?}/{end_price?}/{size?}', 
+            Route::middleware('modules:api')->get('/detail/{slug}', [ProductController::class, 'getProductBySlug']);
+            Route::middleware('modules:api')->get(
+                '/main', 
                 [ProductController::class, 'getPublicProducts']
             );
         });
