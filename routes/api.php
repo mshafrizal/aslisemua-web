@@ -19,7 +19,9 @@ header('Access-Control-Allow-Headers:  Content-Type, X-Auth-Token, Origin, Autho
 
 Route::prefix('v1')->group(function () {
     /**
+     * ==============================
      * Customers
+     * ==============================
      */
     Route::prefix('customers')->group(function () {
         Route::post('/register', [CustomersController::class, 'create']);
@@ -32,7 +34,9 @@ Route::prefix('v1')->group(function () {
     });
 
     /**
+     * ==============================
      * Sign In
+     * ==============================
      */
     Route::post('/sign-in/authenticate', [SignInController::class, 'authenticate']);
     Route::get('/sign-in/authenticate', [SignInController::class, 'authenticate'])->name('login');
@@ -41,7 +45,9 @@ Route::prefix('v1')->group(function () {
     Route::post('/forgot-password/email/send', [CustomersController::class, 'forgotPassword']);
 
     /**
-     * Brand
+     * ==============================
+     * Brands
+     * ==============================
      */
     Route::prefix('brands')->group(function () {
         Route::middleware('modules:api')->get('/', [BrandController::class, 'fetchBrands']);
@@ -53,7 +59,9 @@ Route::prefix('v1')->group(function () {
     });
 
     /**
+     * ==============================
      * Categories
+     * ==============================
      */
     Route::prefix('categories')->group(function () {
         // Administrator
@@ -74,7 +82,9 @@ Route::prefix('v1')->group(function () {
     });
 
     /**
+     * ==============================
      * Products
+     * ==============================
      */
     Route::prefix('products')->group(function () {
         // Administrator
@@ -88,7 +98,22 @@ Route::prefix('v1')->group(function () {
 
         // Users
         Route::prefix('public')->group(function () {
-            Route::get('/{slug}', [ProductController::class, 'getProductBySlug']);
+            Route::get('/detail/{slug}', [ProductController::class, 'getProductBySlug']);
+            Route::get(
+                '/main/{start_price?}/{end_price?}/{size?}', 
+                [ProductController::class, 'getPublicProducts']
+            );
+        });
+    });
+
+    /**
+     * ==============================
+     * Banners
+     * ==============================
+     */
+    Route::prefix('banners')->group(function() {
+        Route::prefix('carousel')->group(function() {
+            
         });
     });
 });

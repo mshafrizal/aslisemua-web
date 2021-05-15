@@ -36,6 +36,81 @@ class ProductController extends Controller
             ], 500);
         }
     }
+
+    function getPublicProducts(Request $request) {
+        try {
+            $data = [
+                'status' => 200,
+                'message' => 'Fetched Successfully',
+            ];
+
+            $products = ProductModel::with('brand','category','productImage');
+            if (($request && $request->start_price) && ($request && $request->end_price)) {
+                if ($request->start_price > $request->end_price) return response()->json([
+                    'status' => 400,
+                    'message' => 'Start price could not be bigger than the end price'
+                ]);
+            }
+
+            if ($request && $request->start_price) $products = $products->where('final_price', '>=', $request->start_price); // Start price
+            if ($request && $request->end_price) $products = $products->where('final_price', '<=', $request->end_price); // End price
+
+            if ($request && $request->clothing_size) {
+                $sizes = explode(',', $request->clothing_size);
+                $products = $products->whereIn('size', $sizes); // Clothing Size
+            }
+
+            if ($request && $request->shoe_size) {
+                $sizes = explode(',', $request->shoe_size);
+                $products = $products->whereIn('size', $sizes); // Shoe Size
+            }
+
+            if ($request && $request->gender) {
+                $gender = explode(',', $request->gender);
+                $products = $products->whereIn('gender', $gender); // Gender
+            }
+
+            if ($request && $request->color) {
+                $color = explode(',', $request->color);
+                $products = $products->whereIn('color', $color); // Color
+            }
+
+            if ($request && $request->category) {
+                $categories = implode(" >> ", explode(",", $request->category));
+                $products = $products->whereHas('category', function($q) use ($categories){
+                    $q->where('name', $categories);
+                }); // Category
+            }
+
+            if ($request && $request->brand) {
+                $brands = implode(" >> ", explode(",", $request->brand));
+                $products = $products->whereHas('brand', function($q) use ($brands) {
+                    $q->where('name', $brands);
+                }); // Brand
+            }
+
+            if ($request && $request->order_by) {
+                if ($request->order_by === 'desc') $products = $products->orderBy('final_price', $request->order_by);
+                else $products = $products->orderBy('final_price', $request->order_by);
+            }
+
+            $products = $products->where('status', true)->paginate(16);
+                        
+            if ($products->count() === 0) return response()->json([
+                'status' => 200,
+                'message' => 'No Data found',
+                'results' => []
+            ]);
+
+            return ProductResource::collection($products)->additional($data)->response();
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
     
     function getProduct($product_id) {
         try {
