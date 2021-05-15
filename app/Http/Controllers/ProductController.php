@@ -91,7 +91,12 @@ class ProductController extends Controller
 
             if ($request && $request->order_by) {
                 if ($request->order_by === 'desc') $products = $products->orderBy('final_price', $request->order_by);
-                else $products = $products->orderBy('final_price', $request->order_by);
+                else $products = $products->orderBy('final_price', $request->order_by); // Order by
+            }
+
+            if ($request && $request->new_arrival === 'yes') {
+                $date = \Carbon\Carbon::today()->subDays(7);
+                $products = $products->where('updated_at', $date); // New Arrival
             }
 
             $products = $products->where('status', true)->paginate(16);
