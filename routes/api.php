@@ -7,6 +7,7 @@ use App\Http\Controllers\SignInController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PaymentMethodController;
 
 //Access-Control-Allow-Origin: *
 header('Access-Control-Allow-Origin: *');
@@ -115,5 +116,16 @@ Route::prefix('v1')->group(function () {
         Route::prefix('carousel')->group(function() {
             
         });
+    });
+
+    /**
+     * ==============================
+     * Payment Methods
+     * ==============================
+     */
+    Route::prefix('payment-methods')->group(function() {
+        Route::middleware('modules:api')->get('/', [PaymentMethodController::class, 'getPaymentMethods']);
+        Route::middleware('modules:api')->delete('/{id}', [PaymentMethodController::class, 'deletePaymentMethod']);
+        Route::middleware('modules:api')->post('/', [PaymentMethodController::class, 'createPaymentMethod']);
     });
 });
