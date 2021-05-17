@@ -5,7 +5,7 @@ use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\GoogleController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
 
 Route::prefix('profile')->group(function () {
