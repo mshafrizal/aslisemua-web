@@ -115,7 +115,7 @@ export default {
       formData.append('file', this.formCreateCategory.file, this.formCreateCategory.file.name)
       formData.append('name', this.formCreateCategory.name)
       formData.append('description', this.formCreateCategory.description)
-      formData.append('parents', this.formCreateCategory.parents)
+      formData.append('parent', this.formCreateCategory.parents)
       this.$store.dispatch('category/adminCreateCategory', formData).then(result => {
         if (result.status >= 400) throw new Error(result.message)
         else {

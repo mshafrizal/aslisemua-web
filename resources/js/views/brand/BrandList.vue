@@ -43,9 +43,6 @@
         class="elevation-1"
         :items-per-page="10"
       >
-        <template v-slot:item.file_path="{item}">
-          <v-img max-height="100" max-width="100" contain :src="resolveImagePath(item.file_path)" :alt="`${item.name} logo`"></v-img>
-        </template>
         <template v-slot:item.updated_at="{item}">{{ new Date(item.updated_at).toLocaleDateString('id-ID') }}</template>
         <template v-slot:item.actions="{item}">
           <v-icon color="primary" class="mr-3" @click="toViewBrand(item.id)">mdi-eye</v-icon>
@@ -66,7 +63,6 @@ export default {
       dataBrands: null,
       dialogDelete: false,
       headerBrands: [
-        { text: 'Logo', align: 'start', sortable: false, value: 'file_path' },
         { text: 'Name', align: 'start', sortable: true, value: 'name' },
         { text: 'Associated Product', align: 'end', sortable: true, value: 'associated_product' },
         { text: 'Updated At', align: 'start', sortable: true, value: 'updated_at' },
@@ -117,9 +113,6 @@ export default {
           message: error
         })
       }).finally(() => this.loading = false)
-    },
-    resolveImagePath (path) {
-      return '../storage/' + path
     },
     toAddBrand () {
       this.$router.push('/admin/brand/create')
