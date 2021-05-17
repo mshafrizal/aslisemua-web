@@ -16,6 +16,10 @@ import BrandEdit from "../views/brand/BrandEdit";
 import CategoryList from "../views/category/CategoryList";
 import CategoryCreate from "../views/category/CategoryCreate";
 import CategoryEdit from "../views/category/CategoryEdit";
+
+import ProductList from "../views/product/ProductList";
+import ProductCreate from "../views/product/ProductCreate";
+
 const routes = [
   {
     path: '/admin/signin', name: 'sign-in', component: SignIn, meta: { requiresAuth: false }
@@ -52,6 +56,12 @@ const routes = [
   },
   {
     path: '/admin/category/:id/edit', name: 'category-edit', component: CategoryEdit, meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/product/list', name: 'product-list', component: ProductList, meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/product/create', name: 'product-create', component: ProductCreate, meta: { requiresAuth: true }
   },
 ]
 

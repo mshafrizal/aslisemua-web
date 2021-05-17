@@ -74,7 +74,7 @@ export default {
       }).finally(() => this.loading = false)
     },
     resolveImagePath (path) {
-      return '../storage/' + path
+      return '/storage/' + path
     },
     toggleDialogStatus (category) {
       if (this.dialogUpdateStatus) this.selectedCategory = null
