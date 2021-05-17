@@ -27,7 +27,7 @@ const actions = {
     }).catch(error => error)
   },
   adminDeleteCategory (context, payload) {
-    return axios.delete(`${process.env.MIX_APP_URL}/api/v1/categories/private/delete/${payload.category_id}`).then(response => {
+    return axios.post(`${process.env.MIX_APP_URL}/api/v1/categories/private/delete/${payload.category_id}`).then(response => {
       return response.data
     }).catch(error => error)
   },
