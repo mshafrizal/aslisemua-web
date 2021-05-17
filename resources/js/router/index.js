@@ -19,7 +19,7 @@ import CategoryEdit from "../views/category/CategoryEdit";
 
 import ProductList from "../views/product/ProductList";
 import ProductCreate from "../views/product/ProductCreate";
-
+import ProductDetail from "../views/product/ProductDetail";
 const routes = [
   {
     path: '/admin/signin', name: 'sign-in', component: SignIn, meta: { requiresAuth: false }
@@ -62,6 +62,9 @@ const routes = [
   },
   {
     path: '/admin/product/create', name: 'product-create', component: ProductCreate, meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/product/:id/detail', name: 'product-detail', component: ProductDetail, meta: { requiresAuth: true }
   },
 ]
 

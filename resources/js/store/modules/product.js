@@ -7,12 +7,12 @@ const actions = {
     }).catch(error => error)
   },
   adminFetchProducts (context, payload) {
-    return axios.get(`${process.env.MIX_APP_URL}/api/products/private/`).then(response => {
+    return axios.get(`${process.env.MIX_APP_URL}/api/v1/products/private/`).then(response => {
       return response.data
     }).catch(error => error)
   },
-  fetchBrand (context, payload) {
-    return axios.get(`${process.env.MIX_APP_URL}/api/v1/brands/${payload.brand_id}`).then(response => {
+  adminFetchProduct (context, payload) {
+    return axios.get(`${process.env.MIX_APP_URL}/api/v1/products/private/${payload.product_id}`).then(response => {
       return response.data
     }).catch(error => error)
   },

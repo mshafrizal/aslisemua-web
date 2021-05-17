@@ -40,7 +40,7 @@
         <template v-slot:item.updated_at="{item}">{{ new Date(item.updated_at).toLocaleDateString('id-ID') }}</template>
         <template v-slot:item.actions="{item}">
           <v-icon color="warning" class="mr-3" @click="toEditCategory(item.id)">mdi-pencil</v-icon>
-          <v-icon color="warning" class="mr-3" @click="toggleDeleteDialog(item)">mdi-trash-can</v-icon>
+          <v-icon color="error" class="mr-3" @click="toggleDeleteDialog(item)">mdi-trash-can</v-icon>
         </template>
       </v-data-table>
     </v-col>
