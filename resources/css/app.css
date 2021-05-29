@@ -2,12 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Belleza-Regular";
+  src: url('/fonts/Belleza-Regular.ttf') format("truetype");
+}
+
 @layer components {
   .btn-primary {
     @apply py-2 px-6 bg-gray-800 text-white font-light hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-black;
+  }
+  .input-primary {
+    @apply max-w-sm px-3 py-2 focus:ring-gray-900 focus:border-gray-900 block sm:text-sm border-gray-400 border
   }
 }
 
 html {
   height: 100%
+}
+
+#signInRightSide {
+  background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('../images/bg-signin.png');
+  background-repeat: no-repeat;
+  background-size: cover;
 }

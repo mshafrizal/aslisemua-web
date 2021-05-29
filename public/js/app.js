@@ -1840,7 +1840,46 @@ module.exports = {
   \*****************************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
+/**
+ * First we will load all of this project's JavaScript dependencies which
+ * includes Vue and other libraries. It is a great starting point when
+ * building robust, powerful web applications using Vue and Laravel.
+ */
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
+
+var userMenuButton = document.getElementById('user-menu');
+var userMenuDropdown = document.getElementById('user-menu-list');
+var signOutButton = document.getElementById('sign-out-button');
+
+if (userMenuButton && userMenuDropdown) {
+  userMenuButton.addEventListener('click', function () {
+    if (userMenuDropdown.classList.contains('hidden')) userMenuDropdown.classList.replace('hidden', 'block');else userMenuDropdown.classList.replace('block', 'hidden');
+  });
+}
+
+if (signOutButton) {
+  signOutButton.addEventListener('click', function () {
+    localStorage.setItem('google_id', '');
+    localStorage.setItem('gender', '');
+    localStorage.setItem('district', '');
+    localStorage.setItem('email_verified_at', '');
+    localStorage.setItem('id', '');
+    localStorage.setItem('address', '');
+    localStorage.setItem('status', '');
+    localStorage.setItem('level', '');
+    localStorage.setItem('city', '');
+    localStorage.setItem('name', '');
+    localStorage.setItem('is_verified', '');
+    localStorage.setItem('created_at', '');
+    localStorage.setItem('updated_at', '');
+    localStorage.setItem('postal_code', '');
+    localStorage.setItem('phone_number', '');
+    localStorage.setItem('is_first_time', '');
+    localStorage.setItem('email', '');
+    localStorage.setItem('token', '');
+    window.location.href = '/sign-in';
+  });
+}
 
 /***/ }),
 
@@ -1852,13 +1891,41 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
+ * We'll load jQuery and the Bootstrap jQuery plugin which provides support
+ * for JavaScript based Bootstrap features such as modals and tabs. This
+ * code may be modified to fit the specific needs of your application.
+ */
+// try {
+//     window.Popper = require('popper.js').default;
+//     window.$ = window.jQuery = require('jquery');
+//     require('bootstrap');
+// } catch (e) {}
+
+/**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
 window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+
+if (!localStorage.getItem('token') || localStorage.getItem('token') === '') {
+  var currentRoute = window.location.href;
+
+  if (currentRoute.includes('profile')) {
+    window.location.href = '/sign-in';
+  }
+}
+
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common = {
+  'Authorization': "Bearer ".concat(localStorage.getItem('token'))
+};
+window.axios.interceptors.response.use(function (response) {
+  return response;
+}, function (error) {
+  return Promise.reject(error);
+});
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
@@ -19039,6 +19106,32 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
 /***/ }),
 
+/***/ "./resources/sass/app.scss":
+/*!*********************************!*\
+  !*** ./resources/sass/app.scss ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./resources/sass/admin.scss":
+/*!***********************************!*\
+  !*** ./resources/sass/admin.scss ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./resources/css/app.css":
 /*!*******************************!*\
   !*** ./resources/css/app.css ***!
@@ -19331,6 +19424,8 @@ process.umask = function() { return 0; };
 /******/ 		
 /******/ 		var deferredModules = [
 /******/ 			["./resources/js/app.js"],
+/******/ 			["./resources/sass/app.scss"],
+/******/ 			["./resources/sass/admin.scss"],
 /******/ 			["./resources/css/app.css"]
 /******/ 		];
 /******/ 		// no chunk on demand loading
