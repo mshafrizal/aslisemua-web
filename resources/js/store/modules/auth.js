@@ -37,7 +37,7 @@ const actions = {
     })
   },
   authLogout ({commit}) {
-    commit('setIsLoggedIn', false)
+    // commit('setIsLoggedIn', false)
     commit('removeAuth')
   }
 }
