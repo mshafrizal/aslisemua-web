@@ -63,6 +63,12 @@ class CustomersController extends Controller
                 'status' => 201,
                 'message' => 'Successfully Registered',
             ], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Validation Error',
+                'error' => $e->errors()
+            ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,

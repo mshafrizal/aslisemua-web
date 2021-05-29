@@ -38,6 +38,10 @@ Route::get('/sign-up', function () {
   return view('signup');
 })->name('signup');
 
+Route::get('/categories', function() {
+  return view('categories/index');
+})->name('categories');
+
 // Verify Account
 Route::get('/registration/verify-account/{id}', [CustomersController::class, 'sendTokenAccount']);
 

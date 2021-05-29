@@ -69,8 +69,9 @@
           throw new Error(result.message);
         }
       }).catch(error => {
+          let errorMessage = error.response.data.message;
           Toastify({
-            text: error,
+            text: errorMessage || error,
             duration: '3000',
             close: true,
             gravity: 'top',
