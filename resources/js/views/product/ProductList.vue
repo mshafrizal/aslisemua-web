@@ -94,7 +94,10 @@ export default {
     },
     submitDelete () {
       this.isSubmitting = true
-      this.$store.dispatch('product/adminDeleteProduct').then(result => {
+      const params = {
+        product_id: this.selectedProduct.id
+      }
+      this.$store.dispatch('product/adminDeleteProduct', params).then(result => {
         if (result.status >= 400) throw new Error (result.message)
         else {
           this.$store.dispatch('showSnackbar', {
@@ -110,7 +113,10 @@ export default {
           type: 'error',
           message: error.response.message || error.toString()
         })
-      }).finally(() => this.isSubmitting = false)
+      }).finally(() => {
+        this.isSubmitting = false
+        this.fetchAdminProducts()
+      })
     },
     toggleDialogDelete (product) {
       if (this.dialogUpdateStatus) this.selectedProduct = null
