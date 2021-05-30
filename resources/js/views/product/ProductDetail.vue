@@ -69,9 +69,8 @@
         <v-card-text v-if="product">
           <v-container fluid>
             <v-row>
-              <v-col cols="6" sm="4" v-for="image in product.product_image">
+              <v-col cols="6" sm="4" v-for="image in product.product_image" :key="image.id">
                 <v-img
-                  :key="image.id"
                   :lazy-src="'/storage/'+image.image_path"
                   max-height="150"
                   max-width="250"
