@@ -92,10 +92,9 @@
 
             <!-- title -->
             <div class="text-center px-6 py-2 mb-6">
-                <h1 class="title-font sm:text-3xl text-3xl mb-4 font-medium	 text-black">Cart</h1>
+                <h1 class="title-font sm:text-3xl text-3xl mb-4 font-medium	 text-black">CART</h1>
             </div>
             <!-- /title -->
-
 
             <div class="h-full">
                 <div class="grid grid-cols-12 gap-6">
@@ -106,9 +105,9 @@
                                 <div id="header" class="flex">
                                     <img alt="brandImage" class="flex-shrink-0 rounded-lg w-48 h-48 object-cover object-center sm:mb-0 mb-4" src="https://storage.seikowatches.com/image/2020/11/19044955398717/0/SPB053J1.png" />
                                     <div id="body" class="flex flex-col ml-5">
-                                        <h4 id="brandName" class="text-xl font-semibold mb-2">Seiko Watch</h4>
-                                        <p id="brandDesc" class="text-gray-800 mt-2">SPB053J1</p>
-                                        <p id="brandPrice" class="text-gray-800 mt-2">Rp.15.000.000</p>
+                                        <h4 id="brandName" class="text-xl font-semibold mt-2">Seiko Watch</h4>
+                                        <p id="brandDesc" class="text-gray-800 mt-1">SPB053J1</p>
+                                        <p id="brandPrice" class="text-gray-800 mt-1">Rp.15.000.000</p>
                                     </div>
                                 </div>
                                 <div class="text-lg font-semibold">
@@ -126,10 +125,10 @@
                                 <div id="header" class="flex">
                                     <img alt="brandImage" class="flex-shrink-0 rounded-lg w-48 h-48 object-cover object-center sm:mb-0 mb-4" src="https://images.tokopedia.net/img/cache/700/product-1/2019/6/24/67875778/67875778_4a098925-2a79-41cc-adf3-17bf2b6d2f44_1080_1080.jpg" />
                                     <div id="body" class="flex flex-col ml-5">
-                                        <h4 id="brandName" class="text-xl font-semibold mb-2">Seven Friday</h4>
-                                        <p id="brandDesc" class="text-gray-800 mt-2">M2B/01 Official Jam Tangan Pria Revolution M-Series</p>
-                                        <p id="ifBrandDisc" class="text-red-600 line-through mt-2">Rp19.800.000</p>
-                                        <p id="brandPrice" class="text-gray-800 mt-2">Rp16.800.000</p>
+                                        <h4 id="brandName" class="text-xl font-semibold mt-2">Seven Friday</h4>
+                                        <p id="brandDesc" class="text-gray-800 mt-1">M2B/01 Official Jam Tangan Pria Revolution M-Series</p>
+                                        <p id="ifBrandDisc" class="text-red-600 line-through mt-1">Rp19.800.000</p>
+                                        <p id="brandPrice" class="text-gray-800 mt-1">Rp16.800.000</p>
                                     </div>
                                 </div>
                                 <div class="text-lg font-semibold">

@@ -91,7 +91,6 @@
             </div>
             <!-- /title -->
 
-
             <div class="h-full">
                 <div class="grid grid-cols-12 gap-6">
                     <div class="col-span-12 sm:col-span-12 md:col-span-7 lg:col-span-8 xxl:col-span-8">
@@ -99,20 +98,14 @@
                         <div class="bg-white py-4 px-4  my-4 mx-4">
                             <div class="flex justify-between px-4">
                                 <div id="header" class="flex">
-                                    <div class="block">
-                                        <div class="mt-4">
-                                            <div class="mt-4">
-                                                <label class="inline-flex items-center">
-                                                    <input type="radio" class="form-radio h-16 w-16" name="radio-sizes" value="" checked>
-                                                    <div id="body" class="flex flex-col ml-5">
-                                                        <h4 id="brandName" class="text-xl font-semibold mb-2">Jonathan Liandi</h4>
-                                                        <p id="brandDesc" class="text-gray-800 mt-2">081298429811</p>
-                                                        <p id="brandPrice" class="text-gray-800 mt-2">Jl. Asia Afrika No.1, RT.1/RW.3, Gelora, Tanah Abang, Central Jakarta City, Jakarta 10270</p>
-                                                    </div>
-                                                </label>
-                                            </div>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" class="form-radio h-20 w-20" name="radio-sizes" value="" checked>
+                                        <div id="body" class="flex flex-col ml-5">
+                                            <h4 id="destName" class="text-xl font-semibold">Jonathan Liandi</h4>
+                                            <p id="destPhone" class="text-gray-800">081298429811</p>
+                                            <p id="destAddr" class="text-gray-800">Jl. Asia Afrika No.1, RT.1/RW.3, Gelora, Tanah Abang, Central Jakarta City, Jakarta 10270</p>
                                         </div>
-                                    </div>
+                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -120,23 +113,15 @@
                         <div class="bg-white py-4 px-4  my-4 mx-4">
                             <div class="flex justify-between px-4">
                                 <div id="header" class="flex">
-                                    <div class="block">
-                                        <div class="mt-4">
-                                            <div class="mt-4">
-                                                <label class="inline-flex items-center">
-                                                    <input type="radio" class="form-radio h-16 w-16" name="radio-sizes" value="">
-                                                    <div id="body" class="flex flex-col ml-5">
-                                                        <h4 id="brandName" class="text-xl font-semibold mb-2">Adam</h4>
-                                                        <p id="brandDesc" class="text-gray-800 mt-2">082308239123</p>
-                                                        <p id="ifBrandDisc" class="text-gray-800  mt-2">Jl. Kyai Maja, RT.11/RW.7, Gunung, Kec. Kby. Baru, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12120</p>
-                                                    </div>
-                                                </label>
-                                            </div>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" class="form-radio h-20 w-20" name="radio-sizes" value="">
+                                        <div id="body" class="flex flex-col ml-5">
+                                            <h4 id="destName" class="text-xl font-semibold">Adam</h4>
+                                            <p id="destPhone" class="text-gray-800">082308239123</p>
+                                            <p id="destAddr" class="text-gray-800">Jl. Kyai Maja, RT.11/RW.7, Gunung, Kec. Kby. Baru, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12120</p>
                                         </div>
-                                    </div>
-
+                                    </label>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -145,10 +130,10 @@
                         <div class="bg-white py-4 px-4 shadow-xl rounded-lg my-4 mx-4">
                             <div class="flex justify-between pt-4 ">
                                 <div class="lg:px-4 lg:py-2 m-2 text-lg lg:text-xl font-bold text-center text-gray-800">
-                                    Total Item
+                                    <p>Total Item</p>
                                 </div>
-                                <div id="totalItem" class="lg:px-4 lg:py-2 m-2 lg:text-lg font-bold text-center text-gray-900">
-                                    Rp.34.800.000
+                                <div class="lg:px-4 lg:py-2 m-2 lg:text-lg font-bold text-center text-gray-900">
+                                    <p id="totalItem">Rp.34.800.000</p>
                                 </div>
                             </div>
                             <div class="flex justify-between pt-4">
@@ -192,9 +177,9 @@
                                 <div id="header" class="flex">
                                     <img alt="brandImage" class="flex-shrink-0 rounded-lg w-32 h-32 object-cover object-center sm:mb-0 mb-4" src="https://storage.seikowatches.com/image/2020/11/19044955398717/0/SPB053J1.png" />
                                     <div id="body" class="flex flex-col ml-5">
-                                        <h4 id="brandName" class="text-xl font-semibold mb-2">Seiko Watch</h4>
-                                        <p id="brandDesc" class="text-gray-800 mt-2">SPB053J1</p>
-                                        <p id="brandPrice" class="text-gray-800 mt-2">Rp.15.000.000</p>
+                                        <h4 id="brandName" class="text-xl font-semibold mt-2">Seiko Watch</h4>
+                                        <p id="brandDesc" class="text-gray-800 mt-1">SPB053J1</p>
+                                        <p id="brandPrice" class="text-gray-800 mt-1">Rp.15.000.000</p>
                                     </div>
                                 </div>
 
@@ -206,10 +191,10 @@
                                 <div id="header" class="flex">
                                     <img alt="brandImage" class="flex-shrink-0 rounded-lg w-32 h-32 object-cover object-center sm:mb-0 mb-4" src="https://images.tokopedia.net/img/cache/700/product-1/2019/6/24/67875778/67875778_4a098925-2a79-41cc-adf3-17bf2b6d2f44_1080_1080.jpg" />
                                     <div id="body" class="flex flex-col ml-5">
-                                        <h4 id="brandName" class="text-xl font-semibold mb-2">Seven Friday</h4>
-                                        <p id="brandDesc" class="text-gray-800 mt-2">M2B/01 Official Jam Tangan Pria Revolution M-Series</p>
-                                        <p id="ifBrandDisc" class="text-red-600 line-through mt-2">Rp19.800.000</p>
-                                        <p id="brandPrice" class="text-gray-800 mt-2">Rp16.800.000</p>
+                                        <h4 id="brandName" class="text-xl font-semibold mt-2">Seven Friday</h4>
+                                        <p id="brandDesc" class="text-gray-800 mt-1">M2B/01 Official Jam Tangan Pria Revolution M-Series</p>
+                                        <p id="ifBrandDisc" class="text-red-600 line-through mt-1">Rp19.800.000</p>
+                                        <p id="brandPrice" class="text-gray-800 mt-1">Rp16.800.000</p>
                                     </div>
                                 </div>
 
