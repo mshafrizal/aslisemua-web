@@ -92,7 +92,7 @@
 
             <!-- title -->
             <div class="text-center px-6 py-2 mb-6">
-                <h1 class=" text-xl md:text-4xl pb-4">Cart</h1>
+                <h1 class="title-font sm:text-3xl text-3xl mb-4 font-medium	 text-black">Cart</h1>
             </div>
             <!-- /title -->
 
