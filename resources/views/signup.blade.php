@@ -73,7 +73,7 @@
 
   <script>
     document.getElementById('signUpForm').addEventListener('submit', signUp, true);
-    
+
     async function signUp(event) {
       event.preventDefault();
       document.getElementById('signUp').setAttribute('disabled', true);
@@ -106,15 +106,21 @@
           } else {
             throw new Error(result.message)
           }
-        }).catch(error => Toastify({
-            text: error,
-            duration: '3000',
-            close: true,
-            gravity: 'top',
-            position: 'center',
-            backgroundColor: '#333',
-            stopOnFocus: true
-        }).showToast()).finally(() => {
+        }).catch(error => {
+            let errorMessage = Object.keys(error.response.data.error).map(k => {
+                return error.response.data.error[k];
+            }).join(', ');
+            Toastify({
+                text: errorMessage || error,
+                duration: '3000',
+                close: true,
+                gravity: 'top',
+                position: 'center',
+                backgroundColor: '#333',
+                stopOnFocus: true
+            }).showToast();
+            }
+        ).finally(() => {
           document.getElementById('signUp').removeAttribute('disabled');
         })
       } else {
