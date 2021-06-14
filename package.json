@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "axios": "^0.21.1",
+        "handlebars": "^4.7.7",
         "tiptap-vuetify": "^2.24.0",
         "toastify-js": "^1.9.3",
         "v-currency-field": "^3.1.1",
