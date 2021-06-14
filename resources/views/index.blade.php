@@ -4,7 +4,7 @@
 
 @section('content')
   <section id="carousel" class="text-center mb-20">
-    CAROUSEL SECTION
+    <img class="w-full" src="{{asset('/images/Slider.png')}}" alt="Aslisemua banner">
   </section>
 
   <section id="sale-banner" class=" mb-20">
