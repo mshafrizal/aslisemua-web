@@ -4,7 +4,9 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+
 require('./bootstrap');
+const Handlebars = require("handlebars");
 
 const userMenuButton = document.getElementById('user-menu');
 const userMenuDropdown = document.getElementById('user-menu-list');
