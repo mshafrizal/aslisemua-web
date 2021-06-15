@@ -78,7 +78,7 @@ Route::prefix('v1')->group(function () {
 
         // Users
         Route::prefix('public')->group(function () {
-            Route::get('/main', [CategoryController::class, 'fetchCategories']);
+            Route::get('/main', [CategoryController::class, 'fetchCategories'])->name('categories-api');
         });
     });
 
@@ -101,7 +101,7 @@ Route::prefix('v1')->group(function () {
         Route::prefix('public')->group(function () {
             Route::middleware('modules:api')->get('/detail/{slug}', [ProductController::class, 'getProductBySlug']);
             Route::middleware('modules:api')->get(
-                '/main', 
+                '/main',
                 [ProductController::class, 'getPublicProducts']
             );
         });
@@ -114,7 +114,7 @@ Route::prefix('v1')->group(function () {
      */
     Route::prefix('banners')->group(function() {
         Route::prefix('carousel')->group(function() {
-            
+
         });
     });
 
