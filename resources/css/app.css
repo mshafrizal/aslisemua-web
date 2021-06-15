@@ -25,3 +25,43 @@ html {
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+/* Navigation bar */
+.group:hover .group-hover\:scale-100 { transform: scale(1) }
+.group:hover .group-hover\:-rotate-180 { transform: rotate(180deg) }
+.scale-0 { transform: scale(0) }
+.min-w-32 { min-width: 8rem }
+
+/*Product Detail*/
+.product-img-frame {
+  max-width: 520px;
+  min-width: 360px;
+}
+
+.product-img {
+  aspect-ratio: 2 / 3;
+  max-width: 480px;
+}
+
+.thumbnail-img-frame {
+  max-width: 150px;
+  min-width: 90px;
+  margin-bottom: 16px;
+}
+
+.thumbnail-img {
+  aspect-ratio: 2 / 3;
+  max-width: 150px;
+}
+
+.magnifier {
+  position: relative;
+}
+
+.magnifier-glass {
+  position: absolute;
+  border: 1px solid #333;
+  cursor: none;
+  width: 200px;
+  height: 200px;
+}
