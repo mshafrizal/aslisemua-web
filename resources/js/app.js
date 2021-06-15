@@ -6,7 +6,8 @@
 
 
 require('./bootstrap');
-const Handlebars = require("handlebars");
+// require('../../public/js/slick/slick.min')
+// const Handlebars = require("handlebars");
 
 const userMenuButton = document.getElementById('user-menu');
 const userMenuDropdown = document.getElementById('user-menu-list');
