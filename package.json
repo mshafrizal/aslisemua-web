@@ -26,6 +26,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "@splidejs/splide": "^2.4.21",
         "axios": "^0.21.1",
         "handlebars": "^4.7.7",
         "tiptap-vuetify": "^2.24.0",
