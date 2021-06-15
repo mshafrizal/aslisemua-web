@@ -7,7 +7,7 @@
     <h2 class="text-3xl">ALL CATEGORIES</h2>
   </section>
   <div class="flex flex-row">
-    <section id="filter-shop" class="hidden md:block border border-gray-300 p-4 flex-grow-0">
+    <section id="filter-shop" class="hidden md:block border border-gray-300 p-4 flex-shrink-0">
       <div id="filter-shop-categories border-b">
         <h5 class="font-bold mb-3">All Categories</h5>
         <ul>
@@ -66,12 +66,36 @@
           <option value="xl">Purple</option>
         </select>
       </section>
-      <section id="products">
-        <div>
-          <div>
-            <img src="https://via.placeholder.com/150/450" alt="">
-          </div>
+      <section id="products" class="flex flex-col">
+        <div class="grid grid-cols-4 gap-2">
+          @if($data->count() > 0)
+            @foreach($data as $product)
+              <div class="flex flex-col relative">
+                <button class="focus:outline-none absolute flex justify-center items-center top-0 right-0" style="height: 32px; width: 32px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 m-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                </button>
+                <div class="mb-3">
+                  <img src="{{ URL::asset('storage/'.$product->image_path) }}" alt="" class="w-full" style="aspect-ratio: 2 / 3">
+                </div>
+                <div>
+                  <a href="/product/{{$product->id}}/detail" class="block">
+                    <h5 class="font-bold text-center text-xl">{{$product->brand->name}}</h5>
+                    <p class="mt-2 mb-0 text-center text-sm">{{$product->name}}</p>
+                    <p class="mt-2 mb-0 text-center text-sm">{{$product->size}}</p>
+                    <p class="mt-2 mb-0 text-center text-yellow-500 text-sm">Rp {{number_format($product->final_price, 0, ',', '.')}}</p>
+                  </a>
+                </div>
+              </div>
+            @endforeach
+          @else
+            <h5 class="text-xl text-center">No Data Available</h5>
+          @endif
         </div>
+        @if($data->count() > 0)
+          <div></div>
+        @endif
       </section>
     </div>
   </div>

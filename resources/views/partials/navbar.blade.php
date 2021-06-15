@@ -31,8 +31,8 @@
                     </svg>
                 </button>
                 <ul
-                    class="bg-white border border-black transform scale-0 group-hover:scale-100 absolute 
-                    transition duration-150 ease-in-out origin-top min-w-32"
+                    class="bg-white border border-black transform scale-0 group-hover:scale-100 absolute
+                    transition duration-150 ease-in-out origin-top min-w-32 right-5 z-10"
                 >
                     <li class="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer">
                         <a class="block" href="/sign-in">
@@ -60,8 +60,8 @@
         <div id="center2" class="flex-grow-0">
             <ul class="flex flex-row mx-auto text-center justify-center">
                 <li class="px-3 py-2"><a class="block" href="/new-arrivals">New Arrivals</a></li>
-                <li class="px-3 py-2"><a class="block" href="/category/women">Women</a></li>
-                <li class="px-3 py-2"><a class="block" href="/category/men">Men</a></li>
+                <li class="px-3 py-2"><a class="block" href="/shop/Women">Women</a></li>
+                <li class="px-3 py-2"><a class="block" href="/shop/Men">Men</a></li>
                 <li class="px-3 py-2"><a class="block text-red-500 font-bold" href="/sale">Sale</a></li>
                 <li class="px-3 py-2"><a class="block text-yellow-500 font-bold" href="/consign">Sell With Us</a></li>
             </ul>
