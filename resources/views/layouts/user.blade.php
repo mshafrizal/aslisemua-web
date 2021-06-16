@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Laravel</title>
+    <title>{{config('app.name')}}</title>
 
     <!-- Fonts -->
     <!-- Styles -->
@@ -43,7 +43,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </button>
-    
+
             <!-- Profile dropdown -->
             <div class="md:ml-3 relative p-2">
               <div>
@@ -54,7 +54,7 @@
               </div>
               <!--
                 Profile dropdown panel, show/hide based on dropdown state.
-    
+
                 Entering: "transition ease-out duration-100"
                   From: "transform opacity-0 scale-95"
                   To: "transform opacity-100 scale-100"
@@ -80,7 +80,7 @@
                 <!-- Icon when menu is closed. -->
                 <!--
                   Heroicon name: outline/menu
-      
+
                   Menu open: "hidden", Menu closed: "block"
                 -->
                 <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -89,7 +89,7 @@
                 <!-- Icon when menu is open. -->
                 <!--
                   Heroicon name: outline/x
-      
+
                   Menu open: "block", Menu closed: "hidden"
                 -->
                 <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -127,7 +127,7 @@
       </div>
       <!--
         Mobile menu, toggle classes based on menu state.
-    
+
         Menu open: "block", Menu closed: "hidden"
       -->
       <div class="hidden sm:hidden">
@@ -158,7 +158,7 @@
         @endauth
       </div>
     @endif
-    
+
     <div class="container mx-auto px-2 md:px-20">
       @yield('content')
     </div>

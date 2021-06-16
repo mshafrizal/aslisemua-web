@@ -9,7 +9,16 @@
   <link href="{{ asset('css/app.css') }}" rel="stylesheet">
   <title>Aslisemua - Sign In</title>
 </head>
-<body class="antialiased flex flex-col h-full">
+<body class="antialiased flex flex-col h-full relative">
+  <div class="w-full h-10 text-center uppercase text-xl absolute top-0 bg-white" id="session-message">
+    @if(Session::has('registered'))
+      <h5 class="text-gray-500 mt-1">{{Session::get('registered')}}</h5>
+    @elseif(Session::has('empty_account'))
+      <h5 class="text-red-500 mt-1">{{Session::get('empty_account')}}</h5>
+    @elseif(Session::has('success_verify'))
+      <h5 class="text-green-500 mt-1">{{Session::get('success_verify')}}</h5>
+    @endif
+  </div>
   <main class="flex justify-between flex-row flex-wrap w-full h-full">
     {{-- LEFT SIDE --}}
     <form class="flex justify-center items-center w-full md:w-1/2 p-4" id="signInForm" name="signInForm">
@@ -69,8 +78,9 @@
           throw new Error(result.message);
         }
       }).catch(error => {
+          let errorMessage = error.response.data.message;
           Toastify({
-            text: error,
+            text: errorMessage || error,
             duration: '3000',
             close: true,
             gravity: 'top',

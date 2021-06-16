@@ -11,6 +11,17 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialogDelete" v-if="dialogDelete" max-width="500">
+      <v-card>
+        <v-card-title>Delete Product</v-card-title>
+        <v-card-text>Are you sure to delete {{this.selectedProduct.name}}?</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="grey darken-3" :disabled="isSubmitting" text @click="toggleDialogDelete">Cancel</v-btn>
+          <v-btn color="primary" :loading="isSubmitting" text @click="submitDelete">Yes</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-col cols="12" sm="10"><h2>Product List</h2></v-col>
     <v-col cols="12" sm="2">
       <v-btn href="/admin/product/create" block>Add Product</v-btn>
@@ -54,6 +65,7 @@ export default {
         { text: 'Discount', align: 'end', sortable: true, value: 'discount_price' },
         { text: 'Actions', align: 'center', sortable: false, value: 'actions' },
       ],
+      isSubmitting: false,
       loading: true,
       selectedProduct: null
     }
@@ -79,6 +91,32 @@ export default {
     },
     resolveImagePath (path) {
       return '../storage/' + path
+    },
+    submitDelete () {
+      this.isSubmitting = true
+      const params = {
+        product_id: this.selectedProduct.id
+      }
+      this.$store.dispatch('product/adminDeleteProduct', params).then(result => {
+        if (result.status >= 400) throw new Error (result.message)
+        else {
+          this.$store.dispatch('showSnackbar', {
+            value: true,
+            type: 'success',
+            message: result.message
+          })
+          this.toggleDialogDelete()
+        }
+      }).catch(error => {
+        this.$store.dispatch('showSnackbar', {
+          value: true,
+          type: 'error',
+          message: error.response.message || error.toString()
+        })
+      }).finally(() => {
+        this.isSubmitting = false
+        this.fetchAdminProducts()
+      })
     },
     toggleDialogDelete (product) {
       if (this.dialogUpdateStatus) this.selectedProduct = null

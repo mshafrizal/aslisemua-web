@@ -37,6 +37,19 @@ class ProductController extends Controller
         }
     }
 
+    function getProductsByQuery(Request $request) {
+        try {
+            $data = 'Hello world';
+            return view('index', $data);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something went wrong',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
     function getPublicProducts(Request $request) {
         try {
             $data = [
@@ -120,7 +133,7 @@ class ProductController extends Controller
             ]);
         }
     }
-    
+
     function getProduct($product_id) {
         try {
             if (!$product_id) return response()->json([
@@ -149,6 +162,12 @@ class ProductController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    function demoGetProduct($product_id) {
+      $data = ProductModel::with('brand','category','productImage')->find($product_id);
+//      dd($data->productImage);
+      return view('product.product-detail')->with('data', $data);
     }
 
     function getProductBySlug($slug) {
@@ -235,7 +254,7 @@ class ProductController extends Controller
             $now = Carbon::now();
             $productImage = [];
             $newProductImage = [];
-        
+
             $newProduct = new ProductModel([
                 'id' => Str::uuid(),
                 'name' => $name,
@@ -272,7 +291,7 @@ class ProductController extends Controller
                         'created_at' => $now,
                         'updated_at' => $now,
                     ];
-    
+
                     $newProductImage[] = $productImage;
                 }
 
@@ -376,7 +395,7 @@ class ProductController extends Controller
                 'status' => 400,
                 'message' => 'Images not found'
             ], 400);
-            
+
             $name = $request->name;
             $size = $request->size;
             $gender = $request->gender;
@@ -409,7 +428,7 @@ class ProductController extends Controller
             $productExisting->updated_by = $user;
             $productExisting->updated_at = $now;
             $productExisting->slug = Str::slug($name) . '-' . time();
-            
+
             $images = $request->file('images');
             $errors = [];
             $arrImages = [];
@@ -442,12 +461,12 @@ class ProductController extends Controller
                         'created_at' => $now,
                         'updated_at' => $now,
                     ];
-    
+
                     $newProductsImages[] = $newProductImage;
                 }
 
                 ProductImageModel::insert($newProductsImages);
-                
+
                 return response()->json([
                     'status' => 200,
                     'message' => $name . ' successfully updated',

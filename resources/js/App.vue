@@ -34,6 +34,7 @@
             </v-list-item>
           </v-list-group>
           <v-list-item
+            v-else
             :key="indexMenu"
             link
             :to="menu.link"

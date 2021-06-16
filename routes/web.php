@@ -3,10 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\HomeController;
 
-Route::get('/', function () {
-    return view('index');
-});
+Route::get('/', [HomeController::class, 'getData']);
 
 Route::prefix('profile')->group(function () {
   Route::get('/personal-info', function () {
@@ -29,6 +28,18 @@ Route::prefix('profile')->group(function () {
     return view('profile.address');
   })->name('profile.address');
 });
+// Demo route
+Route::prefix('shop')->group(function () {
+  Route::get('/', [\App\Http\Controllers\ShopController::class, 'shopAllCategories']);
+  Route::get('/{category_slug}', [\App\Http\Controllers\ShopController::class, 'shopByMainCategory']);
+});
+
+Route::prefix('product')->group(function () {
+  Route::get('/{product_id}/detail', [\App\Http\Controllers\ProductController::class, 'demoGetProduct']);
+});
+
+// End Demo route
+//Route::get('/products', 'ProductController@getProductsByQuery');
 
 Route::get('/sign-in', function () {
   return view('signin');
@@ -37,6 +48,10 @@ Route::get('/sign-in', function () {
 Route::get('/sign-up', function () {
   return view('signup');
 })->name('signup');
+
+Route::get('/categories', function() {
+  return view('categories/index');
+})->name('categories');
 
 // Verify Account
 Route::get('/registration/verify-account/{id}', [CustomersController::class, 'sendTokenAccount']);
