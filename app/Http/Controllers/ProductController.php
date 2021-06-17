@@ -65,6 +65,14 @@ class ProductController extends Controller
                 ]);
             }
 
+            if ($request && $request->keywords) {
+                $keywords = utf8_decode(urldecode($request->keywords));
+                $products = $products->where('name', 'like', '%' . $keywords . '%')
+                                ->orWhereHas('brand', function($q) use ($keywords) {
+                                    $q->where('name', 'like', '%' . $keywords . '%');
+                                });
+            }
+
             if ($request && $request->start_price) $products = $products->where('final_price', '>=', $request->start_price); // Start price
             if ($request && $request->end_price) $products = $products->where('final_price', '<=', $request->end_price); // End price
 
