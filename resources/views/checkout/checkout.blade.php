@@ -60,7 +60,7 @@
                             <div class="flex justify-between px-4">
                                 <div id="header" class="flex">
                                     <label class="inline-flex items-center">
-                                        <input type="radio" class="form-radio h-20 w-20" name="radio-sizes" value="" checked>
+                                        <input type="radio" class="form-radio h-5 w-5" name="radio-sizes" value="" checked>
                                         <div id="body" class="flex flex-col ml-5">
                                             <h4 id="destName" class="text-xl font-semibold">Jonathan Liandi</h4>
                                             <p id="destPhone" class="text-gray-800">081298429811</p>
@@ -75,7 +75,7 @@
                             <div class="flex justify-between px-4">
                                 <div id="header" class="flex">
                                     <label class="inline-flex items-center">
-                                        <input type="radio" class="form-radio h-20 w-20" name="radio-sizes" value="">
+                                        <input type="radio" class="form-radio h-5 w-5" name="radio-sizes" value="">
                                         <div id="body" class="flex flex-col ml-5">
                                             <h4 id="destName" class="text-xl font-semibold">Adam</h4>
                                             <p id="destPhone" class="text-gray-800">082308239123</p>

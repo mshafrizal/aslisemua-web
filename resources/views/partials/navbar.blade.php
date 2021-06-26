@@ -5,8 +5,7 @@
         <div id="center">
             <h1 id="logo" class="font-bold font-serif text-center text-2xl leading-normal">ASLISEMUA</h1>
         </div>
-        <div id="right">
-            blank
+        <div id="right3" class="flex flex-row justify-between text-right flex-grow w-24">
         </div>
     </div> -->
     <nav id="header" class="w-full z-30 top-0 py-1">
