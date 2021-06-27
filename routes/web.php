@@ -7,6 +7,10 @@ use App\Http\Controllers\HomeController;
 
 Route::get('/', [HomeController::class, 'getData']);
 
+// Route::get('/', function () {
+//   return view('checkout');
+// });
+
 Route::prefix('profile')->group(function () {
   Route::get('/personal-info', function () {
     return view('profile.personal-info');
@@ -52,6 +56,18 @@ Route::get('/sign-up', function () {
 Route::get('/categories', function() {
   return view('categories/index');
 })->name('categories');
+
+Route::get('/cart', function() {
+  return view('cart/cart');
+})->name('cart');
+
+Route::get('/orderplaced', function() {
+  return view('orderplaced/orderPlaced');
+})->name('orderPlaced');
+
+Route::get('/checkout', function() {
+  return view('checkout/checkout');
+})->name('checkout');
 
 // Verify Account
 Route::get('/registration/verify-account/{id}', [CustomersController::class, 'sendTokenAccount']);
