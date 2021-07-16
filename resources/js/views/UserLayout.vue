@@ -1,6 +1,10 @@
 <template>
   <v-app id="user">
-    <v-container>
+    <v-snackbar top v-if="snackbar" v-model="snackbar.value" :color="snackbar.type">
+      {{snackbar ? snackbar.message : '-'}}
+    </v-snackbar>
+
+    <v-container v-if="$route.meta.navbar">
       <v-row>
         <v-col></v-col>
         <v-col>
@@ -20,8 +24,17 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
-  name: "UserLayout"
+  name: "UserLayout",
+  computed: {
+    ...mapGetters([
+      'getSnackbar'
+    ]),
+    snackbar () {
+      return this.$store.getters.getSnackbar
+    }
+  }
 }
 </script>
 
