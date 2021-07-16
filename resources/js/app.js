@@ -1,45 +1,48 @@
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-
-
 require('./bootstrap');
-// require('../../public/js/slick/slick.min')
-// const Handlebars = require("handlebars");
 
-const userMenuButton = document.getElementById('user-menu');
-const userMenuDropdown = document.getElementById('user-menu-list');
-const signOutButton = document.getElementById('sign-out-button');
+window.Vue = require('vue').default;
+import Vuetify from 'vuetify';
+import Vuex from 'vuex';
+import VCurrencyField from "v-currency-field";
 
-if (userMenuButton && userMenuDropdown) {
-    userMenuButton.addEventListener('click', () => {
-        if (userMenuDropdown.classList.contains('hidden')) userMenuDropdown.classList.replace('hidden', 'block');
-        else userMenuDropdown.classList.replace('block', 'hidden');
-    });
-}
+import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
+// don't forget to import CSS styles
+import 'tiptap-vuetify/dist/main.css'
 
-if (signOutButton) {
-    signOutButton.addEventListener('click', function () {
-        localStorage.setItem('google_id', '');
-        localStorage.setItem('gender', '');
-        localStorage.setItem('district', '');
-        localStorage.setItem('email_verified_at', '');
-        localStorage.setItem('id', '');
-        localStorage.setItem('address', '');
-        localStorage.setItem('status', '');
-        localStorage.setItem('level', '');
-        localStorage.setItem('city', '');
-        localStorage.setItem('name', '');
-        localStorage.setItem('is_verified', '');
-        localStorage.setItem('created_at', '');
-        localStorage.setItem('updated_at', '');
-        localStorage.setItem('postal_code', '');
-        localStorage.setItem('phone_number', '');
-        localStorage.setItem('is_first_time', '');
-        localStorage.setItem('email', '');
-        localStorage.setItem('token', '');
-        window.location.href = '/sign-in'
-    });
-}
+// Vuetify's CSS styles
+import 'vuetify/dist/vuetify.min.css'
+import '@mdi/font/css/materialdesignicons.css'
+const vuetify = new Vuetify()
+
+Vue.use(Vuetify);
+Vue.use(VCurrencyField, {
+  locale: 'id-ID',
+  decimalLength: 0,
+  autoDecimalMode: false,
+  min: null,
+  max: null,
+  defaultValue: 0,
+  valueAsInteger: true,
+  allowNegative: true
+})
+Vue.use(Vuex);
+Vue.use(TiptapVuetifyPlugin, {
+  vuetify, iconsGroup: 'md'
+})
+Vue.prototype.$axios = axios
+
+import store from './store/index'
+import App from './App.vue'
+import router from "./router"
+/**
+ * Next, we will create a fresh Vue application instance and attach it to
+ * the page. Then, you may begin adding components to this application
+ * or customize the JavaScript scaffolding to fit your unique needs.
+ */
+const app = new Vue({
+  el: '#userApp',
+  router,
+  store,
+  vuetify,
+  render: h => h(App)
+});

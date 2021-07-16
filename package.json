@@ -12,6 +12,7 @@
     "devDependencies": {
         "autoprefixer": "^10.2.4",
         "bootstrap": "^4.0.0",
+        "deepmerge": "^4.2.2",
         "jquery": "^3.2",
         "laravel-mix": "^6.0.19",
         "lodash": "^4.17.21",
@@ -26,6 +27,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "@mdi/font": "^5.9.55",
         "@splidejs/splide": "^2.4.21",
         "axios": "^0.21.1",
         "handlebars": "^4.7.7",
