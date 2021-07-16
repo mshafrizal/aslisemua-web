@@ -47,6 +47,7 @@ html {
   max-width: 150px;
   min-width: 90px;
   margin-bottom: 16px;
+  overflow: hidden;
 }
 
 .thumbnail-img {
