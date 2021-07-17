@@ -1,11 +1,10 @@
 <template>
-  <router-view />
+  <div>REGISTER</div>
 </template>
 
 <script>
-
 export default {
-  name: 'App',
+  name: "Register"
 }
 </script>
 

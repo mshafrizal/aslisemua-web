@@ -5,7 +5,7 @@ use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\HomeController;
 
-Route::get('/', [HomeController::class, 'getData']);
+Route::get('/{any?}', \App\Http\Controllers\PagesController::class)->where('any','.*');
 
 // Route::get('/', function () {
 //   return view('checkout');
@@ -38,8 +38,13 @@ Route::prefix('shop')->group(function () {
   Route::get('/{category_slug}', [\App\Http\Controllers\ShopController::class, 'shopByMainCategory']);
 });
 
-Route::prefix('product')->group(function () {
-  Route::get('/{product_id}/detail', [\App\Http\Controllers\ProductController::class, 'demoGetProduct']);
+//Route::prefix('products')->group(function () {
+//  Route::get('/{slug}', function () {
+//    return view('product.product-detail');
+//  });
+//});
+Route::get('/products', function () {
+  return view('product.product-detail');
 });
 
 // End Demo route
@@ -89,7 +94,7 @@ Route::get('modules/google/callback', [GoogleController::class, 'handleGoogleCal
 
 // ADMIN
 // ===============
-
-Route::prefix('admin')->group(function () {
-  Route::get('/{any?}', App\Http\Controllers\AdminPagesController::class)->where('any','.*');
-});
+//
+//Route::prefix('admin')->group(function () {
+//  Route::get('/{any?}', App\Http\Controllers\AdminPagesController::class)->where('any','.*');
+//});
