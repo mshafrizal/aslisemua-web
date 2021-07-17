@@ -14,7 +14,8 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    public function fetchCategories(Request $request) {
+    public function fetchCategories(Request $request)
+    {
         try {
             $data = [
                 'status' => 200,
@@ -23,7 +24,7 @@ class CategoryController extends Controller
             $categories = [];
             if ($request && $request->limit) $categories = CategoryModel::paginate($request->limit);
             else $categories = CategoryModel::paginate();
-            
+
             if (!$categories) return response()->json([
                 'status' => 200,
                 'message' => 'No Data found',
@@ -40,7 +41,8 @@ class CategoryController extends Controller
         }
     }
 
-    public function fetchCategory($id) {
+    public function fetchCategory($id)
+    {
         try {
             $categoryExisting = CategoryModel::find($id);
             if (empty($categoryExisting) || !$categoryExisting) return response()->json([
@@ -63,11 +65,12 @@ class CategoryController extends Controller
         }
     }
 
-    public function createCategory(Request $request) {
+    public function createCategory(Request $request)
+    {
         try {
             $user = Auth::user();
             $name = $request->name;
-            $newFileName = 'CATEGORY-' . $name . '-' . time() . '.' .$request->file->extension();
+            $newFileName = 'CATEGORY-' . $name . '-' . time() . '.' . $request->file->extension();
             $createdBy = 'Pandhu Wibowo';
             $updatedBy = 'Pandhu Wibowo';
             $createdAt = Carbon::now();
@@ -76,6 +79,7 @@ class CategoryController extends Controller
             $description = $request->description;
             $parent = $request->parent;
             $newCategory = (object)[];
+            $isNavbar = $request->is_navbar;
 
             $newCategory = new CategoryModel([
                 'id' => Str::uuid(),
@@ -88,7 +92,8 @@ class CategoryController extends Controller
                 'is_published' => 1,
                 'created_by' => $createdBy,
                 'updated_by' => $updatedBy,
-                'slug' => Str::slug($name) . '-' . time()
+                'slug' => Str::slug($name) . '-' . time(),
+                'is_navbar' => $isNavbar
             ]);
 
             if ($newCategory->save()) return response()->json([
@@ -114,7 +119,8 @@ class CategoryController extends Controller
         }
     }
 
-    public function updateCategory($category_id, Request $request) {
+    public function updateCategory($category_id, Request $request)
+    {
         try {
             if ($category_id === null || !$category_id) return response()->json([
                 'status' => 400,
@@ -125,12 +131,13 @@ class CategoryController extends Controller
             $user = Auth::user();
             $updatedBy = $user->name;
             $name = $request->name;
-            $newFileName = 'CATEGORY-' . $name . '-' . time() . '.' .$request->file->extension();
+            $newFileName = 'CATEGORY-' . $name . '-' . time() . '.' . $request->file->extension();
             $updatedAt = Carbon::now();
             $filePath = $request->file('file')->storeAs('categories', $newFileName, 'public');
             $description = $request->description;
             $parents = $request->parent;
             $categoryExisting = (object)[];
+            $isNavbar = $request->is_navbar;
 
             $categoryExisting = CategoryModel::find($category_id);
             if (!$categoryExisting) return response()->json([
@@ -148,6 +155,7 @@ class CategoryController extends Controller
             $categoryExisting->file_path = $filePath;
             $categoryExisting->parent = $parents;
             $categoryExisting->slug = Str::slug($name) . '-' . time();
+            $categoryExisting->is_navbar = $isNavbar;
 
             if ($categoryExisting->save()) {
                 $oldFileName = '';
@@ -180,7 +188,8 @@ class CategoryController extends Controller
         }
     }
 
-    function bulkDelete(Request $request) {
+    function bulkDelete(Request $request)
+    {
         try {
             $array = [];
             $error = [];
@@ -220,7 +229,8 @@ class CategoryController extends Controller
         }
     }
 
-    public function deleteCategory($category_id = null) {
+    public function deleteCategory($category_id = null)
+    {
         try {
             if ($category_id === null || !$category_id) return response()->json([
                 'status' => 400,
@@ -241,7 +251,7 @@ class CategoryController extends Controller
 
             $categoryPrefix = 'categories/';
             $prefixLength = strlen($categoryPrefix);
-            
+
             if ($categoryExisting->delete()) {
                 $oldFileName = '';
                 if (substr($oldFilePath, 0, $prefixLength) === $categoryPrefix) {
@@ -254,7 +264,6 @@ class CategoryController extends Controller
                     'message' => $name . ' successfully deleted'
                 ], 200);
             }
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
@@ -264,7 +273,8 @@ class CategoryController extends Controller
         }
     }
 
-    public function updateStatus($category_id, Request $request) {
+    public function updateStatus($category_id, Request $request)
+    {
         try {
             if ($category_id === null || !$category_id) return response()->json([
                 'status' => 400,
@@ -290,7 +300,6 @@ class CategoryController extends Controller
                 'status' => 400,
                 'message' => $categoryExisting->name . 'status totally failed'
             ], 400);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
@@ -300,7 +309,8 @@ class CategoryController extends Controller
         }
     }
 
-    private function unlinkImage ($fileName) {
+    private function unlinkImage($fileName)
+    {
         Storage::delete('/public/categories/' . $fileName);
     }
 }

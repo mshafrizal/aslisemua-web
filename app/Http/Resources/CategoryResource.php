@@ -25,7 +25,8 @@ class CategoryResource extends JsonResource
             'updated_by' => $this->updated_by,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'slug' => $this->slug
+            'slug' => $this->slug,
+            'is_navbar' => $this->is_navbar
         ];
     }
 }

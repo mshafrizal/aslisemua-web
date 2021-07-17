@@ -14,17 +14,18 @@ class CategoryModel extends Model
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $fillable = [
-        'id', 
-        'name', 
-        'description', 
-        'created_by', 
-        'updated_by', 
-        'created_at', 
-        'updated_at', 
+        'id',
+        'name',
+        'description',
+        'created_by',
+        'updated_by',
+        'created_at',
+        'updated_at',
         'file_path',
         'parent',
         'is_published',
-        'slug'
+        'slug',
+        'is_navbar'
     ];
 
     /**
