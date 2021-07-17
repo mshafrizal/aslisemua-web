@@ -30,11 +30,12 @@ import ProductDetail from "../views/admin/product/ProductDetail";
 import UserLayout from "../views/UserLayout";
 
 import Homepage from "../views/user/Homepage";
+import Login from "../views/user/Login";
+import Register from "../views/user/Register";
 const routes = [
   {
     path: '/admin',
     component: AdminLayout,
-    name: 'admin',
     meta: { requiresAuth: false },
     children: [
       {
@@ -93,7 +94,19 @@ const routes = [
         path: '',
         component: Homepage,
         name: 'Homepage',
-        meta: { requiresAuth: false }
+        meta: { requiresAuth: false, navbar: true }
+      },
+      {
+        path: '/login',
+        component: Login,
+        name: 'LoginUser',
+        meta: { requiresAuth: false, navbar: false }
+      },
+      {
+        path: '/register',
+        component: Register,
+        name: 'RegisterUser',
+        meta: { requiresAuth: false, navbar: false }
       }
     ]
   }

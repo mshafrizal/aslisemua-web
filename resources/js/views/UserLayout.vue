@@ -1,18 +1,10 @@
 <template>
   <v-app id="user">
-    <v-container>
-      <v-row>
-        <v-col></v-col>
-        <v-col>
-          <h1 class="text-center logo">ASLISEMUA</h1>
-        </v-col>
-        <v-col class="d-flex justify-end">
-          <v-btn icon><v-icon>mdi-heart-outline</v-icon></v-btn>
-          <v-btn icon><v-icon>mdi-cart-outline</v-icon></v-btn>
-          <v-btn icon><v-icon>mdi-account-outline</v-icon></v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
+    <v-snackbar top v-if="snackbar" v-model="snackbar.value" :color="snackbar.type">
+      {{snackbar ? snackbar.message : '-'}}
+    </v-snackbar>
+    <user-navigation />
+    <v-divider />
     <v-main>
       <router-view />
     </v-main>
@@ -20,13 +12,21 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import UserNavigation from "../components/shared/UserNavigation";
 export default {
-  name: "UserLayout"
+  name: "UserLayout",
+  components: {UserNavigation},
+  computed: {
+    ...mapGetters([
+      'getSnackbar'
+    ]),
+    snackbar () {
+      return this.$store.getters.getSnackbar
+    }
+  }
 }
 </script>
 
 <style scoped>
-  .logo {
-    font-size: 2.5rem;
-  }
 </style>
