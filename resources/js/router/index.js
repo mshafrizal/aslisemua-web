@@ -32,6 +32,7 @@ import UserLayout from "../views/UserLayout";
 import Homepage from "../views/user/Homepage";
 import Login from "../views/user/Login";
 import Register from "../views/user/Register";
+import ForgotPassword from "../views/user/ForgotPassword";
 const routes = [
   {
     path: '/admin',
@@ -106,6 +107,12 @@ const routes = [
         path: '/register',
         component: Register,
         name: 'RegisterUser',
+        meta: { requiresAuth: false, navbar: false }
+      },
+      {
+        path: '/forgot-password',
+        component: ForgotPassword,
+        name: 'ForgotPassword',
         meta: { requiresAuth: false, navbar: false }
       }
     ]
