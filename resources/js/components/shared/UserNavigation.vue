@@ -22,6 +22,8 @@
             <v-list-item
               v-for="(item, index) in computedMenu"
               :key="index"
+              :link="item.link"
+              @click="handleFunction(item.method)"
             >
               <v-list-item-title>{{ item.title }}</v-list-item-title>
             </v-list-item>
@@ -47,10 +49,11 @@ export default {
    data: function () {
      return {
        userMenus: [
-         {title: 'Login', link: '/login', requiresAuth: false},
-         {title: 'Register', link: '/register', requiresAuth: false},
-         {title: 'Profile', link: '/profile', requiresAuth: true},
-         {title: 'Transactions', link: '/profile/transaction-history', requiresAuth: true}
+         {title: 'Login', link: '/login', requiresAuth: false, method: null},
+         {title: 'Register', link: '/register', requiresAuth: false, method: null},
+         {title: 'Profile', link: '/profile', requiresAuth: true, method: null},
+         {title: 'Transactions', link: '/profile/transaction-history', requiresAuth: true, method: null},
+         {title: 'Logout', link: null, requiresAuth: true, method: `$store.dispatch('auth/authLogout')`}
        ]
      }
    },
@@ -61,6 +64,12 @@ export default {
       } else {
         return this.userMenus.filter(menu => !menu.requiresAuth)
       }
+    }
+  },
+  methods: {
+    handleFunction (function_name) {
+      if (!function_name) return
+      this[function_name]()
     }
   }
 }
