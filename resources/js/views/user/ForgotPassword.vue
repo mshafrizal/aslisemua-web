@@ -16,6 +16,7 @@
         <v-col cols="12" class="d-flex flex-col justify-center items-center" v-else>
           <h1 class="text-3xl text-center">Success!</h1>
           <p class="text-center mt-3">Reset password link has been sent to your email.</p>
+          <v-btn link to="/" color="black" text>Back to Home</v-btn>
         </v-col>
       </transition>
     </v-row>

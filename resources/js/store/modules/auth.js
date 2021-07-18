@@ -19,6 +19,9 @@ const mutations = {
       localStorage.setItem(key, user[key])
     })
   },
+  setIsLoggedIn (state, payload) {
+    state.isLoggedIn = payload
+  },
   removeAuth (state) {
     state.user = null
     localStorage.clear()
@@ -30,6 +33,7 @@ const actions = {
     return axios.post('/api/v1/sign-in/authenticate', payload).then(async (response) => {
       if (response.status === 200) {
         await commit('setAuth', response.data.data)
+        await commit('setIsLoggedIn', true)
       }
       return response.data
     }).catch(error => {
@@ -39,6 +43,7 @@ const actions = {
   authLogout ({commit}) {
     // commit('setIsLoggedIn', false)
     commit('removeAuth')
+    commit('setIsLoggedIn', false)
   }
 }
 

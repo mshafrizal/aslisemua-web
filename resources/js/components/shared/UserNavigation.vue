@@ -22,7 +22,8 @@
             <v-list-item
               v-for="(item, index) in computedMenu"
               :key="index"
-              :link="item.link"
+              :link="item.link !== null ? true : false"
+              :to="item.link !== null ? item.link : '#'"
               @click="handleFunction(item.method)"
             >
               <v-list-item-title>{{ item.title }}</v-list-item-title>
@@ -59,7 +60,7 @@ export default {
    },
   computed: {
     computedMenu () {
-      if (this.$store.getters['auth/authLoggedIn']) {
+      if (this.$store.getters['auth/authLoggedIn'] === true) {
         return this.userMenus.filter(menu => menu.requiresAuth)
       } else {
         return this.userMenus.filter(menu => !menu.requiresAuth)
