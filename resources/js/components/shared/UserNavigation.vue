@@ -54,7 +54,7 @@ export default {
          {title: 'Register', link: '/register', requiresAuth: false, method: null},
          {title: 'Profile', link: '/profile', requiresAuth: true, method: null},
          {title: 'Transactions', link: '/profile/transaction-history', requiresAuth: true, method: null},
-         {title: 'Logout', link: null, requiresAuth: true, method: `$store.dispatch('auth/authLogout')`}
+         {title: 'Logout', link: null, requiresAuth: true, method: `logout`}
        ]
      }
    },
@@ -71,6 +71,9 @@ export default {
     handleFunction (function_name) {
       if (!function_name) return
       this[function_name]()
+    },
+    logout () {
+      this.$store.dispatch('auth/authLogout')
     }
   }
 }

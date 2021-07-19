@@ -44,5 +44,8 @@ const app = new Vue({
   router,
   store,
   vuetify,
+  beforeCreate() {
+    this.$store.commit('auth/initializeAuthStore')
+  },
   render: h => h(App)
 });

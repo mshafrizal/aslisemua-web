@@ -1,11 +1,11 @@
 const state = () => ({
-  isLoggedIn: typeof localStorage.getItem('email') === 'string',
-  user: null
+  isLoggedIn: false
 })
 
 const getters = {
   authUserInfo: (state, getters, rootState) => {
-    return state.user
+    if (localStorage.getItem('token') !== null) return localStorage.getItem('user')
+    else return null
   },
   authLoggedIn: (state, getters, rootState) => {
     return state.isLoggedIn
@@ -14,17 +14,20 @@ const getters = {
 
 const mutations = {
   setAuth (state, user) {
-    state.user = user
-    Object.keys(user).forEach(key => {
-      localStorage.setItem(key, user[key])
-    })
+    localStorage.setItem('token', user.token)
+    localStorage.setItem('user', JSON.stringify(user))
   },
   setIsLoggedIn (state, payload) {
-    state.isLoggedIn = payload
+    state.isLoggedIn = localStorage.getItem('token') !== null
   },
   removeAuth (state) {
-    state.user = null
+    state.isLoggedIn = false
     localStorage.clear()
+  },
+  initializeAuthStore (state) {
+    if (localStorage.getItem('token')) {
+      state.isLoggedIn = true
+    }
   }
 }
 
@@ -33,7 +36,7 @@ const actions = {
     return axios.post('/api/v1/sign-in/authenticate', payload).then(async (response) => {
       if (response.status === 200) {
         await commit('setAuth', response.data.data)
-        await commit('setIsLoggedIn', true)
+        await commit('setIsLoggedIn')
       }
       return response.data
     }).catch(error => {
@@ -41,9 +44,8 @@ const actions = {
     })
   },
   authLogout ({commit}) {
-    // commit('setIsLoggedIn', false)
     commit('removeAuth')
-    commit('setIsLoggedIn', false)
+    commit('setIsLoggedIn')
   }
 }
 
