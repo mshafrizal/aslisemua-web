@@ -33,6 +33,8 @@ import Homepage from "../views/user/Homepage";
 import Login from "../views/user/Login";
 import Register from "../views/user/Register";
 import ForgotPassword from "../views/user/ForgotPassword";
+import IndexProfile from "../views/user/profile/IndexProfile";
+import PersonalInfo from "../views/user/profile/PersonalInfo";
 const routes = [
   {
     path: '/admin',
@@ -114,6 +116,11 @@ const routes = [
         component: ForgotPassword,
         name: 'ForgotPassword',
         meta: { requiresAuth: false, navbar: false }
+      },
+      {
+        path: '/profile',
+        component: IndexProfile,
+        meta: { requiresAuth: true, navbar: true }
       }
     ]
   }
@@ -126,9 +133,8 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    console.log(store.getters["auth/authLoggedIn"])
-    if (!store.getters["auth/authLoggedIn"]) {
-      next('/admin/signin')
+    if (!localStorage.getItem('token')) {
+      next('/login')
     } else {
       next()
     }
