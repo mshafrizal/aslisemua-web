@@ -1,6 +1,6 @@
 <template>
   <v-form v-model="valid" ref="loginForm" lazy-validation style="max-width: 400px; width: 100%">
-    <v-sheet class="d-flex flex-column" max-width="400px" width="100%">
+    <v-sheet class="d-flex flex-column pa-4" max-width="400px" width="100%">
       <h1 class="text-3xl text-center mb-10">Welcome Back</h1>
       <div>Email</div>
       <v-text-field
