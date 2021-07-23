@@ -32,7 +32,7 @@ const mutations = {
 }
 
 const actions = {
-  async authLogin ({commit, state}, payload) {
+  async authLogin ({commit, state, dispatch}, payload) {
     return axios.post('/api/v1/sign-in/authenticate', payload).then(async (response) => {
       if (response.status === 200) {
         await commit('setAuth', response.data.data)
@@ -40,7 +40,23 @@ const actions = {
       }
       return response.data
     }).catch(error => {
-      return error
+      let message = ''
+      if (error.response) {
+        message = error.response.data.message
+      } else if (error.request) {
+        dispatch('showSnackbar', {
+          value: true,
+          message: 'Something went wrong, please contact admin for any help',
+          type: 'error'
+        }, { root: true })
+      } else {
+        message = error.message
+      }
+      dispatch('showSnackbar', {
+        value: true,
+        message: message,
+        type: 'error'
+      }, { root: true })
     })
   },
   authLogout ({commit}) {

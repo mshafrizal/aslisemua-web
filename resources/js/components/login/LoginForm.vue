@@ -52,15 +52,14 @@ export default {
         return false
       }
       this.$store.dispatch('auth/authLogin', { email: this.email, password: this.password }).then(result => {
-        if (result.status === 200) {
+        console.log('login', result)
+        if (result && result.status === 200) {
           this.$store.dispatch('showSnackbar', {
             value: true,
             message: result.message,
             type: 'success'
           })
           this.$router.push({name: 'Homepage'})
-        } else {
-          throw new Error(result.message)
         }
       }).catch(error => {
         this.$store.dispatch('showSnackbar', {
