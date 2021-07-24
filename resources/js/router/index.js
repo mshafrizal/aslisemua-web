@@ -35,6 +35,8 @@ import Register from "../views/user/Register";
 import ForgotPassword from "../views/user/ForgotPassword";
 import IndexProfile from "../views/user/profile/IndexProfile";
 import PersonalInfo from "../views/user/profile/PersonalInfo";
+import ShopLayout from "../views/user/shop/ShopLayout";
+import NewArrivals from "../views/user/shop/NewArrivals";
 const routes = [
   {
     path: '/admin',
@@ -121,6 +123,12 @@ const routes = [
         path: '/profile',
         component: IndexProfile,
         meta: { requiresAuth: true, navbar: true }
+      },
+      {
+        path: '/new-arrivals',
+        component: NewArrivals,
+        name: 'NewArrivals',
+        meta: { requiresAuth: false, navbar: true }
       }
     ]
   }
