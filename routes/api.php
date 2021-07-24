@@ -99,8 +99,8 @@ Route::prefix('v1')->group(function () {
 
         // Users
         Route::prefix('public')->group(function () {
-            Route::middleware('modules:api')->get('/detail/{slug}', [ProductController::class, 'getProductBySlug']);
-            Route::middleware('modules:api')->get(
+            Route::get('/detail/{slug}', [ProductController::class, 'getProductBySlug']);
+            Route::get(
                 '/main',
                 [ProductController::class, 'getPublicProducts']
             );
@@ -112,9 +112,8 @@ Route::prefix('v1')->group(function () {
      * Banners
      * ==============================
      */
-    Route::prefix('banners')->group(function() {
-        Route::prefix('carousel')->group(function() {
-
+    Route::prefix('banners')->group(function () {
+        Route::prefix('carousel')->group(function () {
         });
     });
 
@@ -123,7 +122,7 @@ Route::prefix('v1')->group(function () {
      * Payment Methods
      * ==============================
      */
-    Route::prefix('payment-methods')->group(function() {
+    Route::prefix('payment-methods')->group(function () {
         Route::middleware('modules:api')->get('/', [PaymentMethodController::class, 'getPaymentMethods']);
         Route::middleware('modules:api')->delete('/{id}', [PaymentMethodController::class, 'deletePaymentMethod']);
         Route::middleware('modules:api')->post('/', [PaymentMethodController::class, 'createPaymentMethod']);
