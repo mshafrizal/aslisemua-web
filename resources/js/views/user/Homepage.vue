@@ -57,11 +57,6 @@ export default {
       ],
       isDisplayed: false
     }
-  },
-  created() {
-    if (!localStorage.getItem('token')) {
-      this.isDisplayed = true
-    }
   }
 }
 </script>
