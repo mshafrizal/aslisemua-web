@@ -1,11 +1,11 @@
 <template>
-  <div class="product">
-    <img src="/images/product-1.jpg" alt="" class="product__img">
+  <div class="product" v-if="product">
+    <img :src="resolveImagePath(product.products_images[0].image_path)" alt="" class="product__img">
     <div class="product__info">
-      <h1 class="text-uppercase font-weight-bold text-lg black--text">NIKE</h1>
-      <p class="black--text mt-0 mb-1">Air Jordan</p>
-      <p class="black--text mt-0 mb-1">Size: 42</p>
-      <p class="text-yellow-500 mt-0 mb-1">Rp 3.250.000</p>
+      <h1 class="text-uppercase font-weight-bold text-lg black--text">{{product.brand.name}}</h1>
+      <p class="black--text mt-0 mb-1">{{product.name}}</p>
+      <p class="black--text mt-0 mb-1">Size: {{product.size || '-'}}</p>
+      <p class="text-yellow-500 mt-0 mb-1">Rp {{product.final_price.toLocaleString()}}</p>
     </div>
   </div>
 </template>
@@ -20,12 +20,31 @@ export default {
       required: true
     }
   },
-  mounted() {
-    // console.log(this.product)
+  methods: {
+    resolveImagePath (path) {
+      return '/storage/' + path
+    }
   }
 }
 </script>
 
 <style scoped>
 
+.product {
+  display: flex;
+  flex-direction: column;
+}
+.product:hover {
+  cursor: pointer
+}
+.product__img {
+  aspect-ratio: 2/3;
+  /*width: 100%;*/
+  height: auto;
+  object-fit: cover;
+}
+.product__info {
+  margin-top: 16px;
+  text-align: center;
+}
 </style>
