@@ -37,6 +37,7 @@ import IndexProfile from "../views/user/profile/IndexProfile";
 import PersonalInfo from "../views/user/profile/PersonalInfo";
 import ShopLayout from "../views/user/shop/ShopLayout";
 import NewArrivals from "../views/user/shop/NewArrivals";
+import UserProductDetail from "../views/user/product/UserProductDetail";
 const routes = [
   {
     path: '/admin',
@@ -44,49 +45,49 @@ const routes = [
     meta: { requiresAuth: false },
     children: [
       {
-        path: '/signin', name: 'sign-in', component: SignIn, meta: { requiresAuth: false }
+        path: 'signin', name: 'sign-in', component: SignIn, meta: { requiresAuth: false }
       },
       {
-        path: '/', name: 'dashboard', component: Dashboard, meta: { requiresAuth: true }
+        path: '', name: 'dashboard', component: Dashboard, meta: { requiresAuth: true }
       },
       {
-        path: '/customer/list', name: 'customer-list', component: CustomerList, meta: { requiresAuth: true }
+        path: 'customer/list', name: 'customer-list', component: CustomerList, meta: { requiresAuth: true }
       },
       {
-        path: '/customer/:id/detail', name: 'customer-detail', component: CustomerDetail, meta: { requiresAuth: true }
+        path: 'customer/:id/detail', name: 'customer-detail', component: CustomerDetail, meta: { requiresAuth: true }
       },
       {
-        path: '/customer/:id/edit', name: 'customer-edit', component: CustomerDetail, meta: { requiresAuth: true }
+        path: 'customer/:id/edit', name: 'customer-edit', component: CustomerDetail, meta: { requiresAuth: true }
       },
       {
-        path: '/brand/list', name: 'brand-list', component: BrandList, meta: { requiresAuth: true }
+        path: 'brand/list', name: 'brand-list', component: BrandList, meta: { requiresAuth: true }
       },
       {
-        path: '/brand/create', name: 'brand-create', component: BrandCreate, meta: { requiresAuth: true }
+        path: 'brand/create', name: 'brand-create', component: BrandCreate, meta: { requiresAuth: true }
       },
       {
-        path: '/brand/:id/detail', name: 'brand-detail', component: BrandCreate, meta: { requiresAuth: true }
+        path: 'brand/:id/detail', name: 'brand-detail', component: BrandCreate, meta: { requiresAuth: true }
       },
       {
-        path: '/brand/:id/edit', name: 'brand-edit', component: BrandCreate, meta: { requiresAuth: true }
+        path: 'brand/:id/edit', name: 'brand-edit', component: BrandCreate, meta: { requiresAuth: true }
       },
       {
-        path: '/category/list', name: 'category-list', component: CategoryList, meta: { requiresAuth: true }
+        path: 'category/list', name: 'category-list', component: CategoryList, meta: { requiresAuth: true }
       },
       {
-        path: '/category/create', name: 'category-create', component: CategoryCreate, meta: { requiresAuth: true }
+        path: 'category/create', name: 'category-create', component: CategoryCreate, meta: { requiresAuth: true }
       },
       {
-        path: '/category/:id/edit', name: 'category-edit', component: CategoryEdit, meta: { requiresAuth: true }
+        path: 'category/:id/edit', name: 'category-edit', component: CategoryEdit, meta: { requiresAuth: true }
       },
       {
-        path: '/product/list', name: 'product-list', component: ProductList, meta: { requiresAuth: true }
+        path: 'product/list', name: 'product-list', component: ProductList, meta: { requiresAuth: true }
       },
       {
-        path: '/product/create', name: 'product-create', component: ProductCreate, meta: { requiresAuth: true }
+        path: 'product/create', name: 'product-create', component: ProductCreate, meta: { requiresAuth: true }
       },
       {
-        path: '/product/:id/detail', name: 'product-detail', component: ProductDetail, meta: { requiresAuth: true }
+        path: 'product/:id/detail', name: 'product-detail', component: ProductDetail, meta: { requiresAuth: true }
       },
     ]
   },
@@ -128,6 +129,12 @@ const routes = [
         path: '/new-arrivals',
         component: NewArrivals,
         name: 'NewArrivals',
+        meta: { requiresAuth: false, navbar: true }
+      },
+      {
+        path: '/product/:slug',
+        component: UserProductDetail,
+        name: 'UserProductDetail',
         meta: { requiresAuth: false, navbar: true }
       }
     ]
