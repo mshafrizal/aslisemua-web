@@ -5,7 +5,7 @@
         <v-row>
           <v-col cols="12" sm="2">
             <template v-for="image in product.product_image">
-              <v-img @click="selectImage(image)" :src="resolveImagePath(image.image_path)" class="mb-5"" :key="image.id"/>
+              <v-img @click="selectImage(image)" :src="resolveImagePath(image.image_path)" class="mb-5" :key="image.id"/>
             </template>
           </v-col>
           <v-col cols="12" sm="10" class="d-flex items-start justify-center">
