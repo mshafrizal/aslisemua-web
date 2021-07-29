@@ -1,5 +1,5 @@
 <template>
-  <div class="product" v-if="product">
+  <router-link :to="`/product/${product.slug}`" class="product" v-if="product">
     <img :src="resolveImagePath(product.products_images[0].image_path)" alt="" class="product__img">
     <div class="product__info">
       <h1 class="text-uppercase font-weight-bold text-lg black--text">{{product.brand.name}}</h1>
@@ -7,7 +7,7 @@
       <p class="black--text mt-0 mb-1">Size: {{product.size || '-'}}</p>
       <p class="text-yellow-500 mt-0 mb-1">Rp {{product.final_price.toLocaleString()}}</p>
     </div>
-  </div>
+  </router-link>
 </template>
 
 <script>
