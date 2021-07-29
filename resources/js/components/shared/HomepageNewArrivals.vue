@@ -1,10 +1,10 @@
 <template>
-  <section>
+  <section class="mb-10">
     <h1 v-if="products" class="text-3xl text-center mt-20">NEW ARRIVALS</h1>
     <swiper  ref="mySwiper" :options="swiperOptions">
       <template v-if="products">
-        <swiper-slide v-for="product in products.data" :key="product.id">
-          <product-item :product="product" />
+        <swiper-slide v-for="product in products.data" :key="product.id" >
+          <product-item :product="product"/>
         </swiper-slide>
       </template>
       <div class="swiper-button-prev" slot="button-prev"></div>
