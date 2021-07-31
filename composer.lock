@@ -1832,6 +1832,24 @@
                 "source": "https://github.com/laravel/ui/tree/v3.2.1"
             },
             "time": "2021-04-27T18:17:41+00:00"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        },
+        {
+            "name": "lcobucci/jwt",
+            "version": "3.4.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lcobucci/jwt.git",
+                "reference": "511629a54465e89a31d3d7e4cf0935feab8b14c1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/511629a54465e89a31d3d7e4cf0935feab8b14c1",
+                "reference": "511629a54465e89a31d3d7e4cf0935feab8b14c1",
+=======
+>>>>>>> e8486766e82297a69594ef27ed0af3cadda97d2b
         },
         {
             "name": "lcobucci/clock",
@@ -1906,35 +1924,39 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/lcobucci/jwt/zipball/71cf170102c8371ccd933fa4df6252086d144de6",
                 "reference": "71cf170102c8371ccd933fa4df6252086d144de6",
+>>>>>>> 0acbaa36da04a56ea5f06325c00e31f0b95879cd
                 "shasum": ""
             },
             "require": {
-                "ext-hash": "*",
-                "ext-json": "*",
                 "ext-mbstring": "*",
                 "ext-openssl": "*",
-                "ext-sodium": "*",
-                "lcobucci/clock": "^2.0",
-                "php": "^7.4 || ^8.0"
+                "php": "^5.6 || ^7.0"
             },
             "require-dev": {
-                "infection/infection": "^0.21",
-                "lcobucci/coding-standard": "^6.0",
-                "mikey179/vfsstream": "^1.6.7",
-                "phpbench/phpbench": "^1.0@alpha",
-                "phpstan/extension-installer": "^1.0",
-                "phpstan/phpstan": "^0.12",
-                "phpstan/phpstan-deprecation-rules": "^0.12",
-                "phpstan/phpstan-phpunit": "^0.12",
-                "phpstan/phpstan-strict-rules": "^0.12",
-                "phpunit/php-invoker": "^3.1",
-                "phpunit/phpunit": "^9.5"
+                "mikey179/vfsstream": "~1.5",
+                "phpmd/phpmd": "~2.2",
+                "phpunit/php-invoker": "~1.1",
+                "phpunit/phpunit": "^5.7 || ^7.3",
+                "squizlabs/php_codesniffer": "~2.3"
+            },
+            "suggest": {
+                "lcobucci/clock": "*"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.1-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Lcobucci\\JWT\\": "src"
-                }
+                },
+                "files": [
+                    "compat/class-aliases.php",
+                    "compat/json-exception-polyfill.php",
+                    "compat/lcobucci-clock-polyfill.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -1942,7 +1964,7 @@
             ],
             "authors": [
                 {
-                    "name": "Luís Cobucci",
+                    "name": "Luís Otávio Cobucci Oblonczyk",
                     "email": "lcobucci@gmail.com",
                     "role": "Developer"
                 }
@@ -1954,7 +1976,11 @@
             ],
             "support": {
                 "issues": "https://github.com/lcobucci/jwt/issues",
+<<<<<<< HEAD
+                "source": "https://github.com/lcobucci/jwt/tree/3.4.5"
+=======
                 "source": "https://github.com/lcobucci/jwt/tree/4.1.4"
+>>>>>>> 0acbaa36da04a56ea5f06325c00e31f0b95879cd
             },
             "funding": [
                 {
@@ -1966,7 +1992,11 @@
                     "type": "patreon"
                 }
             ],
+<<<<<<< HEAD
+            "time": "2021-02-16T09:40:01+00:00"
+=======
             "time": "2021-03-23T23:53:08+00:00"
+>>>>>>> 0acbaa36da04a56ea5f06325c00e31f0b95879cd
         },
         {
             "name": "league/commonmark",

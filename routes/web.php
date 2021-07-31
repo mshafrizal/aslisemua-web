@@ -5,7 +5,11 @@ use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\HomeController;
 
-Route::get('/', [HomeController::class, 'getData']);
+Route::get('/{any?}', \App\Http\Controllers\PagesController::class)->where('any','.*');
+
+// Route::get('/', function () {
+//   return view('checkout');
+// });
 
 Route::prefix('profile')->group(function () {
   Route::get('/personal-info', function () {
@@ -34,8 +38,13 @@ Route::prefix('shop')->group(function () {
   Route::get('/{category_slug}', [\App\Http\Controllers\ShopController::class, 'shopByMainCategory']);
 });
 
-Route::prefix('product')->group(function () {
-  Route::get('/{product_id}/detail', [\App\Http\Controllers\ProductController::class, 'demoGetProduct']);
+//Route::prefix('products')->group(function () {
+//  Route::get('/{slug}', function () {
+//    return view('product.product-detail');
+//  });
+//});
+Route::get('/products', function () {
+  return view('product.product-detail');
 });
 
 // End Demo route
@@ -52,6 +61,18 @@ Route::get('/sign-up', function () {
 Route::get('/categories', function() {
   return view('categories/index');
 })->name('categories');
+
+Route::get('/cart', function() {
+  return view('cart/cart');
+})->name('cart');
+
+Route::get('/orderplaced', function() {
+  return view('orderplaced/orderPlaced');
+})->name('orderPlaced');
+
+Route::get('/checkout', function() {
+  return view('checkout/checkout');
+})->name('checkout');
 
 // Verify Account
 Route::get('/registration/verify-account/{id}', [CustomersController::class, 'sendTokenAccount']);
@@ -73,7 +94,7 @@ Route::get('modules/google/callback', [GoogleController::class, 'handleGoogleCal
 
 // ADMIN
 // ===============
-
-Route::prefix('admin')->group(function () {
-  Route::get('/{any?}', App\Http\Controllers\AdminPagesController::class)->where('any','.*');
-});
+//
+//Route::prefix('admin')->group(function () {
+//  Route::get('/{any?}', App\Http\Controllers\AdminPagesController::class)->where('any','.*');
+//});
