@@ -11,7 +11,7 @@
       </v-col>
       <v-col cols="12" md="6" class="bg-signin d-flex justify-center items-stretch">
         <div class="d-flex justify-center items-stretch backdrop w-full">
-          <div class="d-flex flex-column justify-center text-center" style="max-width: 400px">
+          <div class="d-flex flex-column justify-center text-center pa-4" style="max-width: 400px">
             <h1 class="text-3xl mb-10 white--text">New User</h1>
             <p class="text-xl white--text">Create an account to start buying and selling your wardrobe</p>
             <p class="text-xl white--text">Set up your profile, manage your orders, build your wishlist and more.</p>

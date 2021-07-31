@@ -1,11 +1,11 @@
 const state = () => ({
-  isLoggedIn: typeof localStorage.getItem('email') === 'string',
-  user: null
+  isLoggedIn: false
 })
 
 const getters = {
   authUserInfo: (state, getters, rootState) => {
-    return state.user
+    if (localStorage.getItem('token') !== null) return localStorage.getItem('user')
+    else return null
   },
   authLoggedIn: (state, getters, rootState) => {
     return state.isLoggedIn
@@ -14,31 +14,55 @@ const getters = {
 
 const mutations = {
   setAuth (state, user) {
-    state.user = user
-    Object.keys(user).forEach(key => {
-      localStorage.setItem(key, user[key])
-    })
+    localStorage.setItem('token', user.token)
+    localStorage.setItem('user', JSON.stringify(user))
+  },
+  setIsLoggedIn (state, payload) {
+    state.isLoggedIn = localStorage.getItem('token') !== null
   },
   removeAuth (state) {
-    state.user = null
+    state.isLoggedIn = false
     localStorage.clear()
+  },
+  initializeAuthStore (state) {
+    if (localStorage.getItem('token')) {
+      state.isLoggedIn = true
+    }
   }
 }
 
 const actions = {
-  async authLogin ({commit, state}, payload) {
+  async authLogin ({commit, state, dispatch}, payload) {
+    console.log('from', payload.from)
     return axios.post('/api/v1/sign-in/authenticate', payload).then(async (response) => {
       if (response.status === 200) {
         await commit('setAuth', response.data.data)
+        await commit('setIsLoggedIn')
       }
       return response.data
     }).catch(error => {
-      return error
+      let message = ''
+      if (error.response) {
+        message = error.response.data.message
+      } else if (error.request) {
+        dispatch('showSnackbar', {
+          value: true,
+          message: 'Something went wrong, please contact admin for any help',
+          type: 'error'
+        }, { root: true })
+      } else {
+        message = error.message
+      }
+      dispatch('showSnackbar', {
+        value: true,
+        message: message,
+        type: 'error'
+      }, { root: true })
     })
   },
   authLogout ({commit}) {
-    // commit('setIsLoggedIn', false)
     commit('removeAuth')
+    commit('setIsLoggedIn')
   }
 }
 
