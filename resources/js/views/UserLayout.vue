@@ -35,15 +35,17 @@
         </v-container>
       </v-col>
     </v-row>
+    <user-footer />
   </v-app>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import UserNavigation from "../components/shared/UserNavigation";
+import UserFooter from "../components/shared/UserFooter";
 export default {
   name: "UserLayout",
-  components: {UserNavigation},
+  components: {UserFooter, UserNavigation},
   computed: {
     ...mapGetters([
       'getSnackbar'

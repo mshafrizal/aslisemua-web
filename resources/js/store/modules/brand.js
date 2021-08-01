@@ -11,6 +11,11 @@ const actions = {
       return response.data
     }).catch(error => error)
   },
+  fetchBrandsPublic (context, payload) {
+    return axios.get(`${process.env.MIX_APP_URL}/api/v1/brands/public`).then(response => {
+      return response.data
+    }).catch(error => error)
+  },
   fetchBrand (context, payload) {
     return axios.get(`${process.env.MIX_APP_URL}/api/v1/brands/${payload.brand_id}`).then(response => {
       return response.data
