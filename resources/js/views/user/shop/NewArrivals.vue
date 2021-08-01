@@ -64,13 +64,53 @@
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col cols="12" sm="9">
+      <v-col cols="12" sm="9" class="relative">
         <v-row>
+          <v-col cols="12" offset-sm="7" sm="5">
+            <v-toolbar flat>
+              <div>Sort by</div>
+              <v-select
+                :items="orderByOptions"
+                item-key="value"
+                item-text="text"
+                v-model="orderBy"
+                outlined
+                dense
+                single-line
+                hide-details
+                class="ml-2"
+                @change="getProducts"
+              />
+            </v-toolbar>
+          </v-col>
+        </v-row>
+<!--        <v-row>-->
+<!--          <v-col cols="12" sm="3">-->
+<!--            <v-select-->
+<!--              v-model=""-->
+<!--            />-->
+<!--          </v-col>-->
+<!--          <v-col cols="12" sm="3"></v-col>-->
+<!--        </v-row>-->
+        <div v-if="loading" class="loading-progress h-full d-flex items-center justify-center">
+          <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        </div>
+        <v-row v-else>
           <template v-for="product in products.data">
             <v-col cols="6" sm="4" md="3">
               <product-item :product="product" :key="product.id"/>
             </v-col>
           </template>
+        </v-row>
+        <v-row>
+          <v-col cols="12" class="d-flex justify-space-between">
+            <v-btn icon outlined color="black" :disabled="page === 1">
+              <v-icon>mdi-chevron-left</v-icon>
+            </v-btn>
+            <v-btn icon outlined color="black" :disabled="noMoreData">
+              <v-icon>mdi-chevron-right</v-icon>
+            </v-btn>
+          </v-col>
         </v-row>
       </v-col>
     </v-row>
@@ -85,14 +125,24 @@ export default {
   data: function () {
     return {
       categories: null,
+      colorOptions: [],
+      color: '',
       brands: [],
       keyword: '',
-      loading: false,
-      orderBy: null,
+      loading: true,
+      orderBy: '',
+      orderByOptions: [
+        { text: 'Newest First', value: '' },
+        { text: 'Price: Low - High', value: 'asc' },
+        { text: 'Price: High - Low', value: 'desc' }
+      ],
+      page: 1,
       products: null,
       selectedBrand: [],
       selectedCategory: null,
       selectedParent: null,
+      sizeOptions: [],
+      size: '',
       start_price: '',
       end_price: ''
     }
@@ -179,6 +229,12 @@ export default {
         return parent
       }
       return []
+    },
+    noMoreData () {
+      if (this.products) {
+        if (!this.products.links.next) return true
+        else return false
+      }
     }
   }
 }
