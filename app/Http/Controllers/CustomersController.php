@@ -102,8 +102,10 @@ class CustomersController extends Controller
             ];
             $this->CustomersModel->updateUser($id, $dataVerification);
 
-            session()->flash('success_verify','Congratulation! Your account has been verified');
-            return view('signin');
+            return response()->json([
+              'status' => 200,
+              'message' => 'Email verified',
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
