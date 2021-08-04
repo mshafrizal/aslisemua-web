@@ -1,9 +1,10 @@
 <template>
-  <v-form v-model="valid" ref="loginForm" lazy-validation style="max-width: 400px; width: 100%">
-    <v-sheet class="d-flex flex-column" max-width="400px" width="100%">
+  <v-form v-model="valid" @submit.prevent="login" ref="loginForm" lazy-validation style="max-width: 400px; width: 100%">
+    <v-sheet class="d-flex flex-column pa-4" max-width="400px" width="100%">
       <h1 class="text-3xl text-center mb-10">Welcome Back</h1>
       <div>Email</div>
       <v-text-field
+        :dense="dense"
         id="email"
         v-model="email"
         placeholder="your@email.com"
@@ -14,6 +15,7 @@
       <div>Password</div>
       <v-text-field
         id="password"
+        :dense="dense"
         v-model="password"
         placeholder="********"
         outlined
@@ -23,7 +25,7 @@
         @click:append="visible = !visible"
       />
       <!--            <p class="text-caption">Forgot Password? <router-link to="/reset-password"><b>Click here</b></router-link></p>-->
-      <v-btn color="black" class="white--text" type="submit" :loading="loading" @click="login" block>Sign In</v-btn>
+      <v-btn color="black" class="white--text" type="submit" :loading="loading" block>Sign In</v-btn>
     </v-sheet>
   </v-form>
 </template>
@@ -31,6 +33,13 @@
 <script>
 export default {
   name: "LoginForm",
+  props: {
+    dense: {
+      required: false,
+      type: Boolean,
+      default: false
+    }
+  },
   data: function () {
     return {
       email: '',
@@ -41,8 +50,7 @@ export default {
     }
   },
   methods: {
-    async login (event) {
-      event.preventDefault()
+    async login () {
       if (this.email.trim() === '' || this.password.trim() === '') {
         this.$store.dispatch('showSnackbar', {
           value: true,
@@ -51,16 +59,15 @@ export default {
         })
         return false
       }
-      this.$store.dispatch('auth/authLogin', { email: this.email, password: this.password }).then(result => {
-        if (result.status === 200) {
+      this.$store.dispatch('auth/authLogin', { email: this.email, password: this.password, from: 'LoginForm.vue login()' }).then(result => {
+        console.log('login', result)
+        if (result && result.status === 200) {
           this.$store.dispatch('showSnackbar', {
             value: true,
             message: result.message,
             type: 'success'
           })
           this.$router.push({name: 'Homepage'})
-        } else {
-          throw new Error(result.message)
         }
       }).catch(error => {
         this.$store.dispatch('showSnackbar', {

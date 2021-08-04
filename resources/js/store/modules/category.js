@@ -36,8 +36,8 @@ const actions = {
       return response.data
     }).catch(error => error)
   },
-  fetchCategories (context, payload) {
-    return axios.get(`${process.env.MIX_APP_URL}/api/v1/categories/public`).then(response => {
+  fetchCategories (context, query) {
+    return axios.get(`${process.env.MIX_APP_URL}/api/v1/categories/public/${query}`).then(response => {
       return response.data
     }).catch(error => error)
   },

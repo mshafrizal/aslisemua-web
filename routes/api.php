@@ -51,6 +51,7 @@ Route::prefix('v1')->group(function () {
      * ==============================
      */
     Route::prefix('brands')->group(function () {
+        Route::get('/public', [BrandController::class, 'fetchBrandsPublic']);
         Route::middleware('modules:api')->get('/', [BrandController::class, 'fetchBrands']);
         Route::middleware('modules:api')->get('/{id}', [BrandController::class, 'fetchBrand']);
         Route::middleware('modules:api')->post('/', [BrandController::class, 'createBrand']);

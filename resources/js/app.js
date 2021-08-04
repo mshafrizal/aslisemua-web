@@ -4,16 +4,17 @@ window.Vue = require('vue').default;
 import Vuetify from 'vuetify';
 import Vuex from 'vuex';
 import VCurrencyField from "v-currency-field";
-
 import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 // don't forget to import CSS styles
 import 'tiptap-vuetify/dist/main.css'
-
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+import 'swiper/css/swiper.min.css'
 // Vuetify's CSS styles
 import 'vuetify/dist/vuetify.min.css'
 import '@mdi/font/css/materialdesignicons.css'
 const vuetify = new Vuetify()
 
+Vue.use(VueAwesomeSwiper, /* { default options with global component } */)
 Vue.use(Vuetify);
 Vue.use(VCurrencyField, {
   locale: 'id-ID',
@@ -44,5 +45,8 @@ const app = new Vue({
   router,
   store,
   vuetify,
+  beforeCreate() {
+    this.$store.commit('auth/initializeAuthStore')
+  },
   render: h => h(App)
 });

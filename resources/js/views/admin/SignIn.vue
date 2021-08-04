@@ -60,7 +60,8 @@ export default {
       if (this.$refs.formLogin.validate()) {
         const params = {
             email: this.formLogin.email,
-            password: this.formLogin.password
+            password: this.formLogin.password,
+            from: 'Signin.vue siginin()'
           }
         this.$store.dispatch('auth/authLogin', params).then(result => {
           if (result.status === 200) {

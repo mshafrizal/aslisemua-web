@@ -5,6 +5,7 @@ import brand from './modules/brand'
 import customer from "./modules/customer"
 import category from "./modules/category"
 import product from './modules/product'
+// import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
