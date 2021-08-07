@@ -20,6 +20,18 @@ const actions = {
     return axios.delete(`/api/v1/customers/${payload.customer_id}`).then(response => {
       return response.data
     }).catch(error => error)
+  },
+  fetchAddresses (context, payload) {
+    const userData = JSON.parse(localStorage.getItem('user'))
+    return axios.get(`/api/v1/customer-address/${userData.id}`).then(response => {
+      return response.data
+    }).catch(error => Promise.reject(error))
+  },
+  AddAddress (context, payload) {
+    const userData = JSON.parse(localStorage.getItem('user'))
+    return axios.post(`/api/v1/customer-address`, { customer_id: userData.id , ...payload}).then(response => {
+      return response.data
+    }).catch(error => Promise.reject(error))
   }
 }
 const mutations = {}
