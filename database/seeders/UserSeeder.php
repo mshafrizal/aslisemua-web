@@ -16,11 +16,12 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->insert([
+        DB::table('customers')->insert([
             'id' => 1,
             'email' => 'admin@admin.com',
             'password' => Hash::make('12345678'),
-            'name' => 'Admin'
+            'name' => 'Admin',
+            'is_verified' => true
         ]);
     }
 }
