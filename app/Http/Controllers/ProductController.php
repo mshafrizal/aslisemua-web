@@ -104,9 +104,10 @@ class ProductController extends Controller
             }
 
             if ($request && $request->brand) {
-                $brands = implode(" >> ", explode(",", $request->brand));
+                $brands = explode(",", $request->brand);
+                // $products = $products->whereIn('brand', $brands)
                 $products = $products->whereHas('brand', function($q) use ($brands) {
-                    $q->where('name', $brands);
+                    $q->whereIn('name', $brands);
                 }); // Brand
             }
 
