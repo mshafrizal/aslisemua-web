@@ -5,7 +5,7 @@
     class="pa-0"
     style="align-items: stretch"
   >
-    <v-row no-gutters>
+    <v-row no-gutters class="mb-3">
       <v-col cols="12" md="6" class="d-flex justify-center align-center">
         <login-form />
       </v-col>

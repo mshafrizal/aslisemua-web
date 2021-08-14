@@ -51,17 +51,10 @@
             <my-purchases />
           </v-tab-item>
           <v-tab-item>
-            <v-card flat>
-              <v-card-text>
-                <p>
-                  Fusce a quam. Phasellus nec sem in justo pellentesque facilisis. Nam eget dui. Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique sapien, a accumsan nisi mauris ac eros. In dui magna, posuere eget, vestibulum et, tempor auctor, justo.
-                </p>
-
-                <p class="mb-0">
-                  Cras sagittis. Phasellus nec sem in justo pellentesque facilisis. Proin sapien ipsum, porta a, auctor quis, euismod ut, mi. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nam at tortor in tellus interdum sagittis.
-                </p>
-              </v-card-text>
-            </v-card>
+            <TrackShipment />
+          </v-tab-item>
+          <v-tab-item>
+            <my-addresses />
           </v-tab-item>
         </v-tabs>
       </v-col>
@@ -72,9 +65,11 @@
 <script>
 import PersonalInfo from "./PersonalInfo";
 import MyPurchases from "./MyPurchases";
+import MyAddresses from "./MyAddresses";
+import TrackShipment from "./TrackShipment";
 export default {
   name: "IndexProfile",
-  components: {MyPurchases, PersonalInfo},
+  components: {TrackShipment, MyAddresses, MyPurchases, PersonalInfo},
   data: function () {
     return {
       address: null,

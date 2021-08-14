@@ -38,6 +38,7 @@ import PersonalInfo from "../views/user/profile/PersonalInfo";
 import ShopLayout from "../views/user/shop/ShopLayout";
 import NewArrivals from "../views/user/shop/NewArrivals";
 import UserProductDetail from "../views/user/product/UserProductDetail";
+import VerifyEmail from "../views/user/VerifyEmail";
 const routes = [
   {
     path: '/admin',
@@ -106,6 +107,12 @@ const routes = [
         path: '/login',
         component: Login,
         name: 'LoginUser',
+        meta: { requiresAuth: false, navbar: false }
+      },
+      {
+        path: '/registration/verify-account/:token',
+        component: VerifyEmail,
+        name: 'VerifyEmail',
         meta: { requiresAuth: false, navbar: false }
       },
       {
