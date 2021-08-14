@@ -62,7 +62,7 @@ export default {
   name: "PersonalInfo",
   data: function () {
     return {
-      isEditing: false,g
+      isEditing: false,
       isSubmitting: false,
       loading: false,
       password: '',
