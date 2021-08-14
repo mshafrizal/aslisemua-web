@@ -5,9 +5,47 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Models\CustomerAddress;
 
 class CustomersModel extends Model
 {
+    use HasFactory;
+
+    protected $table = 'customers';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $fillable = [
+        'id',
+        'google_id',
+        'name',
+        'email',
+        'gender',
+        'password',
+        'phone_number',
+        'postal_code',
+        'city',
+        'district',
+        'address',
+        'status',
+        'is_first_time',
+        'is_verified',
+        'created_at',
+        'updated_at',
+        'email_verified_at',
+        'remember_token',
+        'level'
+    ];
+
+    /**
+     * Get all of the customer address for the CustomersModel
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function customerAddress()
+    {
+        return $this->hasMany(CustomerAddress::class);
+    }
+
     public function create($dataValidated) {
         DB::table('customers')->insert($dataValidated);
     }

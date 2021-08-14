@@ -46,6 +46,7 @@
               v-model="formCreateCategory.parents"
               hint="Select parent category if you wish this category to be sub category"
             ></v-select>
+            <v-checkbox v-model="formCreateCategory.is_navbar" label="Add to navigation bar"></v-checkbox>
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
@@ -68,7 +69,8 @@ export default {
         name: '',
         file: null,
         description: '',
-        parents: null
+        parents: null,
+        is_navbar: false
       },
       loading: false,
       nameRules: [
@@ -116,6 +118,7 @@ export default {
       formData.append('name', this.formCreateCategory.name)
       formData.append('description', this.formCreateCategory.description)
       formData.append('parent', this.formCreateCategory.parents)
+      formData.append('is_navbar', this.formCreateCategory.is_navbar)
       this.$store.dispatch('category/adminCreateCategory', formData).then(result => {
         if (result.status >= 400) throw new Error(result.message)
         else {

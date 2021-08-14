@@ -12,7 +12,7 @@
     <v-row class="border border-black border-b">
       <v-col cols="12">
         <v-container>
-          <v-row>
+          <v-row no-gutters>
             <v-col cols="12" sm="6">
               <v-sheet class="d-flex flex-col text-center">
                 <h2 class="text-2xl mb-2">Consign With Us</h2>
@@ -35,15 +35,17 @@
         </v-container>
       </v-col>
     </v-row>
+    <user-footer />
   </v-app>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import UserNavigation from "../components/shared/UserNavigation";
+import UserFooter from "../components/shared/UserFooter";
 export default {
   name: "UserLayout",
-  components: {UserNavigation},
+  components: {UserFooter, UserNavigation},
   computed: {
     ...mapGetters([
       'getSnackbar'

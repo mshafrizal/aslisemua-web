@@ -8,6 +8,8 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\CustomerAddressController;
+use App\Models\CustomerAddress;
 
 //Access-Control-Allow-Origin: *
 header('Access-Control-Allow-Origin: *');
@@ -51,6 +53,7 @@ Route::prefix('v1')->group(function () {
      * ==============================
      */
     Route::prefix('brands')->group(function () {
+        Route::get('/public', [BrandController::class, 'fetchBrandsPublic']);
         Route::middleware('modules:api')->get('/', [BrandController::class, 'fetchBrands']);
         Route::middleware('modules:api')->get('/{id}', [BrandController::class, 'fetchBrand']);
         Route::middleware('modules:api')->post('/', [BrandController::class, 'createBrand']);
@@ -126,5 +129,17 @@ Route::prefix('v1')->group(function () {
         Route::middleware('modules:api')->get('/', [PaymentMethodController::class, 'getPaymentMethods']);
         Route::middleware('modules:api')->delete('/{id}', [PaymentMethodController::class, 'deletePaymentMethod']);
         Route::middleware('modules:api')->post('/', [PaymentMethodController::class, 'createPaymentMethod']);
+    });
+
+    /**
+     * 
+     */
+    Route::prefix('customer-address')->group(function() {
+        Route::get('/{customerId}', [CustomerAddressController::class, 'getCustomerAddressesByCustomerId']);
+        Route::post('/', [CustomerAddressController::class, 'createCustomerAddress']);
+        Route::delete('/{customerId}/address/{addressId}/delete', [CustomerAddressController::class, 'deleteCustomerAddress']);
+        Route::put('/{customerId}/address/{addressId}', [CustomerAddressController::class, 'updateCustomerAddress']);
+        Route::put('/address/status', [CustomerAddressController::class, 'setCustomerAddressDefault']);
+        Route::get('detail/{id}', [CustomerAddressController::class, 'getCustomerAddress']);
     });
 });

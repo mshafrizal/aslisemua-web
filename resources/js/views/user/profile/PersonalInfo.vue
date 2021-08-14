@@ -75,7 +75,11 @@ export default {
   methods: {
     getPersonalInfo () {
       const { id } = JSON.parse(this.$store.getters['auth/authUserInfo'])
-      this.$axios.get(`/api/v1/customers/${id}`).then(response => {
+      this.$axios.get(`/api/v1/customers/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      }).then(response => {
         if (response.status === 200 && response.data.data) {
           this.personalInfo = response.data.data
         } else {
