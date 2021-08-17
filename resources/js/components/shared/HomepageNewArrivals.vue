@@ -1,9 +1,9 @@
 <template>
   <section class="mb-10">
-    <h1 v-if="products" class="text-3xl text-center mt-20">NEW ARRIVALS</h1>
+    <h1 v-if="products" class="text-3xl text-center mt-20 mb-10">NEW ARRIVALS</h1>
     <swiper  ref="mySwiper" :options="swiperOptions">
       <template v-if="products">
-        <swiper-slide v-for="product in products.data" :key="product.id" >
+        <swiper-slide v-for="product in products" :key="product.id" >
           <product-item :product="product"/>
         </swiper-slide>
       </template>
@@ -20,7 +20,92 @@ export default {
   components: {ProductItem},
   data: function () {
     return {
-      products: null,
+      products: [
+        {
+          id: 1,
+          products_images: [
+            {
+              image_path: '/images/dummyProduct/hermes-1.jpg'
+            },
+            {
+              image_path: '/images/dummyProduct/hermes-2.jpg'
+            },
+            {
+              image_path: '/images/dummyProduct/hermes-3.jpg'
+            }
+          ],
+          brand: {
+            name: 'Hermes'
+          },
+          name: 'Tote bag',
+          size: 'Large',
+          slug: 'tote-bag',
+          final_price: 12500000
+        },
+        {
+          id: 2,
+          products_images: [
+            {
+              image_path: '/images/dummyProduct/ysl-1.jpg'
+            },
+            {
+              image_path: '/images/dummyProduct/ysl-2.jpg'
+            },
+            {
+              image_path: '/images/dummyProduct/ysl-3.jpg'
+            }
+          ],
+          brand: {
+            name: 'Yves Saint Lauren'
+          },
+          name: 'Le 5 À 7 Hobo Bag Croco.',
+          size: 'Medium',
+          slug: 'le-hobo-bag-croco',
+          final_price: 22000000
+        },
+        {
+          id: 3,
+          products_images: [
+            {
+              image_path: '/images/dummyProduct/rolex-1.png'
+            },
+            {
+              image_path: '/images/dummyProduct/rolex-2.png'
+            },
+            {
+              image_path: '/images/dummyProduct/rolex-3.jpg'
+            }
+          ],
+          brand: {
+            name: 'Rolex'
+          },
+          name: 'Datejust',
+          size: '40mm',
+          slug: 'datejust',
+          final_price: 105000000
+        },
+        {
+          id: 4,
+          products_images: [
+            {
+              image_path: '/images/dummyProduct/fendi-1.jpg'
+            },
+            {
+              image_path: '/images/dummyProduct/fendi-2.jpg'
+            },
+            {
+              image_path: '/images/dummyProduct/fendi-3.jpg'
+            }
+          ],
+          brand: {
+            name: 'Fendi'
+          },
+          name: 'Roma Clutch Tan',
+          size: 'Large',
+          slug: 'roma-clutch-tan',
+          final_price: 51000000
+        },
+      ],
       swiperOptions: {
         slidesPerView: 4,
         navigation: {
@@ -56,7 +141,7 @@ export default {
     }
   },
   mounted () {
-    this.getProducts()
+    // this.getProducts()
   },
   methods: {
     getProducts () {
