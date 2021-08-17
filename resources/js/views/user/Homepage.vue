@@ -51,9 +51,11 @@ export default {
         'deep-purple accent-4',
       ],
       slides: [
-        '/images/carousel-1.jpg',
-        '/images/carousel-2.jpg',
-        '/images/carousel-3.jpg'
+        '/images/dummyProduct/banner-1.jpg',
+        '/images/dummyProduct/banner-2.jpg',
+        '/images/dummyProduct/banner-3.jfif',
+        '/images/dummyProduct/banner-4.jfif',
+        '/images/dummyProduct/banner-5.jfif',
       ],
       isDisplayed: false
     }
