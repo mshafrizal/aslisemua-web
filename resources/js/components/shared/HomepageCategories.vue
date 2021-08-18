@@ -82,7 +82,7 @@ export default {
       return '../storage/' + path
     },
     toDemoPage(cat) {
-      this.$router.push(`/demo/shop/${cat.id}/${cat.name}`)
+      this.$router.push(`/demo/shop/${cat.id}`)
     }
   }
 }
