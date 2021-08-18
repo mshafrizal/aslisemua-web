@@ -6,7 +6,7 @@
         <v-btn @click.stop="drawer = !drawer" icon><v-icon>mdi-menu</v-icon></v-btn>
       </v-col>
       <v-col>
-        <h1 class="text-center logo">ASLISEMUA</h1>
+        <h1 class="text-center logo" @click="$router.push('/')">ASLISEMUA</h1>
       </v-col>
       <v-col class="hidden-sm-and-up"></v-col>
       <v-col class="justify-end hidden-sm-and-down">
@@ -46,7 +46,7 @@
     </v-row>
     <v-row class="hidden-sm-and-down">
       <v-col class="d-flex justify-center">
-        <v-btn text small>New Arrivals</v-btn>
+        <v-btn text small link to="/demo/shop/1">New Arrivals</v-btn>
         <v-btn text small>Women</v-btn>
         <v-btn text small>Men</v-btn>
         <v-btn text small color="error">Sale</v-btn>

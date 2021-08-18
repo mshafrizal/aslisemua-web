@@ -51,7 +51,7 @@
             <my-purchases />
           </v-tab-item>
           <v-tab-item>
-            <TrackShipment />
+<!--            <TrackShipment />-->
           </v-tab-item>
           <v-tab-item>
             <my-addresses />
@@ -66,10 +66,10 @@
 import PersonalInfo from "./PersonalInfo";
 import MyPurchases from "./MyPurchases";
 import MyAddresses from "./MyAddresses";
-import TrackShipment from "./TrackShipment";
+// import TrackShipment from "./TrackShipment";
 export default {
   name: "IndexProfile",
-  components: {TrackShipment, MyAddresses, MyPurchases, PersonalInfo},
+  components: {MyAddresses, MyPurchases, PersonalInfo},
   data: function () {
     return {
       address: null,
