@@ -39,6 +39,10 @@ import ShopLayout from "../views/user/shop/ShopLayout";
 import NewArrivals from "../views/user/shop/NewArrivals";
 import UserProductDetail from "../views/user/product/UserProductDetail";
 import VerifyEmail from "../views/user/VerifyEmail";
+
+// Demo
+
+import DemoCategoryShop from '../views/user/shop/DemoCategoryShop';
 const routes = [
   {
     path: '/admin',
@@ -143,6 +147,11 @@ const routes = [
         component: UserProductDetail,
         name: 'UserProductDetail',
         meta: { requiresAuth: false, navbar: true }
+      },
+      {
+        path: '/demo/shop/:cat_id',
+        meta: { requiresAuth: false, navbar: true },
+        component: DemoCategoryShop,
       }
     ]
   }

@@ -6,11 +6,13 @@
       cols="6"
       sm="4"
       md="2"
+      @click="toDemoPage(category)"
     >
-      <v-img :src="resolveImagePath(category.file_path)" :aspect-ratio="1/1" />
+      <!-- <v-img :src="resolveImagePath(category.file_path)" :aspect-ratio="1/1" /> -->
+      <v-img :src="category.file_path" :aspect-ratio="1/1" />
       <h4 class="text-center">{{category.name || '' }}</h4>
     </v-col>
-    <v-col cols="12">
+    <v-col cols="12 text-center">
       <v-btn class="mx-auto white--text mt-5" color="black" depressed>See More Categories</v-btn>
     </v-col>
   </v-row>
@@ -21,11 +23,42 @@ export default {
   name: "HomepageCategories",
   data: function () {
     return {
-      categories: null
+      categories: [
+        {
+          id: 1,
+          name: 'Men\'s',
+          file_path: '/images/dummyProduct/cat-men.jpg'
+        },
+        {
+          id: 2,
+          name: 'Women\'s',
+          file_path: '/images/dummyProduct/cat-women.jpg'
+        },
+        {
+          id: 3,
+          name: 'Bag\'s',
+          file_path: '/images/dummyProduct/cat-bag.jpg'
+        },
+        {
+          id: 4,
+          name: 'Watches',
+          file_path: '/images/dummyProduct/cat-watch.jpg'
+        },
+        {
+          id: 5,
+          name: 'Jewelry',
+          file_path: '/images/dummyProduct/cat-jewelry.jpg'
+        },
+        {
+          id: 6,
+          name: 'Kid\'s',
+          file_path: '/images/dummyProduct/cat-kids.jpg'
+        },
+      ]
     }
   },
   async created () {
-    await this.getCategories()
+    // await this.getCategories()
   },
   methods: {
     getCategories () {
@@ -47,6 +80,9 @@ export default {
     },
     resolveImagePath (path) {
       return '../storage/' + path
+    },
+    toDemoPage(cat) {
+      this.$router.push(`/demo/shop/${cat.id}/${cat.name}`)
     }
   }
 }

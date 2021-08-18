@@ -4,8 +4,8 @@
       <v-col cols="12" sm="8">
         <v-row>
           <v-col cols="12" sm="2">
-            <template v-for="image in product.product_image">
-              <v-img @click="selectImage(image)" :src="resolveImagePath(image.image_path)" class="mb-5" :key="image.id"/>
+            <template v-for="image in product.products_image">
+              <v-img @click="selectImage(image)" :src="image.image_path" class="mb-5" :key="image.id"/>
             </template>
           </v-col>
           <v-col cols="12" sm="10" class="d-flex items-start justify-center">
@@ -66,12 +66,104 @@ export default {
   data: function () {
     return {
       product: null,
+      products: [
+        {
+          id: 2,
+          name: 'Suede Drivers',
+          brand: {
+            name: 'Gucci',
+          },
+          final_price: 3360000,
+          description: 'Sample',
+          details: 'Sample',
+          slug: 'suede-drivers',
+          condition: 'Pristine',
+          products_image: [
+            {image_path: '/images/dummyProduct/gucci-1.jpg'},
+            {image_path: '/images/dummyProduct/gucci-2.jpg'},
+          ]
+        },
+        {
+          id: 1,
+          name: 'Tote Bag',
+          brand: {
+            name: 'Hermes',
+          },
+          final_price: 12500000,
+          description: 'Sample',
+          details: 'Sample',
+          condition: 'Pristine',
+          slug: 'tote-bag',
+          products_image: [
+            {image_path: '/images/dummyProduct/hermes-1.jpg'},
+            {image_path: '/images/dummyProduct/hermes-2.jpg'},
+          ]
+        },
+        {
+          id: 3,
+          products_image: [
+            {
+              image_path: '/images/dummyProduct/ysl-1.jpg'
+            },
+            {
+              image_path: '/images/dummyProduct/ysl-2.jpg'
+            },
+            {
+              image_path: '/images/dummyProduct/ysl-3.jpg'
+            }
+          ],
+          brand: {
+            name: 'Yves Saint Lauren'
+          },
+          name: 'Le 5 À 7 Hobo Bag Croco.',
+          size: 'Medium',
+          slug: 'le-hobo-bag-croco',
+          final_price: 22000000,
+          description: 'Sample',
+          details: 'Sample',
+          condition: 'Pristine',
+        },
+      ],
       loading: true,
+      images: [
+        {
+          name: 'suede-drivers',
+          product_image: [
+            {image_path: '/images/dummyProduct/gucci-1.jpg'},
+            {image_path: '/images/dummyProduct/gucci-2.jpg'},
+          ]
+        },
+        {
+          name: 'tote-bag',
+          product_image: [
+            {image_path: '/images/dummyProduct/hermes-1.jpg'},
+            {image_path: '/images/dummyProduct/hermes-2.jpg'},
+          ]
+        },
+        {
+          name: 'le-hobo-bag-croco',
+          product_image: [
+            {
+              image_path: '/images/dummyProduct/ysl-1.jpg'
+            },
+            {
+              image_path: '/images/dummyProduct/ysl-2.jpg'
+            },
+            {
+              image_path: '/images/dummyProduct/ysl-3.jpg'
+            }
+          ]
+        },
+
+      ],
       selectedImagePath: null
     }
   },
   created () {
-    this.getProduct()
+    this.product = this.products.filter(prd => prd.slug.toLowerCase() === this.$route.params.slug.toLowerCase())[0]
+    this.loading = false
+    this.selectedImagePath = this.product.products_image[0].image_path
+    // this.getProduct()
   },
   methods: {
     addToCart () {
@@ -86,6 +178,9 @@ export default {
         console.log(response)
         if (response.status === 200) {
           this.product = response.data.results.data
+          this.product.product_image.forEach((img, indx) => {
+            img.image_path = this.images[indx].image_path
+          })
           this.selectImage(this.product.product_image[0])
         }
       }).catch(error => {
@@ -102,7 +197,8 @@ export default {
       return '/storage/' + path
     },
     selectImage (image) {
-      this.selectedImagePath = this.resolveImagePath(image.image_path)
+      // this.selectedImagePath = this.resolveImagePath(image.image_path)
+      this.selectedImagePath = image.image_path
     }
   }
 }
