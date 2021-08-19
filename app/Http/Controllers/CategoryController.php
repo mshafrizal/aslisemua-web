@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use ImageKit\ImageKit;
+use Config;
 
 class CategoryController extends Controller
 {
@@ -70,16 +72,37 @@ class CategoryController extends Controller
         try {
             $user = Auth::user();
             $name = $request->name;
-            $newFileName = 'CATEGORY-' . $name . '-' . time() . '.' . $request->file->extension();
-            $createdBy = 'Pandhu Wibowo';
-            $updatedBy = 'Pandhu Wibowo';
+            $newFileName = 'CATEGORY' . preg_replace('/\s+/', '', $name) . time() . '.' .$request->file->extension();
+            $createdBy = $user->name;
+            $updatedBy = $user->name;
             $createdAt = Carbon::now();
             $updatedAt = Carbon::now();
-            $filePath = $request->file('file')->storeAs('categories', $newFileName, 'public');
             $description = $request->description;
             $parent = $request->parent;
             $newCategory = (object)[];
             $isNavbar = $request->is_navbar;
+
+            $imageKit = new ImageKit(
+                config('imagekit.IMAGEKIT_CDN_PUBLIC_KEY'),
+                config('imagekit.IMAGEKIT_CDN_PRIVATE_KEY'),
+                config('imagekit.IMAGEKIT_CDN_URL')
+            );
+
+            try {
+                $uploadFile = $imageKit->upload(
+                    array(
+                        "file" => base64_encode(file_get_contents($request->file('file'))), // required
+                        "fileName" => $newFileName, // required
+                        'folder' => "/Categories"
+                    )
+                );
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 500,
+                    'message' => 'Something Went Wrong',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
 
             $newCategory = new CategoryModel([
                 'id' => Str::uuid(),
@@ -87,25 +110,22 @@ class CategoryController extends Controller
                 'description' => $description,
                 'created_at' => $createdAt,
                 'updated_at' => $updatedAt,
-                'file_path' => $filePath,
+                'file_path' => $uploadFile->success->url,
                 'parent' => $parent,
                 'is_published' => 1,
                 'created_by' => $createdBy,
                 'updated_by' => $updatedBy,
                 'slug' => Str::slug($name) . '-' . time(),
-                'is_navbar' => $isNavbar
+                'is_navbar' => $isNavbar,
+                'filename' => $newFileName,
+                'file_id' => $uploadFile->success->fileId
             ]);
 
             if ($newCategory->save()) return response()->json([
                 'status' => 201,
-                'message' => $name . ' successfully created',
-                'results' => (object) [
-                    'name' => $name,
-                    'file_path' => $filePath
-                ]
+                'message' => $name . ' successfully created'
             ], 201);
 
-            $this->unlinkImage($newFileName);
             return response()->json([
                 'status' => 400,
                 'message' => $name . ' totally failed'
@@ -131,7 +151,7 @@ class CategoryController extends Controller
             $user = Auth::user();
             $updatedBy = $user->name;
             $name = $request->name;
-            $newFileName = 'CATEGORY-' . $name . '-' . time() . '.' . $request->file->extension();
+            $newFileName = 'CATEGORY' . preg_replace('/\s+/', '', $name) . time() . '.' .$request->file->extension();
             $updatedAt = Carbon::now();
             $filePath = $request->file('file')->storeAs('categories', $newFileName, 'public');
             $description = $request->description;
@@ -144,41 +164,56 @@ class CategoryController extends Controller
                 'status' => 400,
                 'message' => 'Category not found'
             ]);
-            $oldFilePath = $categoryExisting->file_path;
-            $categoryPrefix = 'categories/';
-            $prefixLength = strlen($categoryPrefix);
+            $oldFileId = $categoryExisting->file_id;
+            $imageKit = new ImageKit(
+                config('imagekit.IMAGEKIT_CDN_PUBLIC_KEY'),
+                config('imagekit.IMAGEKIT_CDN_PRIVATE_KEY'),
+                config('imagekit.IMAGEKIT_CDN_URL')
+            );
+
+            try {
+                $deleteFile = $imageKit->deleteFile($oldFileId);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 500,
+                    'message' => 'Something Went Wrong',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+
+            try {
+                $uploadFile = $imageKit->upload(
+                    array(
+                        "file" => base64_encode(file_get_contents($request->file('file'))), // required
+                        "fileName" => $newFileName, // required
+                        'folder' => "/Categories"
+                    )
+                );
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 500,
+                    'message' => 'Something Went Wrong',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
 
             $categoryExisting->updated_at = $updatedAt;
             $categoryExisting->description = $description;
             $categoryExisting->updated_by = $updatedBy;
             $categoryExisting->name = $name;
-            $categoryExisting->file_path = $filePath;
+            $categoryExisting->file_path = $uploadFile->success->url;
             $categoryExisting->parent = $parents;
             $categoryExisting->slug = Str::slug($name) . '-' . time();
             $categoryExisting->is_navbar = $isNavbar;
+            $categoryExisting->filename = $newFileName;
+            $categoryExisting->file_id = $uploadFile->success->fileId;
 
-            if ($categoryExisting->save()) {
-                $oldFileName = '';
-                if (substr($oldFilePath, 0, $prefixLength) === $categoryPrefix) {
-                    $oldFileName = substr($oldFilePath, $prefixLength);
-                    $this->unlinkImage($oldFileName);
-                }
+            $categoryExisting->save();
 
-                return response()->json([
-                    'status' => 200,
-                    'message' => $name . ' successfully updated',
-                    'results' => (object)[
-                        'name' => $name,
-                        'file_path' => $filePath
-                    ]
-                ], 200);
-            }
-
-            $this->unlinkImage($newFileName);
             return response()->json([
-                'status' => 400,
-                'message' => $name . ' totally failed'
-            ], 400);
+                'status' => 200,
+                'message' => $name . ' successfully updated',
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
@@ -246,17 +281,24 @@ class CategoryController extends Controller
                 'message' => 'Category not found'
             ]);
 
-            $oldFilePath = $categoryExisting->file_path;
+            $imageKit = new ImageKit(
+                config('imagekit.IMAGEKIT_CDN_PUBLIC_KEY'),
+                config('imagekit.IMAGEKIT_CDN_PRIVATE_KEY'),
+                config('imagekit.IMAGEKIT_CDN_URL')
+            );
+
+            $oldFileId = $categoryExisting->file_id;
             $name = $categoryExisting->name;
 
-            $categoryPrefix = 'categories/';
-            $prefixLength = strlen($categoryPrefix);
-
             if ($categoryExisting->delete()) {
-                $oldFileName = '';
-                if (substr($oldFilePath, 0, $prefixLength) === $categoryPrefix) {
-                    $oldFileName = substr($oldFilePath, $prefixLength);
-                    $this->unlinkImage($oldFileName);
+                try {
+                    $imageKit->deleteFile($oldFileId);
+                } catch (\Exception $e) {
+                    return response()->json([
+                        'status' => 500,
+                        'message' => 'Something Went Wrong',
+                        'error' => $e->getMessage()
+                    ], 500);
                 }
 
                 return response()->json([
