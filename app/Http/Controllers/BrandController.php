@@ -126,7 +126,9 @@ class BrandController extends Controller
                 'created_at' => $createdAt,
                 'updated_at' => $updatedAt,
                 'file_path' => $uploadFile->success->url,
-                'status' => $status
+                'status' => $status,
+                'filename' => $newFileName,
+                'file_id' => $uploadFile->success->fileId
             ]);
 
             if ($newBrand->save()) return response()->json([
@@ -134,7 +136,6 @@ class BrandController extends Controller
                 'message' => $name . ' successfully created'
             ], 201);
 
-            $this->unlinkImage($newFileName);
             return response()->json([
                 'status' => 400,
                 'message' => $name . ' totally failed'
@@ -155,43 +156,58 @@ class BrandController extends Controller
                 'status' => 400,
                 'message' => 'Brand not found'
             ], 400);
-            $oldFilePath = $brandExisting->file_path;
+            $oldFileId = $brandExisting->file_id;
             $user = Auth::user();
             $name = $request->name;
-            $newFileName = 'BRAND-' . $name . '-' . time() . '.' .$request->file->extension();
+            $newFileName = 'BRAND' . preg_replace('/\s+/', '', $name) . time() . '.' .$request->file->extension();
             $updatedBy = $user->name;
             $updatedAt = Carbon::now();
-            $filePath = $request->file('file')->storeAs('brands', $newFileName, 'public');
+
+            $imageKit = new ImageKit(
+                config('imagekit.IMAGEKIT_CDN_PUBLIC_KEY'),
+                config('imagekit.IMAGEKIT_CDN_PRIVATE_KEY'),
+                config('imagekit.IMAGEKIT_CDN_URL')
+            );
+
+            try {
+                $deleteFile = $imageKit->deleteFile($oldFileId);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 500,
+                    'message' => 'Something Went Wrong',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+
+            try {
+                $uploadFile = $imageKit->upload(
+                    array(
+                        "file" => base64_encode(file_get_contents($request->file('file'))), // required
+                        "fileName" => $newFileName, // required
+                        'folder' => "/Brands"
+                    )
+                );
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 500,
+                    'message' => 'Something Went Wrong',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
 
             // Update brand process
             $brandExisting->name = $name;
             $brandExisting->updated_at = $updatedAt;
             $brandExisting->updated_by = $updatedBy;
-            $brandExisting->file_path = $filePath;
-            if ($brandExisting->save()) {
-                $brandPrefix = 'brands/';
-                $prefixLength = strlen($brandPrefix);
-                $oldFileName = '';
-                if (substr($oldFilePath, 0, $prefixLength) === $brandPrefix) {
-                    $oldFileName = substr($oldFilePath, $prefixLength);
-                    $this->unlinkImage($oldFileName);
-                }
+            $brandExisting->file_path = $uploadFile->success->url;
+            $brandExisting->filename = $newFileName;
+            $brandExisting->file_id = $uploadFile->success->fileId;
 
-                return response()->json([
-                    'status' => 200,
-                    'message' => $name . ' successfully updated',
-                    'results' => (object)[
-                        'name' => $name,
-                        'file_path' => $filePath
-                    ]
-                ], 200);
-            }
-
-            $this->unlinkImage($newFileName);
+            $brandExisting->save();
             return response()->json([
-                'status' => 400,
-                'message' => $name . ' totally failed'
-            ], 400);
+                'status' => 200,
+                'message' => $name . ' successfully updated'
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
@@ -209,22 +225,29 @@ class BrandController extends Controller
                 'message' => 'Brand not found'
             ], 400);
 
-            $oldFilePath = $brandExisting->file_path;
+            $oldFileId = $brandExisting->file_id;
             $name = $brandExisting->name;
-            if ($brandExisting->delete()) {
-                $brandPrefix = 'brands/';
-                $prefixLength = strlen($brandPrefix);
-                $oldFileName = '';
-                if (substr($oldFilePath, 0, $prefixLength) === $brandPrefix) {
-                    $oldFileName = substr($oldFilePath, $prefixLength);
-                    $this->unlinkImage($oldFileName);
-                }
 
+            $imageKit = new ImageKit(
+                config('imagekit.IMAGEKIT_CDN_PUBLIC_KEY'),
+                config('imagekit.IMAGEKIT_CDN_PRIVATE_KEY'),
+                config('imagekit.IMAGEKIT_CDN_URL')
+            );
+
+            try {
+                $imageKit->deleteFile($oldFileId);
+            } catch (\Exception $e) {
                 return response()->json([
-                    'status' => 200,
-                    'message' => $name . ' successfully deleted'
-                ], 200);
+                    'status' => 500,
+                    'message' => 'Something Went Wrong',
+                    'error' => $e->getMessage()
+                ], 500);
             }
+            $brandExisting->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => $name . ' successfully deleted'
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,

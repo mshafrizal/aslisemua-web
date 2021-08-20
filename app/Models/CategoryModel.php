@@ -25,7 +25,9 @@ class CategoryModel extends Model
         'parent',
         'is_published',
         'slug',
-        'is_navbar'
+        'is_navbar',
+        'filename',
+        'file_id'
     ];
 
     /**
