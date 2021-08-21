@@ -20,7 +20,9 @@ class ProductImageModel extends Model
         'image_path',
         'image_name',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'file_id',
+        'filename'
     ];
 
     /**
