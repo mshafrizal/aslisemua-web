@@ -21,7 +21,9 @@ class BrandModel extends Model
         'created_at', 
         'updated_at', 
         'file_path',
-        'status'
+        'status',
+        'filename',
+        'file_id'
     ];
 
     /**
