@@ -121,7 +121,12 @@ export default {
       this.$router.push(`/admin/brand/${id}/edit`)
     },
     toViewBrand (id) {
-      this.$router.push(`/admin/brand/${id}/detail`)
+      this.viewBrand.open = true
+      this.viewBrand.loading = true
+      this.$store.dispatch('brand/fetchBrand', { brand_id: id }).then(result => {
+        this.viewBrand.data = result.results
+      }).catch(error => {
+      })
     }
   }
 }

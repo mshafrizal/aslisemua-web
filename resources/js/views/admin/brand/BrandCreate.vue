@@ -3,7 +3,7 @@
     <v-col cols="12">Add Brand</v-col>
     <v-col cols="12" sm="4">
       <v-card>
-        <v-form ref="formAddBrand" v-model="valid">
+        <v-form ref="formAddBrand" v-model="valid" @submit.prevent="handleSubmit">
           <v-card-text>
             <v-img
               max-height="297"
@@ -23,12 +23,12 @@
             <v-divider></v-divider>
             <v-text-field v-model="name" label="Brand Name" required :rules="requiredRules"></v-text-field>
             <v-textarea v-model="description" label="Description"></v-textarea>
-            <v-checkbox v-model="status" label="Active"></v-checkbox>
+<!--            <v-checkbox v-model="status" label="Active"></v-checkbox>-->
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
             <v-btn color="error" plain href="/admin/brand/list">Cancel</v-btn>
-            <v-btn :disabled="!valid" color="primary" depressed @click="handleSubmit">Submit</v-btn>
+            <v-btn type="submit" :disabled="!valid" :loading="loading" color="primary" depressed>Submit</v-btn>
           </v-card-actions>
         </v-form>
       </v-card>
@@ -69,21 +69,24 @@ export default {
         formData.append('file', this.logo, this.logo.name)
         formData.append('name', this.name)
         this.$store.dispatch('brand/createBrand', formData).then(result => {
-          if (result.status >= 400) throw new Error(result.message)
           this.$store.dispatch('showSnackbar', {
-            value: true,
             message: result.message,
-            type: 'success'
+            color: 'success'
           })
+          this.$router.push('/admin/brand/list')
         }).catch(error => {
+          console.log(error)
           this.$store.dispatch('showSnackbar', {
-            value: true,
-            message: error,
-            type: 'error'
+            message: error.response && error.response.data && error.response.data.message ? error.response.data.message : error.message,
+            color: 'error'
           })
         }).finally(() => {
           this.loading = false
-          this.$router.push('/admin/brand/list')
+        })
+      } else {
+        this.$store.dispatch('showSnackbar', {
+          message: 'Please check your form again',
+          color: 'error'
         })
       }
     }
