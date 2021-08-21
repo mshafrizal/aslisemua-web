@@ -1,9 +1,7 @@
 <template>
   <v-app id="inspire">
 
-    <v-snackbar v-if="snackbar" v-model="snackbar.value" :color="snackbar.type">
-      {{snackbar ? snackbar.message : '-'}}
-    </v-snackbar>
+    <VSnackbarQueue :items="$store.getters.getSnackbar()" top right @remove="removeItem"></VSnackbarQueue>
     <v-navigation-drawer
       v-if="renderDrawer"
       v-model="drawer"
@@ -116,17 +114,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'getSnackbar'
-    ]),
-    snackbar () {
-      return this.$store.getters.getSnackbar
-    },
     renderDrawer () {
       return this.$route.meta.requiresAuth
     }
   },
   methods: {
+    removeItem (id) {
+      this.$store.dispatch('removeSnackbarMessage', id)
+    },
     signOut () {
       this.$store.dispatch("auth/authLogout")
       this.$router.push('/admin/signin').catch(err => {})

@@ -11,16 +11,33 @@ Vue.use(Vuex)
 const debug = process.env.NODE_ENV !== 'production'
 
 const state = {
-  snackbar: null
+  snackbar: []
 }
 const mutations = {
   setSnackbar (state, payload) {
-    state.snackbar = payload
+    state.snackbar.push(payload)
+  },
+  removeMessage (state, payload) {
+    const index = state.snackbar.findIndex(item => item.id === payload)
+    if (index !== -1) {
+      state.snackbar.splice(index, 1)
+    }
   }
 }
 const actions = {
+  // payload = {
+  //   message: String,
+  //   color: String
+  // }
   showSnackbar (context, payload) {
-    context.commit('setSnackbar', payload)
+    context.commit('setSnackbar', { id: `snackbar_` +
+        Math.random()
+          .toString(36)
+          .substr(2, 9), ...payload})
+  },
+  // paylad = id
+  removeSnackbarMessage (context, payload) {
+    context.commit('removeMessage', payload)
   }
 }
 const getters = {

@@ -12,6 +12,9 @@ import '@mdi/font/css/materialdesignicons.css'
 import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 // don't forget to import CSS styles
 import 'tiptap-vuetify/dist/main.css'
+import VuetifySnackbarQueue from 'vuetify-snackbar-queue'
+
+Vue.use(VuetifySnackbarQueue)
 const vuetify = new Vuetify()
 
 Vue.use(VueAwesomeSwiper, /* { default options with global component } */)
