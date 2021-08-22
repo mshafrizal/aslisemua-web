@@ -159,49 +159,53 @@ class BrandController extends Controller
             $oldFileId = $brandExisting->file_id;
             $user = Auth::user();
             $name = $request->name;
-            $newFileName = 'BRAND' . preg_replace('/\s+/', '', $name) . time() . '.' .$request->file->extension();
             $updatedBy = $user->name;
             $updatedAt = Carbon::now();
 
-            $imageKit = new ImageKit(
-                config('imagekit.IMAGEKIT_CDN_PUBLIC_KEY'),
-                config('imagekit.IMAGEKIT_CDN_PRIVATE_KEY'),
-                config('imagekit.IMAGEKIT_CDN_URL')
-            );
+            if ($request->file) {
+              $newFileName = 'BRAND' . preg_replace('/\s+/', '', $name) . time() . '.' .$request->file->extension();
+              $imageKit = new ImageKit(
+                  config('imagekit.IMAGEKIT_CDN_PUBLIC_KEY'),
+                  config('imagekit.IMAGEKIT_CDN_PRIVATE_KEY'),
+                  config('imagekit.IMAGEKIT_CDN_URL')
+              );
 
-            try {
-                $deleteFile = $imageKit->deleteFile($oldFileId);
-            } catch (\Exception $e) {
-                return response()->json([
-                    'status' => 500,
-                    'message' => 'Something Went Wrong',
-                    'error' => $e->getMessage()
-                ], 500);
+              try {
+                  $deleteFile = $imageKit->deleteFile($oldFileId);
+              } catch (\Exception $e) {
+                  return response()->json([
+                      'status' => 500,
+                      'message' => 'Something Went Wrong',
+                      'error' => $e->getMessage()
+                  ], 500);
+              }
+
+              try {
+                  $uploadFile = $imageKit->upload(
+                      array(
+                          "file" => base64_encode(file_get_contents($request->file('file'))), // required
+                          "fileName" => $newFileName, // required
+                          'folder' => "/Brands"
+                      )
+                  );
+              } catch (\Exception $e) {
+                  return response()->json([
+                      'status' => 500,
+                      'message' => 'Something Went Wrong',
+                      'error' => $e->getMessage()
+                  ], 500);
+              }
+
+              $brandExisting->file_path = $uploadFile->success->url;
+              $brandExisting->filename = $newFileName;
+              $brandExisting->file_id = $uploadFile->success->fileId;
             }
 
-            try {
-                $uploadFile = $imageKit->upload(
-                    array(
-                        "file" => base64_encode(file_get_contents($request->file('file'))), // required
-                        "fileName" => $newFileName, // required
-                        'folder' => "/Brands"
-                    )
-                );
-            } catch (\Exception $e) {
-                return response()->json([
-                    'status' => 500,
-                    'message' => 'Something Went Wrong',
-                    'error' => $e->getMessage()
-                ], 500);
-            }
 
             // Update brand process
             $brandExisting->name = $name;
             $brandExisting->updated_at = $updatedAt;
             $brandExisting->updated_by = $updatedBy;
-            $brandExisting->file_path = $uploadFile->success->url;
-            $brandExisting->filename = $newFileName;
-            $brandExisting->file_id = $uploadFile->success->fileId;
 
             $brandExisting->save();
             return response()->json([
