@@ -119,15 +119,15 @@ export default {
         this.$store.dispatch('brand/updateBrand', { brand_id: this.brandId, data: formData}).then(result => {
           if (result.status >= 400) throw new Error(result.message)
           this.$store.dispatch('showSnackbar', {
-            value: true,
+
             message: result.message,
-            type: 'success'
+            color: 'success'
           })
         }).catch(error => {
           this.$store.dispatch('showSnackbar', {
-            value: true,
+
             message: error,
-            type: 'error'
+            color: 'error'
           })
         }).finally(() => {
           this.loading = false

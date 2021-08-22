@@ -1,5 +1,6 @@
 <template>
   <v-row>
+    <category-create :open="createCategory.open" @close="handleClose"></category-create>
     <v-dialog v-model="dialogUpdateStatus" v-if="dialogUpdateStatus" persistent max-width="500">
       <v-card>
         <v-card-title>Change Category Status</v-card-title>
@@ -24,7 +25,7 @@
     </v-dialog>
     <v-col cols="12" sm="10">Category List</v-col>
     <v-col cols="12" sm="2">
-      <v-btn href="/admin/category/create" block>Add Category</v-btn>
+      <v-btn @click="createCategory.open = true" block>Add Category</v-btn>
     </v-col>
     <v-col cols="12">
       <v-data-table
@@ -34,8 +35,11 @@
         class="elevation-1"
         :items-per-page="10"
       >
+        <template v-slot:item.is_published="{item}">
+          <v-chip :color="item.is_published === 1 ? 'primary' : 'error'"></v-chip>
+        </template>
         <template v-slot:item.file_path="{item}">
-          <v-img max-height="100" max-width="100" contain :src="resolveImagePath(item.file_path)" :alt="`${item.name} thumbnail`"></v-img>
+          <v-img max-height="100" max-width="100" contain :src="item.file_path" :alt="`${item.name} thumbnail`"></v-img>
         </template>
         <template v-slot:item.updated_at="{item}">{{ new Date(item.updated_at).toLocaleDateString('id-ID') }}</template>
         <template v-slot:item.actions="{item}">
@@ -48,8 +52,10 @@
 </template>
 
 <script>
+import CategoryCreate from "./CategoryCreate";
 export default {
   name: "CategoryList",
+  components: {CategoryCreate},
   data: function () {
     return {
       categories: [],
@@ -65,13 +71,30 @@ export default {
       ],
       isSubmitting: false,
       loading: true,
-      selectedCategory: null
+      selectedCategory: null,
+      createCategory: {
+        open: false
+      },
+      editCategory: {
+        open: false,
+        id: ''
+      },
+      viewCategory: {
+        open: false,
+        id: ''
+      }
     }
   },
   created () {
     this.fetchAdminCategories()
   },
   methods: {
+    handleClose () {
+      this.createCategory.open = false
+      this.editCategory.open = false
+      this.viewCategory.open = false
+      this.fetchAdminCategories()
+    },
     deleteCategory () {
       this.isSubmitting = true
       const params = {
