@@ -368,9 +368,23 @@ class ProductController extends Controller
             $productImageExisting = ProductImageModel::where('product_id', $id)->get();
             if (count($productImageExisting) > 0) ProductImageModel::whereIn('product_id', [$id])->delete();
 
+            $imageKit = new ImageKit(
+                config('imagekit.IMAGEKIT_CDN_PUBLIC_KEY'),
+                config('imagekit.IMAGEKIT_CDN_PRIVATE_KEY'),
+                config('imagekit.IMAGEKIT_CDN_URL')
+            );
+
             if (count($productImageExisting) > 0) {
                 foreach($productImageExisting as $row) {
-                    $this->unlinkImage($row->image_name);
+                    try {
+                        $imageKit->deleteFile($row->file_id);
+                    } catch (\Exception $e) {
+                        return response()->json([
+                            'status' => 500,
+                            'message' => 'Something Went Wrong',
+                            'error' => $e->getMessage()
+                        ], 500);
+                    }
                 }
             }
             $productExisting->delete();
