@@ -22,6 +22,8 @@ class ProductImageResource extends JsonResource
             'image_path' => $this->image_path,
             'image_name' => $this->image_name,
             'product_id' => $this->product_id,
+            'filename' => $this->filename,
+            'file_id' => $this->file_id,
             'product' => new ProductResource($product),
             // 'further_subcategories' => FurtherSubCategoryResource::collection($this->whenLoaded('furtherSubCategory'))
         ];

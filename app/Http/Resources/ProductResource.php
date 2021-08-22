@@ -34,6 +34,8 @@ class ProductResource extends JsonResource
             'stock' => $this->stock,
             'brand' => new BrandResource($brand),
             'category' => new CategoryResource($category),
+            'filename' => $this->filename,
+            'file_id' => $this->file_id,
             'products_images' => ProductImageResource::collection($this->whenLoaded('productImage'))
         ];
     }

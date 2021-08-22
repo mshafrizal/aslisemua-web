@@ -11,6 +11,10 @@ use App\Http\Resources\ProductResource;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use ImageKit\ImageKit;
+use Config;
+
 class ProductController extends Controller
 {
     function getProducts() {
@@ -175,7 +179,6 @@ class ProductController extends Controller
 
     function demoGetProduct($product_id) {
       $data = ProductModel::with('brand','category','productImage')->find($product_id);
-//      dd($data->productImage);
       return view('product.product-detail')->with('data', $data);
     }
 
@@ -236,10 +239,10 @@ class ProductController extends Controller
                 'message' => 'Images not found'
             ], 400);
 
-            $allowedFileExtension = ['jpeg', 'jpg', 'png'];
             $images = $request->file('images');
-            $errors = [];
             $arrImages = [];
+            $arrImagesUrl = [];
+            $arrImageIds = [];
 
             $name = $request->name;
             $size = $request->size;
@@ -253,11 +256,32 @@ class ProductController extends Controller
             $basePrice = $request->base_price;
             $finalPrice = $request->final_price;
             $stock = $request->stock;
-            // $user = Auth::user();
-            $user = 'Pandhu Wibowo';
+            $user = Auth::user();
+
+            $imageKit = new ImageKit(
+                config('imagekit.IMAGEKIT_CDN_PUBLIC_KEY'),
+                config('imagekit.IMAGEKIT_CDN_PRIVATE_KEY'),
+                config('imagekit.IMAGEKIT_CDN_URL')
+            );
             foreach($images as $image) {
-                $newFileName = 'PRODUCT'. time(). '-' . $image->getClientOriginalName();
-                $image->storeAs('products', $newFileName, 'public');
+                $newFileName = 'PRODUCT'. time() . $image->getClientOriginalName();
+                try {
+                    $uploadFile = $imageKit->upload(
+                        array(
+                            "file" => base64_encode(file_get_contents($image)), // required
+                            "fileName" => $newFileName, // required
+                            'folder' => "/Products"
+                        )
+                    );
+                    $arrImagesUrl[] = $uploadFile->success->url;
+                    $arrImageIds[] = $uploadFile->success->fileId;
+                } catch (\Exception $e) {
+                    return response()->json([
+                        'status' => 500,
+                        'message' => 'Something Went Wrong',
+                        'error' => $e->getMessage()
+                    ], 500);
+                }
                 $arrImages[] = $newFileName;
             }
             $now = Carbon::now();
@@ -279,26 +303,30 @@ class ProductController extends Controller
                 'final_price' => $finalPrice,
                 'brand_id' => $brandId,
                 'category_id' => $categoryId,
-                'image_path' => 'products/' . $arrImages[0],
+                'image_path' => $arrImagesUrl[0],
                 'image_name' => $arrImages[0],
                 'status' => true,
-                'created_by' => $user,
-                'updated_by' => $user,
+                'created_by' => $user->name,
+                'updated_by' => $user->name,
                 'created_at' => $now,
                 'updated_at' => $now,
                 'stock' => $stock,
-                'slug' => Str::slug($name) . '-' . time()
+                'slug' => Str::slug($name) . '-' . time(),
+                'filename' => $arrImages[0],
+                'file_id' => $arrImageIds[0]
             ]);
 
             if ($newProduct->save()) {
-                foreach($arrImages as $image) {
+                foreach($arrImagesUrl as $key => $imageUrl) {
                     $productImage = [
                         'id' => Str::uuid(),
                         'product_id' => $newProduct->id,
-                        'image_path' => 'products/' . $image,
-                        'image_name' => $image,
+                        'image_path' => $imageUrl,
+                        'image_name' => $arrImages[$key],
                         'created_at' => $now,
                         'updated_at' => $now,
+                        'filename' => $arrImages[$key],
+                        'file_id' => $arrImageIds[$key]
                     ];
 
                     $newProductImage[] = $productImage;
@@ -309,10 +337,6 @@ class ProductController extends Controller
                     'status' => 201,
                     'message' => $name . ' successfully created',
                 ], 201);
-            }
-
-            foreach($arrImages as $image) {
-                $this->unlinkImage($image);
             }
 
             return response()->json([
@@ -344,9 +368,23 @@ class ProductController extends Controller
             $productImageExisting = ProductImageModel::where('product_id', $id)->get();
             if (count($productImageExisting) > 0) ProductImageModel::whereIn('product_id', [$id])->delete();
 
+            $imageKit = new ImageKit(
+                config('imagekit.IMAGEKIT_CDN_PUBLIC_KEY'),
+                config('imagekit.IMAGEKIT_CDN_PRIVATE_KEY'),
+                config('imagekit.IMAGEKIT_CDN_URL')
+            );
+
             if (count($productImageExisting) > 0) {
                 foreach($productImageExisting as $row) {
-                    $this->unlinkImage($row->image_name);
+                    try {
+                        $imageKit->deleteFile($row->file_id);
+                    } catch (\Exception $e) {
+                        return response()->json([
+                            'status' => 500,
+                            'message' => 'Something Went Wrong',
+                            'error' => $e->getMessage()
+                        ], 500);
+                    }
                 }
             }
             $productExisting->delete();
@@ -417,10 +455,45 @@ class ProductController extends Controller
             $basePrice = $request->base_price;
             $finalPrice = $request->final_price;
             $stock = $request->stock;
-            // $user = Auth::user();
-            $user = 'Pandhu Wibowo';
+            $user = Auth::user();
 
             $now = Carbon::now();
+
+            $imageKit = new ImageKit(
+                config('imagekit.IMAGEKIT_CDN_PUBLIC_KEY'),
+                config('imagekit.IMAGEKIT_CDN_PRIVATE_KEY'),
+                config('imagekit.IMAGEKIT_CDN_URL')
+            );
+
+            $images = $request->file('images');
+            $arrImages = [];
+            $arrImagesUrl = [];
+            $arrImageIds = [];
+
+            // Save new Images
+            foreach($images as $image) {
+                $newFileName = 'PRODUCT'. time(). '-' . $image->getClientOriginalName();
+                try {
+                    $uploadFile = $imageKit->upload(
+                        array(
+                            "file" => base64_encode(file_get_contents($image)), // required
+                            "fileName" => $newFileName, // required
+                            'folder' => "/Products"
+                        )
+                    );
+
+                    $arrImagesUrl[] = $uploadFile->success->url;
+                    $arrImageIds[] = $uploadFile->success->fileId;
+                } catch (\Exception $e) {
+                    return response()->json([
+                        'status' => 500,
+                        'message' => 'Something Went Wrong',
+                        'error' => $e->getMessage()
+                    ], 500);
+                }
+
+                $arrImages[] = $newFileName;
+            }
 
             $productExisting->name = $name;
             $productExisting->size = $size;
@@ -434,41 +507,34 @@ class ProductController extends Controller
             $productExisting->base_price = $basePrice;
             $productExisting->final_price = $finalPrice;
             $productExisting->stock = $stock;
-            $productExisting->updated_by = $user;
+            $productExisting->updated_by = $user->name;
             $productExisting->updated_at = $now;
             $productExisting->slug = Str::slug($name) . '-' . time();
-
-            $images = $request->file('images');
-            $errors = [];
-            $arrImages = [];
-
-            // Save new Images
-            foreach($images as $image) {
-                $newFileName = 'PRODUCT'. time(). '-' . $image->getClientOriginalName();
-                $image->storeAs('products', $newFileName, 'public');
-                $arrImages[] = $newFileName;
-            }
-            $productExisting->image_path = 'products/' . $arrImages[0];
+            $productExisting->image_path = $arrImagesUrl[0];
             $productExisting->image_name = $arrImages[0];
+            $productExisting->filename = $arrImages[0];
+            $productExisting->file_id = $arrImageIds[0];
 
             if ($productExisting->save()) {
                 $productsImages = ProductImageModel::where('product_id', $id)->get();
                 if (count($productsImages) > 0) {
                     foreach($productsImages as $row) {
-                        $this->unlinkImage($row->image_name);
+                        $imageKit->deleteFile($row->file_id);
                     }
 
                     ProductImageModel::whereIn('product_id', [$id])->delete();
                 }
 
-                foreach($arrImages as $image) {
+                foreach($arrImagesUrl as $key=>$imageUrl) {
                     $newProductImage = [
                         'id' => Str::uuid(),
                         'product_id' => $productExisting->id,
-                        'image_path' => 'products/' . $image,
-                        'image_name' => $image,
+                        'image_path' => $imageUrl,
+                        'image_name' => $arrImages[$key],
                         'created_at' => $now,
                         'updated_at' => $now,
+                        'filename' => $arrImages[$key],
+                        'file_id' => $arrImageIds[$key]
                     ];
 
                     $newProductsImages[] = $newProductImage;
