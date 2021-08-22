@@ -1,44 +1,47 @@
 <template>
-  <v-row>
-    <v-col cols="12">Add Brand</v-col>
-    <v-col cols="12" sm="4">
-      <v-card>
-        <v-form ref="formAddBrand" v-model="valid" @submit.prevent="handleSubmit">
-          <v-card-text>
-            <v-img
-              max-height="297"
-              max-width="500"
-              :src="logoUrl"
-            ></v-img>
-            <v-file-input
-              v-model="logo"
-              clearable
-              required
-              :rules="requiredRules"
-              show-size label="Brand Logo"
-              prepend-icon="mdi-camera"
-              accept="image/png, image/jpeg, image/bmp"
-              placeholder="Pick a logo"
-            ></v-file-input>
-            <v-divider></v-divider>
-            <v-text-field v-model="name" label="Brand Name" required :rules="requiredRules"></v-text-field>
-            <v-textarea v-model="description" label="Description"></v-textarea>
-<!--            <v-checkbox v-model="status" label="Active"></v-checkbox>-->
-          </v-card-text>
+  <v-dialog
+    v-model="open"
+    max-width="400"
+  >
+    <v-card>
+      <v-card-title>Add New Brand</v-card-title>
+      <v-form ref="formAddBrand" v-model="valid" @submit.prevent="handleSubmit">
+        <v-card-text>
+          <v-img
+            max-height="297"
+            max-width="500"
+            :src="logoUrl"
+          ></v-img>
+          <v-file-input
+            v-model="logo"
+            clearable
+            required
+            :rules="requiredRules"
+            show-size label="Brand Logo"
+            prepend-icon="mdi-camera"
+            accept="image/png, image/jpeg, image/bmp"
+            placeholder="Pick a logo"
+          ></v-file-input>
           <v-divider></v-divider>
-          <v-card-actions>
-            <v-btn color="error" plain href="/admin/brand/list">Cancel</v-btn>
-            <v-btn type="submit" :disabled="!valid" :loading="loading" color="primary" depressed>Submit</v-btn>
-          </v-card-actions>
-        </v-form>
-      </v-card>
-    </v-col>
-  </v-row>
+          <v-text-field v-model="name" label="Brand Name" required :rules="requiredRules"></v-text-field>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-btn color="error" plain @click="close">Cancel</v-btn>
+          <v-btn type="submit" :disabled="!valid" :loading="loading" color="primary" depressed>Submit</v-btn>
+        </v-card-actions>
+      </v-form>
+    </v-card>
+  </v-dialog>
+
 </template>
 
 <script>
 export default {
   name: "BrandCreate",
+  props: {
+    open: Boolean
+  },
   data: function () {
     return {
       loading: false,
@@ -50,7 +53,6 @@ export default {
         value => !!value || 'This field is required',
       ],
       name: '',
-      description: '',
       status: false,
       valid: true
     }
@@ -61,7 +63,17 @@ export default {
       return URL.createObjectURL(this.logo)
     }
   },
+  watch: {
+    open: function (val, oldVal) {
+      this.logo = null
+      this.name = ''
+      this.loading = false
+    }
+  },
   methods: {
+    close () {
+      this.$emit('close')
+    },
     handleSubmit () {
       if (this.$refs.formAddBrand.validate()) {
         this.loading = true
@@ -73,7 +85,7 @@ export default {
             message: result.message,
             color: 'success'
           })
-          this.$router.push('/admin/brand/list')
+          this.close()
         }).catch(error => {
           console.log(error)
           this.$store.dispatch('showSnackbar', {

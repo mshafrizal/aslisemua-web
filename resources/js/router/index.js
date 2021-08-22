@@ -74,7 +74,7 @@ const routes = [
         path: 'brand/:id/detail', name: 'brand-detail', component: BrandCreate, meta: { requiresAuth: true }
       },
       {
-        path: 'brand/:id/edit', name: 'brand-edit', component: BrandCreate, meta: { requiresAuth: true }
+        path: 'brand/:id/edit', name: 'brand-edit', component: BrandEdit, meta: { requiresAuth: true }
       },
       {
         path: 'category/list', name: 'category-list', component: CategoryList, meta: { requiresAuth: true }

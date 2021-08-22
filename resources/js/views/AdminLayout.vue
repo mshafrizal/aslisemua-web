@@ -1,7 +1,12 @@
 <template>
   <v-app id="inspire">
 
-    <VSnackbarQueue :items="$store.getters.getSnackbar()" top right @remove="removeItem"></VSnackbarQueue>
+    <v-snackbar-queue
+      :items="snackbarItems"
+      @remove="removeItem"
+      close-button-icon="mdi-close"
+      top
+      next-button-count-text="More"></v-snackbar-queue>
     <v-navigation-drawer
       v-if="renderDrawer"
       v-model="drawer"
@@ -70,7 +75,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
 export default {
   name: "AdminLayout",
   data: function () {
@@ -116,6 +120,9 @@ export default {
   computed: {
     renderDrawer () {
       return this.$route.meta.requiresAuth
+    },
+    snackbarItems () {
+      return this.$store.getters.getSnackbar
     }
   },
   methods: {
