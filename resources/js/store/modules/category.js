@@ -40,7 +40,7 @@ const actions = {
     return axios.get(`/api/v1/categories/public/${query}`).then(response => {
       return Promise.resolve(response.data)
     }).catch(error => Promise.reject(error))
-  },
+  }
 }
 const mutations = {}
 

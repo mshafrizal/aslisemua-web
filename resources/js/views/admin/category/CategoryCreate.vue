@@ -2,6 +2,7 @@
   <v-dialog
     v-model="open"
     max-width="400"
+    persistent
   >
     <v-card v-if="loading">
       <v-skeleton-loader

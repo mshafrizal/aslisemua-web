@@ -39,25 +39,25 @@ const actions = {
         await commit('setAuth', response.data.data)
         await commit('setIsLoggedIn')
       }
-      return response.data
+      return Promise.resolve(response.data)
     }).catch(error => {
+      console.log(error.response)
       let message = ''
       if (error.response) {
         message = error.response.data.message
       } else if (error.request) {
         dispatch('showSnackbar', {
-          value: true,
           message: 'Something went wrong, please contact admin for any help',
-          type: 'error'
+          color: 'error'
         }, { root: true })
       } else {
         message = error.message
       }
       dispatch('showSnackbar', {
-        value: true,
         message: message,
-        type: 'error'
+        color: 'error'
       }, { root: true })
+      return Promise.reject(message)
     })
   },
   authLogout ({commit}) {

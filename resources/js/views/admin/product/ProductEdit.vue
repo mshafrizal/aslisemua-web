@@ -5,7 +5,12 @@
       hide-overlay
       transition="dialog-bottom-transition"
   >
-    <v-form v-model="valid" ref="formCreateProduct" @submit.prevent="handleCreateProduct">
+    <v-card v-if="product.loading">
+      <v-skeleton-loader
+        type="card"
+      ></v-skeleton-loader>
+    </v-card>
+    <v-form v-else v-model="valid" ref="formCreateProduct" @submit.prevent="handleEditProduct">
       <v-toolbar
         dark
         color="primary"
@@ -18,7 +23,7 @@
         >
           <v-icon>mdi-close</v-icon>
         </v-btn>
-        <v-toolbar-title>Create Product</v-toolbar-title>
+        <v-toolbar-title>Edit Product</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items>
           <v-btn
@@ -137,11 +142,11 @@
 <script>
 import { TiptapVuetify, Heading, Bold, Italic, Strike, Underline, Paragraph, BulletList, OrderedList, ListItem, Link, Blockquote, HardBreak, HorizontalRule, History } from 'tiptap-vuetify'
 export default {
-  name: "ProductCreate",
+  name: "ProductEdit",
   components: {
     TiptapVuetify
   },
-  props: ['open'],
+  props: ['open', 'id'],
   data: function () {
     return {
       basePriceRules: [
@@ -204,6 +209,10 @@ export default {
         final_price: 0,
         images: []
       },
+      product: {
+        loading: false,
+        data: null
+      },
       gender: [
         { text: 'Male', value: 'male' },
         { text: 'Female', value: 'female' },
@@ -234,11 +243,44 @@ export default {
       }
     }
   },
-  created () {
-    this.fetchBrands()
-    this.fetchCategories()
+  watch: {
+    open: function (val, oldVal) {
+      if (val === true) {
+        this.fetchBrands()
+        this.fetchCategories()
+        this.fetchProduct()
+      }
+    }
   },
   methods: {
+    fetchProduct () {
+      this.product.loading = true
+      this.$store.dispatch('product/adminFetchProduct', { product_id: this.id }).then(result => {
+        console.log(result)
+        this.product.data = result.results.data
+        this.formCreateProduct = {
+          name: result.results.data.name,
+          brand_id: result.results.data.brand_id,
+          category_id: result.results.data.category_id,
+          size: result.results.data.size,
+          gender: result.results.data.gender,
+          color: result.results.data.color,
+          condition: result.results.data.condition,
+          description: result.results.data.description,
+          detail: result.results.data.detail,
+          discount_price: result.results.data.discount_price,
+          alt_image: result.results.data.alt_image,
+          base_price: result.results.data.base_price,
+          final_price: result.results.data.final_price,
+          images: []
+        }
+      }).catch(error => {
+        this.$store.dispatch('showSnackbar', {
+          message: error.toString(),
+          color: 'error'
+        })
+      }).finally(() => this.product.loading = false)
+    },
     handleClose () {
       this.$emit('close')
     },
@@ -279,7 +321,7 @@ export default {
     handleChangeDiscount () {
       this.formCreateProduct.final_price = this.formCreateProduct.base_price - this.formCreateProduct.discount_price
     },
-    handleCreateProduct (event) {
+    handleEditProduct (event) {
       event.preventDefault()
       if (this.formCreateProduct.images.length === 0) {
         this.$store.dispatch('showSnackbar', {
@@ -316,7 +358,7 @@ export default {
       this.formCreateProduct.images.forEach(img => {
         params.append('images[]', img, img.name)
       })
-      this.$store.dispatch('product/adminCreateProduct', params).then(result => {
+      this.$store.dispatch('product/adminEditProduct', { product_id: this.id, data: params}).then(result => {
         if (result.status >= 400) throw new Error(result.message)
         else {
           this.$store.dispatch('showSnackbar', {
