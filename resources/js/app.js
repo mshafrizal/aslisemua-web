@@ -12,6 +12,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 // don't forget to import CSS styles
 import 'tiptap-vuetify/dist/main.css'
+
 const vuetify = new Vuetify()
 
 Vue.use(VueAwesomeSwiper, /* { default options with global component } */)
@@ -31,10 +32,11 @@ Vue.use(TiptapVuetifyPlugin, {
   vuetify, iconsGroup: 'mdi'
 })
 Vue.prototype.$axios = axios
-
+import VuetifySnackbarQueue from "vuetify-snackbar-queue";
 import store from './store/index'
 import App from './App.vue'
 import router from "./router"
+Vue.use(VuetifySnackbarQueue)
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

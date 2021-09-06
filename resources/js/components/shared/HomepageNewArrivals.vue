@@ -1,6 +1,6 @@
 <template>
   <section class="mb-10">
-    <h1 v-if="products" class="text-3xl text-center mt-20">NEW ARRIVALS</h1>
+    <h1 v-if="!products.loading" class="text-3xl text-center mt-20 mb-10">NEW ARRIVALS</h1>
     <swiper  ref="mySwiper" :options="swiperOptions">
       <template v-if="products">
         <swiper-slide v-for="product in products.data" :key="product.id" >
@@ -20,7 +20,10 @@ export default {
   components: {ProductItem},
   data: function () {
     return {
-      products: null,
+      products: {
+        data: [],
+        loading: true
+      },
       swiperOptions: {
         slidesPerView: 4,
         navigation: {
@@ -63,7 +66,7 @@ export default {
       this.$axios.get(`${process.env.MIX_APP_URL}/api/v1/products/public/main?limit=8`).then(response => {
         console.log('getproducts', response)
         if (response.status === 200) {
-          this.products = response.data
+          this.products.data = response.data.data
         }
       }).catch(error => {
         let message = ''
@@ -74,7 +77,7 @@ export default {
           message: message,
           type: 'error'
         })
-      })
+      }).finally(() => this.products.loading = false)
 
     }
   }

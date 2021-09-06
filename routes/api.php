@@ -10,6 +10,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\CustomerAddressController;
 use App\Models\CustomerAddress;
+use App\Http\Controllers\CartController;
 
 //Access-Control-Allow-Origin: *
 header('Access-Control-Allow-Origin: *');
@@ -132,7 +133,9 @@ Route::prefix('v1')->group(function () {
     });
 
     /**
-     * 
+     * ==============================
+     * Customer Addresses
+     * ==============================
      */
     Route::prefix('customer-address')->group(function() {
         Route::get('/{customerId}', [CustomerAddressController::class, 'getCustomerAddressesByCustomerId']);
@@ -141,5 +144,16 @@ Route::prefix('v1')->group(function () {
         Route::put('/{customerId}/address/{addressId}', [CustomerAddressController::class, 'updateCustomerAddress']);
         Route::put('/address/status', [CustomerAddressController::class, 'setCustomerAddressDefault']);
         Route::get('detail/{id}', [CustomerAddressController::class, 'getCustomerAddress']);
+    });
+
+    /**
+     * ==============================
+     * Carts
+     * ==============================
+     */
+    Route::prefix('carts')->group(function() {
+        Route::middleware('modules:api')->post('/store', [CartController::class, 'insertProduct']);
+        Route::middleware('modules:api')->delete('/delete', [CartController::class, 'removeProduct']);
+        Route::middleware('modules:api')->get('/', [CartController::class, 'getCarts']);    
     });
 });

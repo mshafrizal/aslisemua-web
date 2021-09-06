@@ -39,6 +39,14 @@ import ShopLayout from "../views/user/shop/ShopLayout";
 import NewArrivals from "../views/user/shop/NewArrivals";
 import UserProductDetail from "../views/user/product/UserProductDetail";
 import VerifyEmail from "../views/user/VerifyEmail";
+
+import AllCategories from '../views/user/AllCategories'
+import Cart from '../views/user/cart/Cart'
+
+import UserProducts from '../views/user/products/UserProducts'
+// Demo
+
+import DemoCategoryShop from '../views/user/shop/DemoCategoryShop';
 const routes = [
   {
     path: '/admin',
@@ -70,7 +78,7 @@ const routes = [
         path: 'brand/:id/detail', name: 'brand-detail', component: BrandCreate, meta: { requiresAuth: true }
       },
       {
-        path: 'brand/:id/edit', name: 'brand-edit', component: BrandCreate, meta: { requiresAuth: true }
+        path: 'brand/:id/edit', name: 'brand-edit', component: BrandEdit, meta: { requiresAuth: true }
       },
       {
         path: 'category/list', name: 'category-list', component: CategoryList, meta: { requiresAuth: true }
@@ -97,6 +105,12 @@ const routes = [
     component: UserLayout,
     meta: { requiresAuth: false },
     children: [
+      {
+        path: '/all-categories',
+        component: AllCategories,
+        name: 'AllCategories',
+        meta: { requiresAuth: false, navbar: true }
+      },
       {
         path: '',
         component: Homepage,
@@ -143,6 +157,23 @@ const routes = [
         component: UserProductDetail,
         name: 'UserProductDetail',
         meta: { requiresAuth: false, navbar: true }
+      },
+      {
+        path: '/products/:category_name/:category_id',
+        component: UserProducts,
+        name: 'UserProducts',
+        meta: { requiresAuth: false, navbar: true }
+      },
+      {
+        path: '/cart',
+        component: Cart,
+        name: 'Cart',
+        meta: { requiresAuth: true, navbar: true }
+      },
+      {
+        path: '/demo/shop/:cat_id',
+        meta: { requiresAuth: false, navbar: true },
+        component: DemoCategoryShop,
       }
     ]
   }

@@ -1,5 +1,7 @@
 <template>
   <v-row>
+    <product-create :open="dialogCreateProduct" @close="handleClose" @createSuccess="handleSuccess"/>
+    <product-edit :open="dialogEditProduct.open" :id="dialogEditProduct.id" @close="handleClose" @editSuccess="handleSuccess"/>
     <v-dialog v-model="dialogUpdateStatus" persistent>
       <v-card>
         <v-card-title>Change Product Status</v-card-title>
@@ -22,9 +24,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-col cols="12" sm="10"><h2>Product List</h2></v-col>
-    <v-col cols="12" sm="2">
-      <v-btn href="/admin/product/create" block>Add Product</v-btn>
+    <v-col class="flex-grow-1"><h2>Product List</h2></v-col>
+    <v-col class="flex-grow-0">
+      <v-btn @click="dialogCreateProduct = true" block>Add Product</v-btn>
     </v-col>
     <v-col cols="12">
       <v-data-table
@@ -51,8 +53,11 @@
 </template>
 
 <script>
+import ProductCreate from './ProductCreate.vue'
+import ProductEdit from './ProductEdit.vue'
 export default {
   name: "ProductList",
+  components: {ProductCreate, ProductEdit},
   data: function () {
     return {
       products: [],
@@ -65,6 +70,11 @@ export default {
         { text: 'Discount', align: 'end', sortable: true, value: 'discount_price' },
         { text: 'Actions', align: 'center', sortable: false, value: 'actions' },
       ],
+      dialogEditProduct: {
+        open: false,
+        id: ''
+      },
+      dialogCreateProduct: false,
       isSubmitting: false,
       loading: true,
       selectedProduct: null
@@ -74,6 +84,14 @@ export default {
     this.fetchAdminProducts()
   },
   methods: {
+    handleClose () {
+      this.dialogCreateProduct = false
+      this.dialogEditProduct.open = false
+      this.dialogEditProduct.id = ''
+    },
+    handleSuccess () {
+      this.fetchAdminProducts()
+    },
     fetchAdminProducts () {
       this.loading = true
       this.$store.dispatch("product/adminFetchProducts").then(result => {
@@ -132,7 +150,8 @@ export default {
       this.$router.push(`/admin/product/${id}/detail`)
     },
     toEditProduct (id) {
-      this.$router.push(`/admin/product/${id}/edit`)
+      this.dialogEditProduct.id = id
+      this.dialogEditProduct.open = true
     }
   }
 }
