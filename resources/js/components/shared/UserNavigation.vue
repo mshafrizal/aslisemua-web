@@ -15,7 +15,7 @@
             <v-btn icon><v-icon>mdi-heart-outline</v-icon></v-btn>
           </v-col>
           <v-col cols="1">
-            <v-btn icon><v-icon>mdi-cart-outline</v-icon></v-btn>
+            <cart-button />
           </v-col>
           <v-col cols="1">
             <v-menu offset-y>
@@ -129,8 +129,10 @@
 </template>
 
 <script>
+import CartButton from './CartButton.vue'
 export default {
   name: "UserNavigation",
+  components: {CartButton},
    data: function () {
      return {
        drawer: false,

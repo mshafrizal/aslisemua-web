@@ -1,5 +1,47 @@
 <template>
   <v-row>
+    <brand-create :open="createBrand.open" @close="handleClose"></brand-create>
+    <brand-edit :open="editBrand.open" :brand-id="editBrand.id" @close="handleClose"></brand-edit>
+    <v-dialog
+      :loading="viewBrand.loading"
+      v-model="viewBrand.open"
+      max-width="374"
+    >
+      <v-card>
+        <template slot="progress">
+          <v-progress-linear
+            color="primary"
+            height="10"
+            indeterminate
+          ></v-progress-linear>
+        </template>
+        <template v-if="viewBrand.data">
+          <v-img :src="viewBrand.data.file_path" >
+            <template v-slot:placeholder>
+              <v-row
+                class="fill-height ma-0"
+                align="center"
+                justify="center"
+              >
+                <v-progress-circular
+                  indeterminate
+                  color="grey lighten-5"
+                ></v-progress-circular>
+              </v-row>
+            </template>
+          </v-img>
+          <v-card-title>{{ viewBrand.data.name }}</v-card-title>
+          <v-card-text>
+            <p>
+              {{ viewBrand.data.description }}
+            </p>
+            <p>
+              {{ viewBrand.data.associated_product }}&nbsp;Products
+            </p>
+          </v-card-text>
+        </template>
+      </v-card>
+    </v-dialog>
     <v-dialog
       v-model="dialogDelete"
       persistent
@@ -31,7 +73,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-col cols="12" sm="10">Brand List</v-col>
+    <v-col cols="12" sm="10">
+      <h3 class="text-h3 font-weight-bold">Brands</h3>
+    </v-col>
     <v-col cols="12" sm="2">
       <v-btn @click="toAddBrand" block>Add Brand</v-btn>
     </v-col>
@@ -55,8 +99,11 @@
 </template>
 
 <script>
+import BrandCreate from "./BrandCreate";
+import BrandEdit from "./BrandEdit";
 export default {
   name: "BrandList",
+  components: {BrandEdit, BrandCreate},
   data: function () {
     return {
       loading: true,
@@ -69,13 +116,31 @@ export default {
         { text: 'Updated By', align: 'start', sortable: true, value: 'updated_by' },
         { text: 'Actions', align: 'center', sortable: false, value: 'actions' },
       ],
-      selectedBrand: null
+      createBrand: {
+        open: false
+      },
+      editBrand: {
+        open: false,
+        id: '',
+      },
+      selectedBrand: null,
+      viewBrand: {
+        data: null,
+        loading: false,
+        open: false
+      }
     }
   },
   mounted () {
     this.fetchBrands()
   },
   methods: {
+    handleClose () {
+      this.createBrand.open = false
+      this.editBrand.open = false
+      this.editBrand.id = ''
+      this.fetchBrands()
+    },
     toggleDeleteDialog (item) {
       this.dialogDelete = !this.dialogDelete
       if (!this.selectedBrand) this.selectedBrand = item
@@ -115,13 +180,28 @@ export default {
       }).finally(() => this.loading = false)
     },
     toAddBrand () {
-      this.$router.push('/admin/brand/create')
+      this.createBrand.open = true
     },
     toEditBrand (id) {
-      this.$router.push(`/admin/brand/${id}/edit`)
+      this.editBrand.open = true
+      this.editBrand.id = id
     },
     toViewBrand (id) {
-      this.$router.push(`/admin/brand/${id}/detail`)
+      this.viewBrand.open = true
+      this.viewBrand.loading = true
+      this.viewBrand.data = null
+      this.$store.dispatch('brand/fetchBrand', { brand_id: id }).then(result => {
+        this.viewBrand.data = result.results
+      }).catch(error => {
+        this.$store.dispatch('showSnackbar', {
+          message: error.response ? error.response.message : error.message,
+          color: 'error'
+        })
+        this.viewBrand.open = false
+        this.viewBrand.data = null
+      }).finally(() => {
+        this.viewBrand.loading = false
+      })
     }
   }
 }

@@ -1,6 +1,5 @@
 <template>
   <router-link :to="`/product/${product.slug}`" class="product" v-if="product && product.products_images.length > 0">
-<!--    <img :src="resolveImagePath(product.products_images[0].image_path)" alt="" class="product__img">-->
     <img :src="product.products_images[0].image_path" alt="" class="product__img">
     <div class="product__info">
       <h1 class="text-uppercase font-weight-bold text-lg black--text">{{product.brand.name}}</h1>
@@ -21,11 +20,6 @@ export default {
       required: true
     }
   },
-  methods: {
-    resolveImagePath (path) {
-      return '/storage/' + path
-    }
-  }
 }
 </script>
 

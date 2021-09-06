@@ -64,22 +64,16 @@ export default {
             from: 'Signin.vue siginin()'
           }
         this.$store.dispatch('auth/authLogin', params).then(result => {
+          console.log(result)
           if (result.status === 200) {
             this.$store.dispatch('showSnackbar', {
-              value: true,
               message: result.message,
-              type: 'success'
+              color: 'success'
             })
-            setTimeout(() => this.$router.push({name: 'dashboard'}), 2000)
+            this.$router.push('/admin/')
           } else {
             throw new Error(result.message)
           }
-        }).catch(error => {
-          this.$store.dispatch('showSnackbar', {
-            value: true,
-            message: error,
-            type: 'error'
-          })
         }).finally(() => this.formLogin.loading = false)
       }
     }

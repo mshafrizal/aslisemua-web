@@ -1,9 +1,6 @@
 <template>
   <v-row>
-    <v-col cols="12" sm="10"><h2>Product List</h2></v-col>
-    <v-col cols="12" sm="2">
-      <v-btn href="/admin/product/:id/edit" block>Edit Product</v-btn>
-    </v-col>
+    <v-col class="flex-grow-1"><h2>Product List</h2></v-col>
     <v-col cols="12">
       <v-card class="text-caption">
         <v-container fluid>
