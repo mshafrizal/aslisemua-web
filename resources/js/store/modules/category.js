@@ -38,6 +38,7 @@ const actions = {
   },
   fetchCategories (context, query) {
     return axios.get(`/api/v1/categories/public/${query}`).then(response => {
+      console.log(response.data)
       return Promise.resolve(response.data)
     }).catch(error => Promise.reject(error))
   }

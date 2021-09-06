@@ -5,7 +5,7 @@
       hide-overlay
       transition="dialog-bottom-transition"
   >
-    <v-form v-model="valid" ref="formCreateProduct" @submit.prevent="handleCreateProduct">
+    <v-form v-if="open" v-model="valid" ref="formCreateProduct" @submit.prevent="handleCreateProduct">
       <v-toolbar
         dark
         color="primary"
@@ -334,6 +334,7 @@ export default {
         })
       }).finally(() => {
         this.isSubmitting = false
+        this.handleClose()
         this.formCreateProduct = {
           name: '',
           brand_id: '',

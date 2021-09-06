@@ -107,6 +107,13 @@ export default {
   },
   methods: {
     close () {
+      this.formCreateCategory =  {
+        name: '',
+        file: null,
+        description: '',
+        parents: null,
+        is_navbar: false
+      }
       this.$emit('close')
     },
     fetchParentCategories () {
@@ -157,6 +164,13 @@ export default {
         })
       }).finally(() => {
         this.isSubmitting = false
+        this.formCreateCategory =  {
+          name: '',
+          file: null,
+          description: '',
+          parents: null,
+          is_navbar: false
+        }
       })
     }
   }

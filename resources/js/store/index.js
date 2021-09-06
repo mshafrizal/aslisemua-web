@@ -5,6 +5,7 @@ import brand from './modules/brand'
 import customer from "./modules/customer"
 import category from "./modules/category"
 import product from './modules/product'
+import cart from './modules/cart'
 // import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 
@@ -56,7 +57,8 @@ export default new Vuex.Store({
     brand,
     customer,
     category,
-    product
+    product,
+    cart
   }
 })
 

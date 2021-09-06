@@ -24,7 +24,7 @@ const actions = {
     }).catch(error => error)
   },
   adminEditProduct (context, payload) {
-    return axios.put(`/api/v1/products/private/${payload.product_id}/update`, payload.data).then(response => {
+    return axios.post(`/api/v1/products/private/${payload.product_id}/update`, payload.data).then(response => {
       return response.data
     }).catch(error => error)
   }
