@@ -53,6 +53,7 @@
             item-text="name"
             item-value="id"
             v-model="formCreateCategory.parents"
+            clearable
             hint="Select parent category if you wish this category to be sub category"
           ></v-select>
           <v-checkbox v-model="formCreateCategory.is_navbar" label="Add to navigation bar"></v-checkbox>
