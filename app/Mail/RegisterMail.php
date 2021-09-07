@@ -29,6 +29,6 @@ class RegisterMail extends Mailable
     public function build()
     {
         // return $this->view('view.name');
-        return $this->from($address = 'noreply.payment.midtrans@gmail.com', $name = $this->details['sender'])->subject($this->details['title'])->view('emails.email-verification');
+        return $this->from($address = 'admin@aslisemua.com', $name = $this->details['sender'])->subject($this->details['title'])->view('emails.email-verification');
     }
 }

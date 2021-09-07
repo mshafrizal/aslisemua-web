@@ -23,7 +23,7 @@
           </v-card-subtitle>
           <v-card-text>
             <v-chip v-if="category.data.is_navbar" color="info">Shown at Navbar</v-chip>
-            <v-chip v-if="category.data.is_navbar" :color="category.data.is_published === 1 ? 'primary' : 'error'">{{ category.data.is_published === 1 ? 'Published': 'Not Published' }}</v-chip>
+            <v-chip :color="category.data.is_published === 1 ? 'primary' : 'error'">{{ category.data.is_published === 1 ? 'Published': 'Not Published' }}</v-chip>
           </v-card-text>
           <v-card-text>
             <span>
@@ -59,8 +59,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-col cols="12" sm="9">Category List</v-col>
-    <v-col cols="12" sm="3">
+    <v-col class="flex-grow-1">Category List</v-col>
+    <v-col class="flex-grow-0">
       <v-btn @click="createCategory.open = true">Add Category</v-btn>
     </v-col>
     <v-col cols="12">
