@@ -62,6 +62,7 @@ Route::prefix('v1')->group(function () {
         Route::middleware('modules:api')->delete('/{id}', [BrandController::class, 'deleteBrand']);
         Route::middleware('modules:api')->put('/{id}/status', [BrandController::class, 'updateBrandStatus']);
         Route::middleware('modules:api')->get('/search', [BrandController::class, 'searchBrands']);
+        Route::middleware('modules:api')->get('/all', [BrandController::class, 'fetchAllBrands']);
     });
 
     /**
