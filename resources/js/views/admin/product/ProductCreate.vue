@@ -186,7 +186,9 @@ export default {
       contentDetail: ``,
       finalPriceRules: [
         v => !!v || 'Final Price is required',
-        v => v >= 0 || 'Must have positive value'
+        function (v) {
+          return parseInt(v) >= 0 || 'Must have positive value'
+        }
       ],
       formCreateProduct: {
         name: '',

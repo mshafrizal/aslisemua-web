@@ -36,6 +36,29 @@ class BrandController extends Controller
         }
     }
 
+    public function searchBrands (Request $request) {
+        try {
+            $brand = BrandModel::where('name', $request->keyword)->get();
+            if (!$brand) return response()->json([
+                'status' => 200,
+                'message' => 'No Data found',
+                'results' => []
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Successfully Fetched',
+                'results' => $brand
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function fetchBrandsPublic () {
       try {
         $brands = BrandModel::orderBy('name', 'asc')->get();
