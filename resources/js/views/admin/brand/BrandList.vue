@@ -73,32 +73,57 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-col cols="12" sm="10">
-      <h3 class="text-h3 font-weight-bold">Brands</h3>
+    <v-col class="flex-grow-1">
+      <h2>Brands</h2>
     </v-col>
-    <v-col cols="12" sm="2">
+    <v-col class="flex-grow-0">
       <v-btn @click="toAddBrand" block>Add Brand</v-btn>
     </v-col>
     <v-col cols="12">
-      <v-data-table
-        :headers="headerBrands"
-        :items="dataBrands ? dataBrands.data : []"
-        :loading="loading"
-        class="elevation-1"
-        :items-per-page="10"
-      >
-        <template v-slot:item.updated_at="{item}">{{ new Date(item.updated_at).toLocaleDateString('id-ID') }}</template>
-        <template v-slot:item.actions="{item}">
-          <v-icon color="primary" class="mr-3" @click="toViewBrand(item.id)">mdi-eye</v-icon>
-          <v-icon color="warning" class="mr-3" @click="toEditBrand(item.id)">mdi-pencil</v-icon>
-          <v-icon color="error" @click="toggleDeleteDialog(item)">mdi-delete-outline</v-icon>
+      <v-skeleton-loader v-if="loading" type="table" />
+      <v-simple-table v-else>
+        <template v-slot:default>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Associated Product</th>
+              <th>Updated At</th>
+              <th>Updated By</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="brand in brands">
+              <tr :key="brand.id">
+                <td>{{ brand.name }}</td>
+                <td>{{ brand.associated_product }}</td>
+                <td>{{ new Date(brand.updated_at).toLocaleDateString('id') }}</td>
+                <td>{{ brand.updated_by }}</td>
+                <td>
+                  <div class="d-flex">
+                    <v-btn color="primary" @click="toViewBrand(brand.id)" icon><v-icon>mdi-eye</v-icon></v-btn>
+                    <v-btn color="warning" @click="toEditBrand(brand.id)" icon><v-icon>mdi-pencil</v-icon></v-btn>
+                    <v-btn color="error" @click="toggleDeleteDialog(brand)" icon><v-icon>mdi-trash-can</v-icon></v-btn>
+                  </div>
+                </td>
+              </tr>
+            </template>
+          </tbody>
         </template>
-      </v-data-table>
+      </v-simple-table>
+      <v-col v-if="links">
+        <div class="mx-auto d-flex justify-between" style="max-width: 300px">
+          <template v-for="link in links">
+            <v-btn :disabled="!link.url" :color="link.active ? 'primary': ''" small depressed @click="fetchBrands(link.url)" v-html="link.label" :key="link.label"></v-btn>
+          </template>
+        </div>
+      </v-col>
     </v-col>
   </v-row>
 </template>
 
 <script>
+import axios from 'axios'
 import BrandCreate from "./BrandCreate";
 import BrandEdit from "./BrandEdit";
 export default {
@@ -107,13 +132,20 @@ export default {
   data: function () {
     return {
       loading: true,
-      dataBrands: null,
       dialogDelete: false,
+      options: {},
+      brands: [],
+      page: 1,
+      numOfPages: 0,
+      total: 0,
+      nextUrl: null,
+      prevUrl: null,
+      links: null,
       headerBrands: [
-        { text: 'Name', align: 'start', sortable: true, value: 'name' },
-        { text: 'Associated Product', align: 'end', sortable: true, value: 'associated_product' },
-        { text: 'Updated At', align: 'start', sortable: true, value: 'updated_at' },
-        { text: 'Updated By', align: 'start', sortable: true, value: 'updated_by' },
+        { text: 'Name', align: 'start', sortable: false, value: 'name' },
+        { text: 'Associated Product', align: 'end', sortable: false, value: 'associated_product' },
+        { text: 'Updated At', align: 'start', sortable: false, value: 'updated_at' },
+        { text: 'Updated By', align: 'start', sortable: false, value: 'updated_by' },
         { text: 'Actions', align: 'center', sortable: false, value: 'actions' },
       ],
       createBrand: {
@@ -131,15 +163,23 @@ export default {
       }
     }
   },
-  mounted () {
-    this.fetchBrands()
+  watch: {
+    options: {
+      handler () {
+        this.fetchBrands()
+      },
+      deep: true
+    }
+  },
+  created () {
+    this.fetchBrands(axios.defaults.baseURL + `/api/v1/brands?page=${this.page}`)
   },
   methods: {
-    handleClose () {
+    handleClose (reload) {
       this.createBrand.open = false
       this.editBrand.open = false
       this.editBrand.id = ''
-      this.fetchBrands()
+      if (reload.value) this.fetchBrands()
     },
     toggleDeleteDialog (item) {
       this.dialogDelete = !this.dialogDelete
@@ -166,18 +206,25 @@ export default {
         })
       }).finally(() => this.fetchBrands())
     },
-    fetchBrands () {
+    async fetchBrands (url) {
       this.loading = true
-      this.$store.dispatch('brand/fetchBrands').then(result => {
-        if (result.status >= 400) throw new Error(result.message)
-        else this.$set(this, 'dataBrands', result.results)
+      axios.get(url).then(response => {
+        console.log('asxios', response)
+        if (response.status === 200) {
+          this.brands = response.data.results.data
+          this.page = response.data.results.current_page
+          this.total = response.data.results.total
+          this.prevUrl = response.data.results.prev_page_url
+          this.nextUrl = response.data.results.next_page_url
+          this.links = response.data.results.links
+        }
       }).catch(error => {
         this.$store.dispatch('showSnackbar', {
-          value: true,
-          type: 'error',
-          message: error
+          message: 'Failed to fetch brands',
+          color: 'error'
         })
       }).finally(() => this.loading = false)
+      
     },
     toAddBrand () {
       this.createBrand.open = true

@@ -4,7 +4,7 @@ const state = () => ({})
 const getters = {}
 const actions = {
   adminFetchProducts (context, payload) {
-    return axios.get(`/api/v1/products/private/`).then(response => {
+    return axios.get(`/api/v1/products/private`).then(response => {
       return response.data
     }).catch(error => error)
   },

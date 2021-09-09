@@ -2,6 +2,7 @@
   <v-dialog
     v-model="open"
     max-width="400"
+    persistent
   >
     <v-card v-if="!brandForm.data">
       <v-skeleton-loader
@@ -32,7 +33,7 @@
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
-          <v-btn color="error" plain :disabled="loading" @click="close">Cancel</v-btn>
+          <v-btn color="error" plain :disabled="loading" @click="close(false)">Cancel</v-btn>
           <v-btn :loading="loading" :disabled="!valid" color="primary" depressed type="submit">Submit</v-btn>
         </v-card-actions>
       </v-form>
@@ -87,8 +88,8 @@ export default {
     }
   },
   methods: {
-    close () {
-      this.$emit('close')
+    close (reload) {
+      this.$emit('close', { value: reload })
     },
     getBrand (id) {
       this.loading = true
@@ -131,7 +132,7 @@ export default {
           })
         }).finally(() => {
           this.loading = false
-          this.close()
+          this.close(true)
         })
       }
     }

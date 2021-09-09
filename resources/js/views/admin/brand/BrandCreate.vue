@@ -2,6 +2,7 @@
   <v-dialog
     v-model="open"
     max-width="400"
+    persistent
   >
     <v-card>
       <v-card-title>Add New Brand</v-card-title>
@@ -27,7 +28,7 @@
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
-          <v-btn color="error" plain @click="close">Cancel</v-btn>
+          <v-btn color="error" plain @click="close(false)">Cancel</v-btn>
           <v-btn type="submit" :disabled="!valid" :loading="loading" color="primary" depressed>Submit</v-btn>
         </v-card-actions>
       </v-form>
@@ -71,8 +72,8 @@ export default {
     }
   },
   methods: {
-    close () {
-      this.$emit('close')
+    close (reload) {
+      this.$emit('close', { value: reload })
     },
     handleSubmit () {
       if (this.$refs.formAddBrand.validate()) {
@@ -85,7 +86,7 @@ export default {
             message: result.message,
             color: 'success'
           })
-          this.close()
+          this.close(true)
         }).catch(error => {
           console.log(error)
           this.$store.dispatch('showSnackbar', {
