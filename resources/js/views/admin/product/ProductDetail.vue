@@ -6,12 +6,12 @@
         <v-container fluid>
           <v-row>
             <v-col cols="12" sm="3">
+              <v-skeleton-loader v-if="!product" type="card" />
               <v-img
                 v-if="product"
-                :lazy-src="'/storage/'+product.product_image[0].image_path"
                 max-height="150"
                 max-width="250"
-                :src="'/storage/'+product.product_image[0].image_path"
+                :src="product.image_path"
               />
             </v-col>
             <v-col cols="12" sm="9">
@@ -68,11 +68,10 @@
             <v-row>
               <v-col cols="6" sm="4" v-for="image in product.product_image" :key="image.id">
                 <v-img
-                  :lazy-src="'/storage/'+image.image_path"
                   max-height="150"
                   max-width="250"
                   contain
-                  :src="'/storage/'+image.image_path"
+                  :src="image.image_path"
                 />
               </v-col>
             </v-row>

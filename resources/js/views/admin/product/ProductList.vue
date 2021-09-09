@@ -29,10 +29,12 @@
       <v-btn @click="dialogCreateProduct = true" block>Add Product</v-btn>
     </v-col>
     <v-col cols="12">
+      <v-skeleton-loader v-if="loading" type="table" />
       <v-data-table
+        v-else
         :headers="headerProducts"
-        :items="products"
-        :loading="loading"
+        :items="products.data"
+        :server-items-length="products.meta.total"
         class="elevation-1"
         :items-per-page="10"
       >
@@ -40,7 +42,7 @@
           Rp {{item.base_price ? item.base_price.toLocaleString('id') : ''}}
         </template>
         <template v-slot:item.discount_price="{item}">
-          Rp {{item.discount_price ? item.discount_price.toLocaleString('id') : ''}}
+          {{ item.discount_price && parseInt(item.discount_price) > 0 ? 'Rp': '' }} {{item.discount_price ? item.discount_price.toLocaleString('id') : ''}}
         </template>
         <template v-slot:item.actions="{item}">
           <v-icon color="primary" class="mr-3" @click="toDetailProduct(item.id)">mdi-eye</v-icon>
@@ -60,7 +62,11 @@ export default {
   components: {ProductCreate, ProductEdit},
   data: function () {
     return {
-      products: [],
+      products: {
+        data: [],
+        links: '',
+        meta: null
+      },
       dialogDelete: false,
       dialogUpdateStatus: false,
       headerProducts: [
@@ -77,7 +83,8 @@ export default {
       dialogCreateProduct: false,
       isSubmitting: false,
       loading: true,
-      selectedProduct: null
+      selectedProduct: null,
+      limit: 16
     }
   },
   created () {
@@ -94,10 +101,12 @@ export default {
     },
     fetchAdminProducts () {
       this.loading = true
-      this.$store.dispatch("product/adminFetchProducts").then(result => {
+      this.$store.dispatch("product/adminFetchProducts", `main?${this.limit}`).then(result => {
         if (result.status >= 400) throw new Error(result.message)
         else {
-          this.products = result.data
+          this.products.data = result.data
+          this.products.meta = result.meta
+          this.products.links = result.links
         }
       }).catch(error => {
         this.$store.dispatch('showSnackbar', {
