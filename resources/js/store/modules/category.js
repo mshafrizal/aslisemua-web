@@ -1,46 +1,71 @@
+import axios from 'axios'
 const state = () => ({})
 const getters = {}
 const actions = {
-  adminCreateCategory (context, payload) {
-    return axios.post(`/api/v1/categories/private`, payload).then(response => {
-      return Promise.resolve(response.data)
-    }).catch(error => Promise.reject(error))
+  async adminCreateCategory (context, payload) {
+    try {
+      const response = await axios.post(`/api/v1/categories/private`, payload)
+      return await Promise.resolve(response.data)
+    } catch (error) {
+      return await Promise.reject(error)
+    }
   },
-  adminFetchCategories (context, payload) {
-    return axios.get(`/api/v1/categories/private`, payload).then(response => {
-      return Promise.resolve(response.data)
-    }).catch(error => Promise.reject(error))
+  async adminFetchCategories (context, payload) {
+    try {
+      const response = await axios.get(`/api/v1/categories/private`, payload)
+      return await Promise.resolve(response.data)
+    } catch (error) {
+      return await Promise.reject(error)
+    }
   },
-  adminFetchCategory (context, payload) {
-    return axios.get(`/api/v1/categories/private/${payload.category_id}`).then(response => {
-      return Promise.resolve(response.data)
-    }).catch(error => Promise.reject(error))
+  async adminFetchCategory (context, payload) {
+    try {
+      const response = await axios.get(`/api/v1/categories/private/${payload.category_id}`)
+      return await Promise.resolve(response.data)
+    } catch (error) {
+      return await Promise.reject(error)
+    }
   },
-  adminUpdateCategory (context, payload) {
-    return axios.post(`/api/v1/categories/private/update/${payload.category_id}`, payload.data).then(response => {
-      return Promise.resolve(response.data)
-    }).catch(error => Promise.reject(error))
+  async adminUpdateCategory (context, payload) {
+    try {
+      const response = await axios.post(`/api/v1/categories/private/update/${payload.category_id}`, payload.data)
+      return await Promise.resolve(response.data)
+    } catch (error) {
+      return await Promise.reject(error)
+    }
   },
-  adminUpdateCategoryStatus (context, payload) {
-    return axios.post(`/api/v1/categories/private/update/status/${payload.category_id}`).then(response => {
-      return Promise.resolve(response.data)
-    }).catch(error => Promise.reject(error))
+  async adminUpdateCategoryStatus (context, payload) {
+    try {
+      const response = await axios.post(`/api/v1/categories/private/update/status/${payload.category_id}`)
+      return await Promise.resolve(response.data)
+    } catch (error) {
+      return await Promise.reject(error)
+    }
   },
-  adminDeleteCategory (context, payload) {
-    return axios.post(`/api/v1/categories/private/delete/${payload.category_id}`).then(response => {
-      return Promise.resolve(response.data)
-    }).catch(error => Promise.reject(error))
+  async adminDeleteCategory (context, payload) {
+    try {
+      const response = await axios.post(`/api/v1/categories/private/delete/${payload.category_id}`)
+      return await Promise.resolve(response.data)
+    } catch (error) {
+      return await Promise.reject(error)
+    }
   },
-  adminBulkDeleteCategories (context, payload) {
-    return axios.post(`/api/v1/categories/private/delete/bulk`, payload).then(response => {
-      return Promise.resolve(response.data)
-    }).catch(error => Promise.reject(error))
+  async adminBulkDeleteCategories (context, payload) {
+    try {
+      const response = await axios.post(`/api/v1/categories/private/delete/bulk`, payload)
+      return await Promise.resolve(response.data)
+    } catch (error) {
+      return await Promise.reject(error)
+    }
   },
-  fetchCategories (context, query) {
-    return axios.get(`/api/v1/categories/public/${query}`).then(response => {
+  async fetchCategories (context, query) {
+    try {
+      const response = await axios.get(`/api/v1/categories/public/${query}`)
       console.log(response.data)
-      return Promise.resolve(response.data)
-    }).catch(error => Promise.reject(error))
+      return await Promise.resolve(response.data)
+    } catch (error) {
+      return await Promise.reject(error)
+    }
   }
 }
 const mutations = {}

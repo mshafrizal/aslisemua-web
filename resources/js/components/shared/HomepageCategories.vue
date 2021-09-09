@@ -49,7 +49,7 @@ export default {
     getCategories () {
       this.categories.loading = true
       this.categories.data = []
-      return this.$axios.get(`${process.env.MIX_APP_URL}/api/v1/categories/public/main?limit=6`).then(response => {
+      return this.$axios.get(`/api/v1/categories/public/main?limit=6`).then(response => {
         if (response.status === 200){
           this.categories.data = response.data.data
         }
