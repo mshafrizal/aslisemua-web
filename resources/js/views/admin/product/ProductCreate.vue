@@ -44,11 +44,39 @@
                 </v-col>
 
                 <v-col cols="12" >
-                  <v-select id="brand" v-model="formCreateProduct.brand_id" label="Brand" :rules="brandRules" :items="brands" outlined dense item-text="name" item-value="id"></v-select>
+                  <!-- <v-select id="brand" v-model="formCreateProduct.brand_id" label="Brand" :rules="brandRules" :items="brands" outlined dense item-text="name" item-value="id"></v-select> -->
+                  <v-autocomplete
+                    v-model="formCreateProduct.brand_id"
+                    :items="brands"
+                    :search-input.sync="brandSearch.query"
+                    color="primary"
+                    :loading="brandSearch.loading"
+                    hide-no-data
+                    hide-selected
+                    item-text="name"
+                    item-value="id"
+                    label="Brand"
+                    outlined
+                    dense
+                  />
                 </v-col>
 
                 <v-col cols="12" >
-                  <v-select id="category" v-model="formCreateProduct.category_id" label="Category" :items="categories" outlined dense item-text="name" item-value="id"></v-select>
+                  <!-- <v-select id="category" v-model="formCreateProduct.category_id" label="Category" :items="categories" outlined dense item-text="name" item-value="id"></v-select> -->
+                  <v-autocomplete
+                    v-model="formCreateProduct.category_id"
+                    :items="categories"
+                    :search-input.sync="categorySearch.query"
+                    color="primary"
+                    hide-no-data
+                    hide-selected
+                    item-text="name"
+                    item-value="id"
+                    label="Category"
+                    placeholder="Start typing to Search"
+                    outlined
+                    dense
+                  />
                 </v-col>
 
                 <v-col cols="12">
@@ -151,10 +179,18 @@ export default {
       brandRules: [
         v => !!v || 'Brand is required'
       ],
+      brandSearch: {
+        query: '',
+        isLoading: ''
+      },
       categories: [],
       categoryRules: [
         v => !!v || 'Category is required'
       ],
+      categorySearch: {
+        query: '',
+        isLoading: ''
+      },
       colorRules: [
         v => !!v || 'Color is required'
       ],
@@ -246,10 +282,11 @@ export default {
     },
     async fetchBrands () {
       this.loading = true
-      this.$store.dispatch('brand/fetchBrands').then(result => {
+      this.$store.dispatch('brand/fetchBrandsPublic').then(result => {
         if (result.status >= 400) throw new Error(result.message)
         else {
-          this.brands = result.results.data
+          console.log(result)
+          this.brands = result.results
           return true
         }
       }).catch(error => {
@@ -260,6 +297,18 @@ export default {
         })
         return false
       }).finally(() => this.loading = false)
+    },
+    async searchBrands () {
+      this.$store.dispatch('brand/searchBrands', this.brandSearch.query).then(result => {
+        console.log('search brands', result.results)
+        if (result.results.data) this.brands = result.results.data
+      }).catch(error => {
+        this.$store.dispatch('showSnackbar', {
+          message: error,
+          color: 'error'
+        })
+        return false
+      }).finally(() => this.brandSearch.isLoading = false)
     },
     async fetchCategories () {
       this.loading = true
@@ -271,18 +320,16 @@ export default {
         }
       }).catch(error => {
         this.$store.dispatch('showSnackbar', {
-          
           message: error,
           color: 'error'
         })
         return false
-      }).finally(() => this.loading = false)
+      }).finally(() => this.categorySearch.isLoading = false)
     },
     handleChangeDiscount () {
       this.formCreateProduct.final_price = this.formCreateProduct.base_price - this.formCreateProduct.discount_price
     },
-    handleCreateProduct (event) {
-      event.preventDefault()
+    handleCreateProduct () {
       if (this.formCreateProduct.images.length === 0) {
         this.$store.dispatch('showSnackbar', {
           

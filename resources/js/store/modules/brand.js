@@ -1,3 +1,5 @@
+import axios from "axios"
+
 const state = () => ({})
 const getters = {}
 const actions = {
@@ -28,6 +30,17 @@ const actions = {
   },
   deleteBrand (context, payload) {
     return axios.delete(`/api/v1/brands/${payload.brand_id}`).then(response => {
+      return Promise.resolve(response.data)
+    }).catch(error => Promise.reject(error))
+  },
+  searchBrands (context, keyword) {
+    console.log('keyword', keyword)
+    return axios.get(`/api/v1/brands/search`, {keyword: keyword}).then(response => {
+      return Promise.resolve(response.data)
+    }).catch(error => Promise.reject(error))
+  },
+  fetchAllBrands (context, payload) {
+    return axios.get(`/api/v1/brands/all`).then(response => {
       return Promise.resolve(response.data)
     }).catch(error => Promise.reject(error))
   }
