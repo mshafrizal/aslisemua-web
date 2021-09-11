@@ -159,10 +159,10 @@ const routes = [
         meta: { requiresAuth: false, navbar: true }
       },
       {
-        path: '/products/:category_name/:category_id',
+        path: '/products',
         component: UserProducts,
         name: 'UserProducts',
-        meta: { requiresAuth: false, navbar: true }
+        meta: { requiresAuth: false, navbar: true },
       },
       {
         path: '/cart',
