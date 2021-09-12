@@ -4,6 +4,7 @@
       fullscreen
       hide-overlay
       transition="dialog-bottom-transition"
+      persistent
   >
     <v-form v-if="open" v-model="valid" ref="formCreateProduct" @submit.prevent="handleCreateProduct">
       <v-toolbar

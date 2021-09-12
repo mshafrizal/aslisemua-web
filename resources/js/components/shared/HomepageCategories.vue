@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     viewProductsByCategory (name, id) {
-      this.$router.push(`/products/${name}/${id}`)
+      this.$router.push({ name: 'UserProducts', query: { c_name: name, c_id: id }})
     },
     getCategories () {
       this.categories.loading = true

@@ -31,7 +31,7 @@ window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.headers.common = { 'Authorization': `Bearer ${localStorage.getItem('token')}` };
-window.axios.defaults.baseURL = 'http://aslisemua.com'
+// window.axios.defaults.baseURL = 'http://aslisemua.com'
 window.axios.interceptors.response.use(function (response) {
     return response;
 }, function (error) {

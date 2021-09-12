@@ -163,23 +163,15 @@ export default {
       }
     }
   },
-  watch: {
-    options: {
-      handler () {
-        this.fetchBrands()
-      },
-      deep: true
-    }
-  },
   created () {
-    this.fetchBrands(axios.defaults.baseURL + `/api/v1/brands?page=${this.page}`)
+    this.fetchBrands(process.env.MIX_APP_URL + `/api/v1/brands/`)
   },
   methods: {
     handleClose (reload) {
       this.createBrand.open = false
       this.editBrand.open = false
       this.editBrand.id = ''
-      if (reload.value) this.fetchBrands()
+      if (reload.value) this.fetchBrands(process.env.MIX_APP_URL + `/api/v1/brands/`)
     },
     toggleDeleteDialog (item) {
       this.dialogDelete = !this.dialogDelete
@@ -196,7 +188,7 @@ export default {
             type: 'success',
             message: result.message
           })
-          this.toggleDeleteDialog()
+          this.toggleDeleteDialog(process.env.MIX_APP_URL + `/api/v1/brands/`)
         }
       }).catch(error => {
         this.$store.dispatch('showSnackbar', {
@@ -204,11 +196,15 @@ export default {
           type: 'error',
           message: error
         })
-      }).finally(() => this.fetchBrands())
+      }).finally(() => this.fetchBrands(process.env.MIX_APP_URL + `/api/v1/brands/`))
     },
     async fetchBrands (url) {
       this.loading = true
-      axios.get(url).then(response => {
+      axios({
+        url: url.toString(),
+        baseURL: '',
+        method: 'get'
+      }).then(response => {
         console.log('asxios', response)
         if (response.status === 200) {
           this.brands = response.data.results.data
