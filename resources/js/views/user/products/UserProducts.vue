@@ -1,9 +1,9 @@
 <template>
   <v-container class="mb-10">
-    <pre>{{JSON.stringify(this.$route.params, null, 2)}}</pre>
+    <!-- <pre>{{JSON.stringify(this.$route.params, null, 2)}}</pre> -->
     <v-row class="mt-5 mb-5">
       <v-col cols="12" class="text-center">
-        <h1 class="text-3xl">{{ this.$route.params.category_name }}</h1>
+        <h1 class="text-3xl">{{ this.$route.query && this.$route.query.c_name ? this.$route.query.c_name : '' }}</h1>
       </v-col>
     </v-row>
     <v-row>
