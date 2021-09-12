@@ -5,7 +5,7 @@
         <v-card-title class="text-center">
           <h1>SIGN UP TO ASLISEMUA</h1>
         </v-card-title>
-        <v-form v-model="valid" ref="registerForm" lazy-validation>
+        <v-form v-model="valid" ref="registerForm" lazy-validation @submit.prevent="register">
           <v-card-text>
             <span>Name</span>
             <v-text-field v-model="name" type="text" color="black" outlined single-line dense placeholder="Fullname" :rules="[requiredRules]"></v-text-field>
@@ -62,7 +62,7 @@
 
             <v-checkbox v-model="agreement" dense label="I agree to Aslisemua’s Terms and Conditions & Privacy Policy" color="black" :rules="[requiredRules]"></v-checkbox>
 
-            <v-btn @click="register" type="submit" color="black" :loading="loading" :disabled="!valid" class="white--text" block>Sign Up</v-btn>
+            <v-btn type="submit" color="black" :loading="loading" :disabled="!valid" class="white--text" block>Sign Up</v-btn>
             <v-divider class="my-4"/>
             <v-btn link to="/login" color="black" :disabled="loading" block outlined>Sign In</v-btn>
           </v-card-text>
@@ -106,9 +106,9 @@ export default {
     }
   },
   methods: {
-    register (event) {
-      event.preventDefault()
+    register () {
       if (this.$refs.registerForm.validate()) {
+        this.loading = true
         const params = {
           name: this.name,
           email: this.email,
@@ -123,6 +123,11 @@ export default {
         this.$axios.post(`/api/v1/customers/register`, params).then(response => {
           if (response.status === 200) {
             this.registerSuccess = true
+            this.$store.dispatch('showSnackbar', {
+              message: 'Register success! Please verify your email by clicking the link in your email',
+              color: 'success'
+            })
+            this.$router.push('/')
           } else {
             this.$store.dispatch('showSnackbar', {
               value: true,

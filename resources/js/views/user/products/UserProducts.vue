@@ -1,9 +1,9 @@
 <template>
   <v-container class="mb-10">
-    <pre>{{JSON.stringify(this.$route.params, null, 2)}}</pre>
+    <!-- <pre>{{JSON.stringify(this.$route.params, null, 2)}}</pre> -->
     <v-row class="mt-5 mb-5">
       <v-col cols="12" class="text-center">
-        <h1 class="text-3xl">{{ this.$route.params.category_name }}</h1>
+        <h1 class="text-3xl">{{ this.$route.query && this.$route.query.c_name ? this.$route.query.c_name : '' }}</h1>
       </v-col>
     </v-row>
     <v-row>
@@ -11,14 +11,8 @@
       <v-col cols="12" sm="3">
         <v-card outlined class="relative">
           <v-card-text>
-            <div class="text-lg font-weight-bold">Categories</div>
-            <v-treeview
-              activatable
-              dense
-              return-object
-              :items="categories.data"
-              @update:active="categories.selected"
-            ></v-treeview>
+            <v-skeleton-loader v-if="categories.loading" type="list-item" />
+            <categories-filter v-else :items="computedCategory" @selected="handleSelectCategory" />
           </v-card-text>
           <v-divider />
           <v-card-text>
@@ -48,21 +42,10 @@
           </v-card-text>
           <v-divider />
           <v-card-text>
-            <div class="text-lg font-weight-bold mb-2">Brands</div>
-            <div class="d-flex flex-col">
-              <template v-for="brand in brands.data">
-                <v-checkbox
-                  v-model="brands.selected"
-                  :key="brand.id"
-                  :label="brand.name"
-                  hide-details
-                  :value="brand.name"
-                  dense
-                  color="black"
-                  @change="fetchProducts"
-                />
-              </template>
-            </div>
+            <brands-filter
+              :items="brands.data"
+                @brand-selected="handleSelectBrand"
+            />
           </v-card-text>
         </v-card>
       </v-col>
@@ -75,7 +58,9 @@
           </template>
           <template v-else>
             <template v-for="item in products.data">
-              <product-card :product="item" :key="item.id" />
+              <v-col cols="6" sm="3" :key="item.id">
+                <product-card :product="item" :key="item.id" />
+              </v-col>
             </template>
           </template>
         </v-row>
@@ -85,8 +70,12 @@
 </template>
 
 <script>
+import CategoriesFilter from '../../../components/shared/CategoriesFilter.vue'
+import BrandsFilter from '../../../components/shared/BrandsFilter.vue'
+import ProductCard from '../../../components/shared/ProductCard.vue'
 export default {
   name: 'UserProducts',
+  components: {CategoriesFilter, BrandsFilter, ProductCard},
   data: function () {
     return {
       products: {
@@ -121,6 +110,7 @@ export default {
     }
   },
   async created () {
+    console.log(this.$route.query)
     this.categories.selected = this.$route.params.category_name
     await Promise.allSettled([this.fetchBrands(), this.fetchCategories()]).then(resutls => {
       resutls.forEach((result, index) => {
@@ -142,7 +132,37 @@ export default {
     })
     this.fetchProducts()
   },
+  computed: {
+    computedCategory () {
+      if (this.categories.data.length > 0) {
+        return this.categories.data.map(cat => {
+          return {
+            ...cat,
+            children: this.categories.data.filter(child => {
+              return child.parent === cat.id
+            })
+          }
+        }).filter(cat => cat.parent === 'null' || !cat.parent)
+      }
+      return []
+    }
+  },
   methods: {
+    handleSelectBrand (value) {
+      if (value) {
+        this.brands.selected = [value]
+        this.$router.replace({ name: 'UserProducts', query: { ...this.$route.query, b_name: [value] } })
+        this.fetchProducts()
+      }
+    },
+    handleSelectCategory (value) {
+      if (value) {
+        this.categories.selected = value
+        const category = this.categories.data.find(item => item.id === value)
+        this.$router.replace({ name: 'UserProducts', query: { ...this.$route.query, c_name: category.name, c_id: category.id }}).catch(() => {})
+        this.fetchProducts()
+      }
+    },
     fetchBrands () {
       return this.$store.dispatch('brand/fetchBrandsPublic')
     },
@@ -165,7 +185,7 @@ export default {
       let query = []
       if (this.brands.selected.length > 0) query.push(`brand=${this.brands.selected.toString()}`)
 
-      if (this.categories.selected) query.push(`category=${this.categories.selected}`)
+      if (this.categories.selected) query.push(`category=${this.categories.data.find(cat => cat.id === this.categories.selected).name}`)
 
       if (this.orderBy) query.push(`order_by=${this.orderBy}`)
 

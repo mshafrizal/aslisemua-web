@@ -3,6 +3,7 @@
       v-model="open"
       fullscreen
       hide-overlay
+      persistent
       transition="dialog-bottom-transition"
   >
     <v-card v-if="product.loading">

@@ -150,6 +150,7 @@ export default {
          { title: 'Sale', icon: false, classes: 'error--text' },
          { title: 'Sell With Us', icon: false, classes: 'warning--text' },
        ],
+       categories: []
      }
    },
   computed: {
@@ -161,6 +162,9 @@ export default {
       }
     }
   },
+  created () {
+    this.fetchCategories()
+  },
   methods: {
     handleFunction (function_name) {
       if (!function_name) return
@@ -168,6 +172,11 @@ export default {
     },
     logout () {
       this.$store.dispatch('auth/authLogout')
+      this.$router.push('/login')
+    },
+    async fetchCategories () {
+      const categories = await this.$store.dispatch('category/fetchCategories', 'main?limit=100')
+      console.log('usernav categories', categories)
     }
   }
 }
