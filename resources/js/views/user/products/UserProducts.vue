@@ -12,7 +12,7 @@
         <v-card outlined class="relative">
           <v-card-text>
             <v-skeleton-loader v-if="categories.loading" type="list-item" />
-            <categories-filter v-else :items="categories.data" @selected="handleSelectCategory" />
+            <categories-filter v-else :items="computedCategory" @selected="handleSelectCategory" />
           </v-card-text>
           <v-divider />
           <v-card-text>
@@ -132,16 +132,36 @@ export default {
     })
     this.fetchProducts()
   },
+  computed: {
+    computedCategory () {
+      if (this.categories.data.length > 0) {
+        return this.categories.data.map(cat => {
+          return {
+            ...cat,
+            children: this.categories.data.filter(child => {
+              return child.parent === cat.id
+            })
+          }
+        }).filter(cat => cat.parent === 'null' || !cat.parent)
+      }
+      return []
+    }
+  },
   methods: {
     handleSelectBrand (value) {
-      console.log(value)
-      this.$router.replace({ name: 'UserProducts', query: { ...this.$route.query, b_name: [value] } })
-      this.fetchProducts()
+      if (value) {
+        this.brands.selected = [value]
+        this.$router.replace({ name: 'UserProducts', query: { ...this.$route.query, b_name: [value] } })
+        this.fetchProducts()
+      }
     },
     handleSelectCategory (value) {
-      this.categories.selected = value
-      this.$router.replace({ name: 'UserProducts', query: { ...this.$route.query, c_name: value.name, c_id: value.id }})
-      this.fetchProducts()
+      if (value) {
+        this.categories.selected = value
+        const category = this.categories.data.find(item => item.id === value)
+        this.$router.replace({ name: 'UserProducts', query: { ...this.$route.query, c_name: category.name, c_id: category.id }}).catch(() => {})
+        this.fetchProducts()
+      }
     },
     fetchBrands () {
       return this.$store.dispatch('brand/fetchBrandsPublic')
@@ -155,16 +175,8 @@ export default {
       return this.$store.dispatch('category/fetchCategories', 'main?limit=0')
     },
     fetchCategoriesSuccess (result) {
-      let addChildrenArray = result.data.map(cat => {
-        return {
-          ...cat,
-          children: result.data.filter(child => {
-            return child.parent === cat.id
-          })
-        }
-      }).filter(cat => cat.parent === 'null' || !cat.parent)
       this.categories.loading = false
-      this.categories.data = addChildrenArray
+      this.categories.data = result.data
       this.categories.links = result.links
       this.categories.meta = result.meta
     },
@@ -173,7 +185,7 @@ export default {
       let query = []
       if (this.brands.selected.length > 0) query.push(`brand=${this.brands.selected.toString()}`)
 
-      if (this.categories.selected) query.push(`category=${this.categories.selected}`)
+      if (this.categories.selected) query.push(`category=${this.categories.data.find(cat => cat.id === this.categories.selected).name}`)
 
       if (this.orderBy) query.push(`order_by=${this.orderBy}`)
 
