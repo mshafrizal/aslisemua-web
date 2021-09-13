@@ -158,4 +158,15 @@ Route::prefix('v1')->group(function () {
         Route::middleware('modules:api')->delete('/delete', [CartController::class, 'removeProduct']);
         Route::middleware('modules:api')->get('/', [CartController::class, 'getCarts']);    
     });
+
+    /**
+     * ==============================
+     * Wishlists
+     * ==============================
+     */
+    Route::prefix('wishlists')->group(function() {
+        Route::middleware('modules:api')->post('/store', [CartController::class, 'insertProduct']);
+        Route::middleware('modules:api')->delete('/delete', [CartController::class, 'removeProduct']);
+        Route::middleware('modules:api')->get('/', [CartController::class, 'getWishlists']);    
+    });
 });
