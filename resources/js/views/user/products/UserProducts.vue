@@ -110,8 +110,7 @@ export default {
     }
   },
   async created () {
-    console.log(this.$route.query)
-    this.categories.selected = this.$route.params.category_name
+    this.categories.selected = this.$route.query && this.$route.query.c_name ? this.$route.query.c_name : '' 
     await Promise.allSettled([this.fetchBrands(), this.fetchCategories()]).then(resutls => {
       resutls.forEach((result, index) => {
         if (result.status === 'fulfilled') {
@@ -160,6 +159,7 @@ export default {
         this.categories.selected = value
         const category = this.categories.data.find(item => item.id === value)
         this.$router.replace({ name: 'UserProducts', query: { ...this.$route.query, c_name: category.name, c_id: category.id }}).catch(() => {})
+        this.categories.selected = category.name
         this.fetchProducts()
       }
     },
@@ -168,7 +168,6 @@ export default {
     },
     fetchBrandsSuccess (result) {
       this.brands.loading = false
-      console.log(result)
       this.brands.data = result.value.results
     },
     fetchCategories () {
@@ -183,9 +182,10 @@ export default {
     async fetchProducts () {
       this.products.loading = true
       let query = []
+      console.log(this.categories.selected)
       if (this.brands.selected.length > 0) query.push(`brand=${this.brands.selected.toString()}`)
 
-      if (this.categories.selected) query.push(`category=${this.categories.data.find(cat => cat.id === this.categories.selected).name}`)
+      if (this.categories.selected) query.push(`category=${this.categories.selected}`)
 
       if (this.orderBy) query.push(`order_by=${this.orderBy}`)
 
@@ -195,7 +195,7 @@ export default {
 
       if (this.keyword) query.push(`keywords=${this.keyword}`)
       // query.push(`new_arrival=yes&sale=no`)
-
+      console.log('query', query)
       query = query.join('&')
       const res =  await this.$axios.get(`/api/v1/products/public/main?${query}`)
       if (res.status === 200 ) {

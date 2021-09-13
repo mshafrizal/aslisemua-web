@@ -45,10 +45,17 @@
       </v-col>
     </v-row>
     <v-row class="hidden-sm-and-down">
-      <v-col class="d-flex justify-center">
+      <v-col class="d-flex justify-center" v-if="categories.length > 0">
         <v-btn text small link to="/demo/shop/1">New Arrivals</v-btn>
-        <v-btn text small>Women</v-btn>
-        <v-btn text small>Men</v-btn>
+        <v-btn
+          v-for="category in categories"
+          :key="category.title"
+          @click="handleLinkClick(category)"
+          text
+          small
+        >
+          {{ category.name }}
+        </v-btn>
         <v-btn text small color="error">Sale</v-btn>
         <v-btn text small color="warning">Sell With Us</v-btn>
       </v-col>
@@ -143,7 +150,7 @@ export default {
          {title: 'Transactions', link: '/profile', requiresAuth: true, method: null, icon: 'mdi-receipt'},
          {title: 'Logout', link: null, requiresAuth: true, method: `logout`, icon: 'mdi-logout'}
        ],
-       mobileMenus: [
+       mobileMenus: [ 
          { title: 'New Arrivals', icon: false, classes: '' },
          { title: 'Women', icon: false, classes: '' },
          { title: 'Men', icon: false, classes: '' },
@@ -166,6 +173,9 @@ export default {
     this.fetchCategories()
   },
   methods: {
+    handleLinkClick (category) {
+      this.$router.push({ name: 'UserProducts', query: { c_name: category.name, c_id: category.id }}).catch(() => {})
+    },
     handleFunction (function_name) {
       if (!function_name) return
       this[function_name]()
@@ -176,7 +186,9 @@ export default {
     },
     async fetchCategories () {
       const categories = await this.$store.dispatch('category/fetchCategories', 'main?limit=100')
-      console.log('usernav categories', categories)
+      if (categories.data && categories.data.length > 0) {
+        this.categories = categories.data.filter(cat => cat.is_navbar > 0)
+      }
     }
   }
 }

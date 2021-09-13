@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-lg font-weight-bold">Categories</div>
+    <div class="text-lg font-weight-bold mb-3 cursor-pointer" @click="toAllProducts">Categories</div>
     <div class="d-flex flex-col">
       <ul class="pl-2">
         <li v-for="item in items" :key="item.id">
@@ -62,6 +62,9 @@ export default {
     }
   },
   methods: {
+    toAllProducts () {
+      this.$router.push('/products').catch(() => {})
+    },
     selectCategory (id) {
       if (this.categories.selected !== id) {
         this.categories.selected = id
