@@ -6,7 +6,7 @@
     <user-navigation />
     <v-divider />
     <v-main>
-      <router-view />
+      <router-view :key="$route.fullPath" />
     </v-main>
 
     <v-row class="border border-black border-b">

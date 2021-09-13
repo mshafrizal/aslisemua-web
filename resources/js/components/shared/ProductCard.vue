@@ -1,5 +1,5 @@
 <template>
-  <v-card class="relative h-full product-card">
+  <v-card class="relative h-full product-card" @click="toProductDetail(product.slug)">
     <v-img height="250" :src="product.products_images[0].image_path"></v-img>
     <v-card-text class="d-flex flex-column justify-center text-center">
       <p class="font-weight-bold mb-3 black--text text-lg">{{ product.brand.name }}</p>
@@ -26,6 +26,9 @@ export default {
   methods: {
     addToWishlist () {
       console.log('to wishlist')
+    },
+    toProductDetail (slug) {
+      this.$router.push(`/product/${slug}`)
     }
   }  
 }
