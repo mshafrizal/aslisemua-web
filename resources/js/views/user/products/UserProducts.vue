@@ -26,7 +26,6 @@
               prefix="Rp"
               placeholder="From"
               class="mt-2"
-              @blur="fetchProducts"
             />
             <v-text-field
               v-model="price.end"
@@ -37,8 +36,8 @@
               prefix="Rp"
               placeholder="To"
               class="mt-4"
-              @blur="fetchProducts"
             />
+            <v-btn class="mt-2 black white--text" @click="fetchProducts" block>Apply</v-btn>
           </v-card-text>
           <v-divider />
           <v-card-text>
@@ -189,9 +188,9 @@ export default {
 
       if (this.orderBy) query.push(`order_by=${this.orderBy}`)
 
-      if (this.price.start > 0) query.push(`start_price=${this.price.start}`)
+      if (this.price.start >= 0) query.push(`start_price=${this.price.start}`)
 
-      if (this.price.end > 0 && this.price.end > this.price.start) query.push(`end_price=${this.price.end}`)
+      if (this.price.end >= 0 && this.price.end > this.price.start) query.push(`end_price=${this.price.end}`)
 
       if (this.keyword) query.push(`keywords=${this.keyword}`)
       // query.push(`new_arrival=yes&sale=no`)
