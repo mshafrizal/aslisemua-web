@@ -9,8 +9,9 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\CustomerAddressController;
-use App\Models\CustomerAddress;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaymentTypeController;
+use App\Http\Controllers\BankController;
 
 //Access-Control-Allow-Origin: *
 header('Access-Control-Allow-Origin: *');
@@ -125,21 +126,52 @@ Route::prefix('v1')->group(function () {
 
     /**
      * ==============================
-     * Payment Methods
+     * Payments Area
      * ==============================
      */
-    Route::prefix('payment-methods')->group(function () {
-        Route::middleware('modules:api')->get('/', [PaymentMethodController::class, 'getPaymentMethods']);
-        Route::middleware('modules:api')->delete('/{id}', [PaymentMethodController::class, 'deletePaymentMethod']);
-        Route::middleware('modules:api')->post('/', [PaymentMethodController::class, 'createPaymentMethod']);
+    /**
+     * ==============================
+     * Payments Types
+     * ==============================
+     */
+    Route::prefix('payments-types')->group(function () {
+        Route::middleware('modules:api')->get('/', [PaymentTypeController::class, 'getPaymentTypes']);
+        Route::middleware('modules:api')->post('/', [PaymentTypeController::class, 'storePaymentType']);
+        Route::middleware('modules:api')->get('/{id}', [PaymentTypeController::class, 'getPaymentType']);
+        Route::middleware('modules:api')->put('/{id}', [PaymentTypeController::class, 'updatePaymentType']);
+        Route::middleware('modules:api')->delete('/{id}', [PaymentTypeController::class, 'deletePaymentType']);
     });
+
+    /**
+     * ==============================
+     * Banks
+     * ==============================
+     */
+    Route::prefix('banks')->group(function () {
+        Route::prefix('private')->group(function () {
+            Route::middleware('modules:api')->get('/', [BankController::class, 'getBanks']);
+            Route::middleware('modules:api')->get('/{paymentTypeId}', [BankController::class, 'getBanksByPaymentTypeId']);
+            Route::middleware('modules:api')->delete('/payment-types/{paymentTypeId}/banks/{bankid}', [BankController::class, 'deleteBank']);
+            Route::middleware('modules:api')->post('/', [BankController::class, 'storeBank']);
+            // Route::middleware('modules:api')->put('/{id}', [BankController::class, 'updateBank']);
+        });
+
+        Route::prefix('public')->group(function () {
+
+        });
+    });
+    /**
+     * ==============================
+     * Payments Area
+     * ==============================
+     */
 
     /**
      * ==============================
      * Customer Addresses
      * ==============================
      */
-    Route::prefix('customer-address')->group(function() {
+    Route::prefix('customer-address')->group(function () {
         Route::get('/{customerId}', [CustomerAddressController::class, 'getCustomerAddressesByCustomerId']);
         Route::post('/', [CustomerAddressController::class, 'createCustomerAddress']);
         Route::delete('/{customerId}/address/{addressId}/delete', [CustomerAddressController::class, 'deleteCustomerAddress']);
@@ -153,9 +185,9 @@ Route::prefix('v1')->group(function () {
      * Carts
      * ==============================
      */
-    Route::prefix('carts')->group(function() {
+    Route::prefix('carts')->group(function () {
         Route::middleware('modules:api')->post('/store', [CartController::class, 'insertProduct']);
         Route::middleware('modules:api')->delete('/delete', [CartController::class, 'removeProduct']);
-        Route::middleware('modules:api')->get('/', [CartController::class, 'getCarts']);    
+        Route::middleware('modules:api')->get('/', [CartController::class, 'getCarts']);
     });
 });
