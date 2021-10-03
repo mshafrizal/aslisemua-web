@@ -9,8 +9,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\CustomerAddressController;
-use App\Models\CustomerAddress;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaymentTypeController;
 
 //Access-Control-Allow-Origin: *
 header('Access-Control-Allow-Origin: *');
@@ -125,14 +125,37 @@ Route::prefix('v1')->group(function () {
 
     /**
      * ==============================
-     * Payment Methods
+     * Payments Area
      * ==============================
      */
-    Route::prefix('payment-methods')->group(function () {
-        Route::middleware('modules:api')->get('/', [PaymentMethodController::class, 'getPaymentMethods']);
-        Route::middleware('modules:api')->delete('/{id}', [PaymentMethodController::class, 'deletePaymentMethod']);
-        Route::middleware('modules:api')->post('/', [PaymentMethodController::class, 'createPaymentMethod']);
-    });
+        /**
+         * ==============================
+         * Payments Types
+         * ==============================
+         */
+        Route::prefix('payments-types')->group(function() {
+            Route::middleware('modules:api')->get('/', [PaymentTypeController::class, 'getPaymentTypes']);
+            Route::middleware('modules:api')->post('/', [PaymentTypeController::class, 'storePaymentType']);
+            Route::middleware('modules:api')->get('/{id}', [PaymentTypeController::class, 'getPaymentType']);
+            Route::middleware('modules:api')->put('/{id}', [PaymentTypeController::class, 'updatePaymentType']);
+            Route::middleware('modules:api')->delete('/{id}', [PaymentTypeController::class, 'deletePaymentType']);
+        });
+
+        /**
+         * ==============================
+         * Banks
+         * ==============================
+         */
+        Route::prefix('banks')->group(function () {
+            Route::middleware('modules:api')->get('/', [PaymentMethodController::class, 'getPaymentMethods']);
+            Route::middleware('modules:api')->delete('/{id}', [PaymentMethodController::class, 'deletePaymentMethod']);
+            Route::middleware('modules:api')->post('/', [PaymentMethodController::class, 'createPaymentMethod']);
+        });
+    /**
+     * ==============================
+     * Payments Area
+     * ==============================
+     */
 
     /**
      * ==============================

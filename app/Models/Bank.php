@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentMethod extends Model
+class Bank extends Model
 {
     use HasFactory;
 
-    protected $table = 'payment_methods';
+    protected $table = 'banks';
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $fillable = [
@@ -18,7 +18,9 @@ class PaymentMethod extends Model
         'image_name', 
         'created_at',
         'updated_at',
-        'alt_image'
+        'alt_image',
+        'key_name',
+        'name'
     ];
 
 }
