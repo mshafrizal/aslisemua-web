@@ -46,7 +46,7 @@
     <v-col cols="12">
       <v-btn @click="openDialog" :disabled="isSubmitting" color="black" class="white--text" depressed>Add Address</v-btn>
     </v-col>
-    <v-col cols="12" md="6">
+    <v-col cols="12" md="8">
       <v-card flat :loading="loading || isSubmitting">
         <template slot="progress">
           <v-progress-linear
@@ -59,40 +59,16 @@
           type="article, actions"
           v-if="loading"
         ></v-skeleton-loader>
-        <v-card-text v-if="!loading && addresses">
+        <v-card-text>
           <v-row>
-            <v-col cols="12" md="6">
-              <span>Name</span>
-              <v-text-field v-model="personalInfo.name" color="black" :disabled="!isEditing" outlined dense></v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
-              <span>Email</span>
-              <v-text-field v-model="personalInfo.email" color="black" :disabled="!isEditing" outlined dense></v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
-              <span>Gender</span>
-              <v-text-field v-model="personalInfo.gender" color="black" :disabled="!isEditing" outlined dense></v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
-              <span>Phone Number</span>
-              <v-text-field v-model="personalInfo.phone_number" color="black" :disabled="!isEditing" outlined dense></v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
-              <span>Postal Code</span>
-              <v-text-field v-model="personalInfo.postal_code" color="black" :disabled="!isEditing" outlined dense></v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
-              <span>City</span>
-              <v-text-field v-model="personalInfo.city" color="black" :disabled="!isEditing" outlined dense></v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
-              <span>District</span>
-              <v-text-field v-model="personalInfo.district" color="black" :disabled="!isEditing" outlined dense></v-text-field>
-            </v-col>
-            <v-col cols="12">
-              <span>Address</span>
-              <v-textarea v-model="personalInfo.address" color="black" :disabled="!isEditing" outlined></v-textarea>
-            </v-col>
+            <template v-for="address in addresses">
+              <Address 
+                  :address="address" 
+                  :key="address.id" 
+                  @update-success="handleUpdateSuccess"
+                  @update-failed="handleUpdateFailed"    
+              />
+            </template>
           </v-row>
         </v-card-text>
       </v-card>
@@ -101,8 +77,10 @@
 </template>
 
 <script>
+import Address from './Address.vue'
 export default {
   name: "MyAddresses",
+  components: {Address},
   data: function () {
     return {
       addAddressValid: true,
@@ -122,6 +100,23 @@ export default {
     this.getAddresses()
   },
   methods: {
+    handleUpdateSuccess () {
+      console.log('handleUpdateSuccess() called')
+      this.$store.dispatch('showSnackbar', {
+        value: true,
+        message: 'Success',
+        type: 'success'
+      })
+      this.getAddresses()
+    },
+    handleUpdateFailed () {
+      this.$store.dispatch('showSnackbar', {
+        value: true,
+        message: 'Failed. Please try again.',
+        type: 'error'
+      })
+      this.getAddresses()
+    },
     closeDialog () {
       this.dialog = false
       this.formNewAddress = {
@@ -146,10 +141,11 @@ export default {
           this.getAddresses()
         }
       }).catch(error => {
+        console.log(error)
         if (error.response) {
           this.$store.dispatch('showSnackbar', {
             value: true,
-            message: error.response.data.message,
+            message: error.response?.data?.message,
             type: 'error`'
           })
         } else {
@@ -161,6 +157,7 @@ export default {
         }
       }).finally(() => {
         this.isSubmitting = false
+        this.getAddresses()
       })
     },
     getAddresses () {
@@ -170,7 +167,7 @@ export default {
       this.$store.dispatch('customer/fetchAddresses').then(result => {
         console.log('getAddresses', result)
         if (result.status === 200) {
-          this.addresses = result.data
+          this.addresses = result.results
         }
       }).catch(error => {
         if (error.response) {
