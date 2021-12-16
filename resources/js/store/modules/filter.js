@@ -1,3 +1,4 @@
+import axios from "axios"
 
 const state = {
     search: '',
@@ -5,7 +6,7 @@ const state = {
     end_price: '',
     category: '',
     brand: [],
-    order_by: '',
+    order_by: 'asc',
     color: '',
     gender: '',
     clothing_size: '',
@@ -13,6 +14,8 @@ const state = {
     new_arrival: '',
     limit: 16,
     sale: '',
+    results: null,
+    loading: false,
 }             
 const getters = {
     getSearch: (state) => state.search,
@@ -27,7 +30,9 @@ const getters = {
     getShoeSize: (state) => state.shoe_size,
     getNewArrival: (state) => state.new_arrival,
     getLimit: (state) => state.limit,
-    getSale: (state) => state.sale
+    getSale: (state) => state.sale,
+    getLoading: (state) => state.loading,
+    getResults: (state) => state.results
 }     
 const actions = {
     updateSearch: ({ commit }, search) => commit('setSearch', search),
@@ -42,7 +47,42 @@ const actions = {
     updateShoeSize: ({ commit }, shoeSize) => commit('setShoeSize', shoeSize),
     updateNewArrival: ({ commit }, newArrival) => commit('setNewArrival', newArrival),
     updateLimit: ({ commit }, limit) => commit('setLimit', limit),
-    updateSale: ({ commit }, sale) => commit('setSale', sale)
+    updateSale: ({ commit }, sale) => commit('setSale', sale),
+    async fetchProductsByFilter ({ commit, state }, payload) {
+        console.log('called')
+        commit('setResults', null)
+        commit('setLoading', true)
+        const params = {
+            brand: state.brand.toString(),
+            category: state.category ? state.category.name : '',
+            start_price: state.start_price,
+            end_price: state.end_price,
+            order_by: state.order_by
+        }
+        await axios.get('http://localhost:8000/api/v1/products/public/main', {
+            params: params
+        })
+        .then(response => commit('setResults', response.data))
+        .catch(error => {
+            console.log('error', error)
+        }).finally(() => {
+            commit('setLoading', false)
+        })
+    },
+    clearFilter ({ commit }) {
+        commit('setSearch', '')
+        commit('setStartPrice', '')
+        commit('setEndPrice', '')
+        commit('setCategory', '')
+        commit('setBrand', [])
+        commit('setOrderBy', 'asc')
+        commit('setColor', '')
+        commit('setGender', '')
+        commit('setClothingSize', '')
+        commit('setNewArrival', '')
+        commit('setLimit', 16)
+        commit('setSale', '')
+    }
 }
 const mutations = {
     setSearch: (state, search) => state.search = search,
@@ -56,7 +96,9 @@ const mutations = {
     setClothingSize: (state, clothingSize) => state.clothing_size = clothingSize,
     setNewArrival: (state, newArrival) => state.new_arrival = newArrival,
     setLimit: (state, limit) => state.limit = limit,
-    setSale: (state, sale) => state.sale = sale
+    setSale: (state, sale) => state.sale = sale,
+    setLoading: (state, loading) => state.loading = loading,
+    setResults: (state, results) => state.results = results,
 }
 export default {
     namespaced: true,
