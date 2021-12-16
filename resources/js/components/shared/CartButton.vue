@@ -27,11 +27,9 @@ export default {
       this.$router.push('/cart').catch(() => {})
     },
     getProducts () {
-      if (window.localStorage.getItem('token')) {
-        this.$store.dispatch('cart/getProducts').then(result => {
-          this.products = result.data
-        })
-      }
+      this.$store.dispatch('cart/getProducts').then(result => {
+        this.products = result.data
+      })
     }
   }
 }

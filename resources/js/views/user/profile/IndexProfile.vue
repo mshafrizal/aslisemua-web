@@ -2,7 +2,7 @@
   <v-container>
     <v-row class="mt-5">
       <v-col cols="12">
-        <h1 class="text-5xl">Hello, {{ username }}</h1>
+        <h1 class="text-5xl">Hello, Jonathan Morningstar</h1>
       </v-col>
       <v-col cols="12">
         <v-divider />
@@ -81,18 +81,13 @@ export default {
       shipment: null,
     }
   },
-  
+  created () {
+  },
   methods:{
   },
   computed: {
     viewport () {
       return this.$vuetify.breakpoint.name
-    },
-    username () {
-      const user = JSON.parse(window.localStorage.getItem('user'))
-      console.log(user)
-      if (user) return user.name
-      else return '-'
     }
   }
 }
