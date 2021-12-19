@@ -79,8 +79,8 @@ export default {
   },
   methods: {
     toAllProducts() {
-      this.$store.dispatch("filter/clearFilter");
-      this.$router.push("/products").catch(() => {});
+      this.$store.dispatch("filter/updateCategory", "");
+      this.$store.dispatch("filter/fetchProductsByFilter");
     },
     selectCategory(item) {
       this.$store.dispatch("filter/updateCategory", item);
