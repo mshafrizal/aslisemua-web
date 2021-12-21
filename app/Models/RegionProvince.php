@@ -9,7 +9,7 @@ class RegionProvince extends Model
 {
     use HasFactory;
 
-    protected $incrementing = false;
+    public $incrementing = false;
     protected $fillable = [
         'id', 
         'name',
