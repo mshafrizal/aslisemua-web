@@ -25,6 +25,8 @@ import ProductList from "../views/admin/product/ProductList";
 import ProductCreate from "../views/admin/product/ProductCreate";
 import ProductDetail from "../views/admin/product/ProductDetail";
 
+import RegionList from "../views/admin/region/RegionList";
+
 // user
 
 import UserLayout from "../views/UserLayout";
@@ -98,6 +100,9 @@ const routes = [
       {
         path: 'product/:id/detail', name: 'product-detail', component: ProductDetail, meta: { requiresAuth: true }
       },
+      {
+        path: 'region/list', name: 'region-list', component: RegionList, meta: { requiresAuth: true }
+      }
     ]
   },
   {
@@ -147,12 +152,6 @@ const routes = [
         meta: { requiresAuth: true, navbar: true }
       },
       {
-        path: '/new-arrivals',
-        component: NewArrivals,
-        name: 'NewArrivals',
-        meta: { requiresAuth: false, navbar: true }
-      },
-      {
         path: '/product/:slug',
         component: UserProductDetail,
         name: 'UserProductDetail',
@@ -174,6 +173,18 @@ const routes = [
         path: '/demo/shop/:cat_id',
         meta: { requiresAuth: false, navbar: true },
         component: DemoCategoryShop,
+      },
+      {
+        path: '/new-arrivals',
+        name: "new-arrivals",
+        component: UserProducts,
+        meta: { requiresAuth: false, navbar: true }
+      },
+      {
+        path: '/sale',
+        name: "sale",
+        component: UserProducts,
+        meta: { requiresAuth: false, navbar: true }
       }
     ]
   }

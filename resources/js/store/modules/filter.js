@@ -61,7 +61,7 @@ const actions = {
             new_arrival: state.new_arrival,
             sale: state.sale
         }
-        await axios.get('http://localhost:8000/api/v1/products/public/main', {
+        await axios.get('/api/v1/products/public/main', {
             params: params
         })
         .then(response => commit('setResults', response.data))
