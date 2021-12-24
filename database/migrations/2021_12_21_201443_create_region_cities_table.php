@@ -23,6 +23,10 @@ class CreateRegionCitiesTable extends Migration
         Schema::table('region_cities', function (Blueprint $table) {
           $table->foreign('province_id')->references('id')->on('region_provinces');
         });
+
+        Schema::table("region_cities", function ($table) {
+          $table->softDeletes();
+        });
     }
 
     /**
@@ -32,6 +36,9 @@ class CreateRegionCitiesTable extends Migration
      */
     public function down()
     {
+        Schema::table("region_cities", function ($table) {
+          $table->dropSoftDeletes();
+        });
         Schema::dropIfExists('region_cities');
     }
 }

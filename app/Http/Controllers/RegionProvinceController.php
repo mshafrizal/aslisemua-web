@@ -117,6 +117,9 @@ class RegionProvinceController extends Controller
           ], 400);
         }
 
+        $province->name = $request->name;
+        $province->save();
+
         return response()->json([
           'status' => 200,
           'message' => 'Data found',

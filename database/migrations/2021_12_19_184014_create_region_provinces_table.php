@@ -18,6 +18,10 @@ class CreateRegionProvincesTable extends Migration
             $table->string('name', 100);
             $table->timestamps();
         });
+
+        Schema::table('region_provinces', function (Blueprint $table) {
+          $table->softDeletes();
+        });
     }
 
     /**
@@ -27,6 +31,9 @@ class CreateRegionProvincesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('region_provinces');
+      Schema::table("region_cities", function ($table) {
+        $table->dropSoftDeletes();
+      });
+      Schema::dropIfExists('region_provinces');
     }
 }
