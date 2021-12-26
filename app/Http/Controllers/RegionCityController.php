@@ -137,7 +137,7 @@ class RegionCityController extends Controller
       ], 200);
     }
 
-    return resposne()->json([
+    return response()->json([
       'status' => 400,
       'message' => 'Failed to save city'
     ], 400);
