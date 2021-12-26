@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\RegionCity;
 
 class RegionProvince extends Model
 {
@@ -16,4 +17,9 @@ class RegionProvince extends Model
         'id',
         'name',
     ];
+
+    public function city()
+    {
+        return $this->hasMany(RegionCity::class);
+    }
 }
