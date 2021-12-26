@@ -26,6 +26,30 @@
               :rules="[requiredRules]"
               color="black"
             />
+            <v-text-field
+              v-model="formNewAddress.city"
+              outlined
+              label="City"
+              dense
+              :rules="[requiredRules]"
+              color="black"
+            />
+            <v-text-field
+              v-model="formNewAddress.district"
+              outlined
+              label="District"
+              dense
+              :rules="[requiredRules]"
+              color="black"
+            />
+            <v-text-field
+              v-model="formNewAddress.zip_code"
+              outlined
+              label="Zip Code"
+              dense
+              :rules="[requiredRules]"
+              color="black"
+            />
             <v-textarea
               v-model="formNewAddress.address"
               outlined
@@ -88,7 +112,10 @@ export default {
       formNewAddress: {
         name: '',
         phone: '',
-        address: ''
+        address: '',
+        city: '',
+        district: '',
+        zip_code: '',
       },
       dialog: false,
       loading: false,
@@ -122,7 +149,10 @@ export default {
       this.formNewAddress = {
         name: '',
         phone: '',
-        address: ''
+        address: '',
+        city: '',
+        district: '',
+        zip_code: '',
       }
     },
     openDialog () {
