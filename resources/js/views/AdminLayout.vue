@@ -106,21 +106,8 @@ export default {
               link: "/admin/product/list"
             },
             {
-              title: "Addresses",
-              children: [
-                {
-                  title: "Province",
-                  link: "/admin/addresses/province/list"
-                },
-                {
-                  title: "City",
-                  link: "/admin/addresses/city/list"
-                },
-                {
-                  title: "District",
-                  link: "/admin/addresses/district/list"
-                }
-              ]
+              title: "Regions",
+              link: "/admin/region/list"
             }
           ]
         },

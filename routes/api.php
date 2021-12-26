@@ -14,7 +14,7 @@ use App\Http\Controllers\PaymentTypeController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\RegionProvinceController;
 use App\Http\Controllers\RegionCityController;
-
+use App\Http\Controllers\RegionDistrictController;
 //Access-Control-Allow-Origin: *
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods:  POST, GET, OPTIONS, PUT, DELETE');
@@ -220,6 +220,11 @@ Route::prefix('v1')->group(function () {
               Route::middleware('modules:api')->post('/', [RegionCityController::class, 'store']);
               Route::middleware('modules:api')->put('/{id}', [RegionCityController::class, 'update']);
               Route::middleware('modules:api')->delete('/{id}', [RegionCityController::class, 'delete']);
+            });
+            Route::prefix('district')->group(function () {
+              Route::middleware('modules:api')->post('/', [RegionDistrictController::class, 'store']);
+              Route::middleware('modules:api')->put('/{id}', [RegionDistrictController::class, 'update']);
+              Route::middleware('modules:api')->delete('/{id}', [RegionDistrictController::class, 'delete']);
             });
         });
         Route::prefix('public')->group(function() {
