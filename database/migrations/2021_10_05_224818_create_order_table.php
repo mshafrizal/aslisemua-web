@@ -21,14 +21,12 @@ class CreateOrderTable extends Migration
             $table->string('billing_phone_number');
             $table->string('billing_zip_code');
             $table->text('billing_address');
-            $table->string('billing_province');
             $table->string('billing_city');
             $table->string('billing_district');
             $table->string('shipping_name');
             $table->string('shipping_phone_number');
             $table->string('shipping_zip_code');
             $table->text('shipping_address');
-            $table->string('shipping_province');
             $table->string('shipping_city');
             $table->string('shipping_district');
             $table->timestamp('created_at');

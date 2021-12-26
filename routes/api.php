@@ -12,15 +12,12 @@ use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentTypeController;
 use App\Http\Controllers\BankController;
+use App\Http\Controllers\CheckoutController;
 
 //Access-Control-Allow-Origin: *
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods:  POST, GET, OPTIONS, PUT, DELETE');
 header('Access-Control-Allow-Headers:  Content-Type, X-Auth-Token, Origin, Authorization');
-
-// Route::middleware('modules:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
 
 Route::prefix('v1')->group(function () {
     /**
@@ -189,5 +186,14 @@ Route::prefix('v1')->group(function () {
         Route::middleware('modules:api')->post('/store', [CartController::class, 'insertProduct']);
         Route::middleware('modules:api')->delete('/delete', [CartController::class, 'removeProduct']);
         Route::middleware('modules:api')->get('/', [CartController::class, 'getCarts']);
+    });
+
+    /**
+     * ==============================
+     * Checkout
+     * ==============================
+     */
+    Route::prefix('checkout')->group(function () {
+        Route::middleware('modules:api')->post('processed', [CheckoutController::class, 'checkout']);
     });
 });
