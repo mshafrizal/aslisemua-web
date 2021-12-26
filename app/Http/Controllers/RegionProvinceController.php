@@ -18,12 +18,10 @@ class RegionProvinceController extends Controller
     public function index()
     {
         try {
-            $provinces = DB::table('region_provinces')->get();
-
             return response()->json([
                 'status' => 200,
                 'message' => 'Provinces successfully fetched',
-                'data' => $provinces
+                'data' => RegionProvince::paginate(10)
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -110,20 +108,20 @@ class RegionProvinceController extends Controller
         $province = RegionProvince::find($id);
 
         if (!isset($province)) {
-          return response()->json([
-            'status' => 400,
-            'message' => 'Data not found',
-            'data' => null
-          ], 400);
+            return response()->json([
+                'status' => 400,
+                'message' => 'Data not found',
+                'data' => null
+            ], 400);
         }
 
         $province->name = $request->name;
         $province->save();
 
         return response()->json([
-          'status' => 200,
-          'message' => 'Data found',
-          'data' => $province
+            'status' => 200,
+            'message' => 'Data found',
+            'data' => $province
         ], 200);
     }
 
@@ -138,17 +136,17 @@ class RegionProvinceController extends Controller
         $province = RegionProvince::find($id);
 
         if (!isset($province)) {
-          return response()->json([
-            'status' => 400,
-            'message' => 'Data not found',
-            'data' => null
-          ], 400);
+            return response()->json([
+                'status' => 400,
+                'message' => 'Data not found',
+                'data' => null
+            ], 400);
         }
         $province->delete();
         return response()->json([
-          'status' => 200,
-          'message' => 'Province successfully deleted',
-          'data' => null
+            'status' => 200,
+            'message' => 'Province successfully deleted',
+            'data' => null
         ], 200);
     }
 }
