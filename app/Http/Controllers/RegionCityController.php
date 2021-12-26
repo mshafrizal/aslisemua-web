@@ -174,4 +174,15 @@ class RegionCityController extends Controller
       'message' => 'City deleted successfully'
     ], 200);
   }
+
+
+  public function getByProvinceId($province_id)
+  {
+    $cities = RegionCity::where('province_id', $province_id)->get();
+    return response()->json([
+      'status' => 200,
+      'message' => 'Cities successfully fetched',
+      'data' => $cities
+    ], 200);
+  }
 }
