@@ -141,10 +141,6 @@ export default {
     };
   },
   async created() {
-    this.categories.selected =
-      this.$route.query && this.$route.query.c_name
-        ? this.$route.query.c_name
-        : "";
     await Promise.allSettled([this.fetchBrands(), this.fetchCategories()]).then(
       resutls => {
         resutls.forEach((result, index) => {
@@ -165,6 +161,16 @@ export default {
         });
       }
     );
+    if (this.$route.name === "new-arrivals") {
+      this.$store.dispatch("filter/clearFilter");
+      this.$store.dispatch("filter/updateNewArrival", "yes");
+    } else if (this.$route.name === "sale") {
+      this.$store.dispatch("filter/clearFilter");
+      this.$store.dispatch("filter/updateSale", "yes");
+    } else {
+      this.$store.dispatch("filter/updateSale", "no");
+      this.$store.dispatch("filter/updateNewArrival", "noe");
+    }
     this.$store.dispatch("filter/fetchProductsByFilter");
   },
   computed: {

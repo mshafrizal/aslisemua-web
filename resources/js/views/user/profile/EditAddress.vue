@@ -11,6 +11,8 @@
         <v-card-text v-if="formEditAddress">
           <v-text-field
             v-model="formEditAddress.name"
+            outlined
+            dense
             name="name"
             label="Receiver's Name"
             id="name"
@@ -19,12 +21,38 @@
           ></v-text-field>
           <v-text-field
             v-model="formEditAddress.phone"
+            outlined
+            dense
             name="phone"
             label="Phone"
             id="phone"
             :rules="[requiredRules]"
             color="black"
           ></v-text-field>
+          <v-text-field
+            v-model="formEditAddress.city"
+            outlined
+            dense
+            label="City"
+            :rules="[requiredRules]"
+            color="black"
+          />
+          <v-text-field
+            v-model="formEditAddress.district"
+            outlined
+            dense
+            label="District"
+            :rules="[requiredRules]"
+            color="black"
+          />
+          <v-text-field
+            v-model="formEditAddress.zip_code"
+            outlined
+            dense
+            label="Zip Code"
+            :rules="[requiredRules]"
+            color="black"
+          />
           <v-textarea
             v-model="formEditAddress.address"
             outlined
@@ -61,7 +89,10 @@ export default {
     this.formEditAddress = {
       name: this.address.name,
       phone: this.address.phone,
-      address: this.address.address
+      address: this.address.address,
+      city: this.address.city,
+      district: this.address.district,
+      zip_code: this.address.zip_code,
     }
   },
   methods: {

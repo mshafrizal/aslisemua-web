@@ -12,7 +12,9 @@ use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentTypeController;
 use App\Http\Controllers\BankController;
-
+use App\Http\Controllers\RegionProvinceController;
+use App\Http\Controllers\RegionCityController;
+use App\Http\Controllers\RegionDistrictController;
 //Access-Control-Allow-Origin: *
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods:  POST, GET, OPTIONS, PUT, DELETE');
@@ -199,6 +201,42 @@ Route::prefix('v1')->group(function () {
     Route::prefix('wishlists')->group(function() {
         Route::middleware('modules:api')->post('/store', [CartController::class, 'insertProduct']);
         Route::middleware('modules:api')->delete('/delete', [CartController::class, 'removeProduct']);
-        Route::middleware('modules:api')->get('/', [CartController::class, 'getWishlists']);    
+        Route::middleware('modules:api')->get('/', [CartController::class, 'getWishlists']);
+    });
+
+    /**
+     * ==============================
+     * Regions
+     * ==============================
+     */
+    Route::prefix('regions')->group(function() {
+        Route::prefix('private')->group(function () {
+            Route::prefix('province')->group(function () {
+                Route::middleware('modules:api')->post('/', [RegionProvinceController::class, 'store']);
+                Route::middleware('modules:api')->put('/{id}', [RegionProvinceController::class, 'update']);
+                Route::middleware('modules:api')->delete('/{id}', [RegionProvinceController::class, 'delete']);
+            });
+            Route::prefix('city')->group(function () {
+              Route::middleware('modules:api')->post('/', [RegionCityController::class, 'store']);
+              Route::middleware('modules:api')->put('/{id}', [RegionCityController::class, 'update']);
+              Route::middleware('modules:api')->delete('/{id}', [RegionCityController::class, 'delete']);
+            });
+            Route::prefix('district')->group(function () {
+              Route::middleware('modules:api')->post('/', [RegionDistrictController::class, 'store']);
+              Route::middleware('modules:api')->put('/{id}', [RegionDistrictController::class, 'update']);
+              Route::middleware('modules:api')->delete('/{id}', [RegionDistrictController::class, 'delete']);
+            });
+        });
+        Route::prefix('public')->group(function() {
+            Route::prefix('province')->group(function() {
+                Route::get('/', [RegionProvinceController::class, 'index']);
+            });
+            Route::prefix('city')->group(function() {
+                Route::get('/', [RegionCityController::class, 'index']);
+            });
+            Route::prefix('district')->group(function() {
+                Route::get('/', [RegionDistrictController::class, 'index']);
+            });
+        });
     });
 });

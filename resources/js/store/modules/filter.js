@@ -11,9 +11,9 @@ const state = {
     gender: '',
     clothing_size: '',
     shoe_size: '',
-    new_arrival: '',
+    new_arrival: 'no',
     limit: 16,
-    sale: '',
+    sale: 'no',
     results: null,
     loading: false,
 }             
@@ -57,9 +57,11 @@ const actions = {
             category: state.category ? state.category.name : '',
             start_price: state.start_price,
             end_price: state.end_price,
-            order_by: state.order_by
+            order_by: state.order_by,
+            new_arrival: state.new_arrival,
+            sale: state.sale
         }
-        await axios.get('http://localhost:8000/api/v1/products/public/main', {
+        await axios.get('/api/v1/products/public/main', {
             params: params
         })
         .then(response => commit('setResults', response.data))
@@ -79,9 +81,9 @@ const actions = {
         commit('setColor', '')
         commit('setGender', '')
         commit('setClothingSize', '')
-        commit('setNewArrival', '')
+        commit('setNewArrival', 'no')
         commit('setLimit', 16)
-        commit('setSale', '')
+        commit('setSale', 'no')
     }
 }
 const mutations = {
