@@ -27,6 +27,7 @@ import ProductDetail from "../views/admin/product/ProductDetail";
 
 import RegionList from "../views/admin/region/RegionList";
 
+import PaymentTypeList from "../views/admin/payment types/PaymentTypes";
 // user
 
 import UserLayout from "../views/UserLayout";
@@ -102,7 +103,10 @@ const routes = [
       },
       {
         path: 'region/list', name: 'region-list', component: RegionList, meta: { requiresAuth: true }
-      }
+      },
+      {
+        path: 'payment-type/list', name: 'payment-type-list', component: PaymentTypeList, meta: { requiresAuth: true }
+      },
     ]
   },
   {
