@@ -13,10 +13,11 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentTypeController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\CheckoutController;
-
 use App\Http\Controllers\RegionProvinceController;
 use App\Http\Controllers\RegionCityController;
 use App\Http\Controllers\RegionDistrictController;
+use App\Http\Controllers\OrderController;
+
 //Access-Control-Allow-Origin: *
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods:  POST, GET, OPTIONS, PUT, DELETE');
@@ -201,6 +202,16 @@ Route::prefix('v1')->group(function () {
     });
     
     /**
+     * ==============================
+     * Orders
+     * ==============================
+     */
+    Route::prefix('orders')->group(function () {
+        Route::middleware('modules:api')->get('/{order_id}', [OrderController::class, 'getOrders']);
+    });
+
+    /**
+     * ==============================
      * Wishlists
      * ==============================
      */
