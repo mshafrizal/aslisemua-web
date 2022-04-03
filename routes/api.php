@@ -17,6 +17,7 @@ use App\Http\Controllers\RegionProvinceController;
 use App\Http\Controllers\RegionCityController;
 use App\Http\Controllers\RegionDistrictController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ConsignController;
 
 //Access-Control-Allow-Origin: *
 header('Access-Control-Allow-Origin: *');
@@ -254,6 +255,22 @@ Route::prefix('v1')->group(function () {
             Route::prefix('district')->group(function() {
                 Route::get('/', [RegionDistrictController::class, 'index']);
             });
+        });
+    });
+
+    /**
+     * ==============================
+     * Consignments
+     * ==============================
+     */
+    Route::prefix('consignments')->group(function() {
+        Route::prefix('public')->group(function() {
+            Route::middleware('modules:api')->post('/', [ConsignController::class, 'storeConsignment']);
+            Route::middleware('modules:api')->get('/', [ConsignController::class, 'getListConsignments']);
+        });
+
+        Route::prefix('private')->group(function() {
+            // Route::middleware('modules:api')->get('')
         });
     });
 });
