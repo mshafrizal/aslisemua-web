@@ -1,8 +1,13 @@
-import axios from "axios"
-
 export default {
   namespaced: true,
   actions: {
+    async createAddress (context, payload) {
+      try {
+        return await axios.post(`api/v1/customer-address`, payload)
+      } catch (error) {
+        return error
+      }
+    },
     // Change Status Active Address
     async changeActiveAddress (context, payload) {
       try {
