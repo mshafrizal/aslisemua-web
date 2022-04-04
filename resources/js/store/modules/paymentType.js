@@ -56,7 +56,7 @@ const actions = {
         })
     },
     storeBank({ commit }, payload) {
-        commit('setPaymentTypeisSubmitting', true)
+        commit('setPaymentTypeIsSubmitting', true)
         return new Promise((resolve, reject) => {
             axios.post(`/api/v1/banks/private/`, payload)
                 .then(response => resolve(response))
