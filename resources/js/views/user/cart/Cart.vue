@@ -24,7 +24,7 @@
                 <p class="mt-5"><strong>Total:</strong> Rp {{ total.toLocaleString() }}</p>
               </v-card-text>
             </v-card>
-            <v-btn color="black" :disabled="total === 0" class="white--text mt-4" block>Checkout</v-btn>
+            <v-btn color="black" :disabled="total === 0" class="white--text mt-4" block @click="toSelectAddress">Checkout</v-btn>
           </v-col>
         </v-row>
       </v-col>
@@ -66,6 +66,9 @@ export default {
     this.getProducts()
   },
   methods: {
+    toSelectAddress() {
+      this.$router.push("/cart/select-address")
+    },
     handleRemove (product_id) {
       console.log('handleRemove', product_id)
       this.carts.data = this.carts.data.filter(product => product.product_id !== product_id)
