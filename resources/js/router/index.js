@@ -41,7 +41,7 @@ import VerifyEmail from "../views/user/VerifyEmail";
 
 import AllCategories from '../views/user/AllCategories'
 import Cart from '../views/user/cart/Cart'
-
+import CartSelectAddress from '../views/user/cart/CartSelectAddress'
 import UserProducts from '../views/user/products/UserProducts'
 // Demo
 
@@ -168,6 +168,12 @@ const routes = [
         path: '/cart',
         component: Cart,
         name: 'Cart',
+        meta: { requiresAuth: true, navbar: true }
+      },
+      {
+        path: '/cart/select-address',
+        component: CartSelectAddress,
+        name: 'CartSelectAddress',
         meta: { requiresAuth: true, navbar: true }
       },
       {
