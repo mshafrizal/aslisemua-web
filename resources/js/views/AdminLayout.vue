@@ -108,7 +108,11 @@ export default {
             {
               title: "Regions",
               link: "/admin/region/list"
-            }
+            },
+            {
+              title: "Payment Types",
+              link: "/admin/payment-type/list"
+            },
           ]
         },
         {
