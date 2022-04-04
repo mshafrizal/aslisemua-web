@@ -4,6 +4,7 @@
         <add-payment-type v-if="dialogMode === 'create'" @cancel="handleCancel" @success="handleSuccess" />
         <edit-payment-type v-else-if="dialogMode === 'edit'" @cancel="handleCancel" @success="handleSuccess" :paymentType="selectedData" />
         <delete-payment-type v-else-if="dialogMode === 'delete'" @cancel="handleCancel" @success="handleSuccess" :paymentType="selectedData" />
+        <add-bank v-else-if="dialogMode === 'addbank'" @cancel="handleCancel" @success="handleSuccess" :paymentType="selectedData" />
     </v-dialog>
     <v-col cols="12" sm="9">
         <h2>Payment Type List</h2>
@@ -19,8 +20,12 @@
             :headers="headers"
             item-key="id"
             :loading="loading"
+            :single-expand="false"
+            :expanded.sync="expanded"
+            show-expand
         >
             <template v-slot:item.actions="{ item }">
+                <v-btn @click="addBank(item)" text>Add Bank</v-btn>
                 <v-icon
                     small
                     class="mr-2"
@@ -35,6 +40,12 @@
                     mdi-delete
                 </v-icon>
             </template>
+
+            <template v-slot:expanded-item="{ headers, item }">
+            <td :colspan="headers.length">
+                More info about {{ item.name }}
+            </td>
+            </template>
         </v-data-table>
     </v-col>
   </v-row>
@@ -44,11 +55,13 @@
 import AddPaymentType from "./AddPaymentType.vue"
 import EditPaymentType from "./EditPaymentType.vue"
 import DeletePaymentType from "./DeletePaymentType.vue"
+import AddBank from "./AddBank.vue"
 export default {
     name: "PaymentTypes",
-    components: {AddPaymentType, EditPaymentType, DeletePaymentType},
+    components: {AddPaymentType, EditPaymentType, DeletePaymentType, AddBank},
     data: function() {
         return {
+            expanded: [],
             dialog: false,
             dialogMode: "create",
             selectedData: null,
@@ -73,6 +86,11 @@ export default {
     methods: {
         createItem() {
             this.dialogMode = 'create'
+            this.dialog = true
+        },
+        addBank(item) {
+            this.selectedData = item
+            this.dialogMode = "addbank"
             this.dialog = true
         },
         editItem(item) {
