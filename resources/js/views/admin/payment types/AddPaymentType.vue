@@ -42,7 +42,7 @@ export default {
             this.$refs.addPaymentTypeRef.resetValidation();
         },
         submit() {
-            this.$store.dispatch("paymentType/storePaymentType", this.formmodel)
+            this.$store.dispatch("paymentType/storePaymentType", this.formModel)
             .then(result => {
                 this.$emit("success")
             })
