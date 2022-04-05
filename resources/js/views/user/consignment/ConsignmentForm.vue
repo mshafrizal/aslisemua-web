@@ -94,7 +94,7 @@ export default {
             formData.append("kondisi", this.form.kondisi)
             if (this.form.image) {
               this.form.image.forEach(image => {
-                formData.append("image[]", this.form.image, this.form.image.name)
+                formData.append("image[]", image, image.name)
               });
             }
             this.$axios({
