@@ -24,6 +24,8 @@ import ProductDetail from "../views/admin/product/ProductDetail";
 import RegionList from "../views/admin/region/RegionList";
 
 import PaymentTypeList from "../views/admin/payment types/PaymentTypes";
+
+import ConsignmentList from "../views/admin/consignment/ConsignmentList";
 // user
 
 import UserLayout from "../views/UserLayout";
@@ -103,6 +105,9 @@ const routes = [
       },
       {
         path: 'payment-type/list', name: 'payment-type-list', component: PaymentTypeList, meta: { requiresAuth: true }
+      },
+      {
+        path: 'consignment/list', name: 'consignment-list', component: ConsignmentList, meta: { requiresAuth: true }
       },
     ]
   },
