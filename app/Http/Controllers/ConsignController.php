@@ -126,6 +126,34 @@ class ConsignController extends Controller
         }
     }
 
+    function getAllConsignments() {
+        try {
+            $data = [
+                'status' => 200,
+                'message' => 'Fetched Successfully',
+            ];
+
+            $consignments = ConsignModel::paginate(10);
+            if (!$consignments) return response()->json([
+                'status' => 200,
+                'message' => 'Consignments not found',
+                'message' => []
+            ], 200);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Fetched Successfully',
+                'data' => $consignments
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500, 
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     protected function validateConsignPayload($consign) {
         if (!$consign) return $this->outputValidation(false, (Object)[]);
         if (!$consign->name) return $this->outputValidation(false, 'name');
