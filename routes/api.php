@@ -270,7 +270,7 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::prefix('private')->group(function() {
-            // Route::middleware('modules:api')->get('')
+            Route::middleware('modules:api')->get('/', [ConsignController::class, 'getAllConsignments']);
         });
     });
 });
