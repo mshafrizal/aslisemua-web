@@ -19,7 +19,14 @@ const actions = {
         commit('setPaymentTypeLoading', true)
         await axios.get('/api/v1/payments-types')
             .then(response => {
-                commit('setPaymentTypes', response.data.results)
+                commit(
+                    'setPaymentTypes', 
+                    response.data.results.map(paymentType => {
+                        return {
+                            ...paymentType, withBank: null,
+                        }
+                    })
+                )
                 return Promise.resolve(response)
             })
             .catch(error => {
@@ -63,6 +70,18 @@ const actions = {
                 .catch(error => reject(error))
                 .finally(() => commit('setPaymentTypeIsSubmitting', false))
         })
+    },
+    fetchBankByPaymentType({ commit }, paymentTypeId) {
+        commit('setPaymentTypeLoading', true)
+        return axios.get(`/api/v1/banks/private/${paymentTypeId}`)
+            .then(response => {
+                return Promise.resolve(response)
+            })
+            .catch(error => {
+                return Promise.reject(error);
+            }).finally(() => {
+                commit('setPaymentTypeLoading', false)
+            })
     }
     
 }

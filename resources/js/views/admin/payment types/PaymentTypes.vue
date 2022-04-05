@@ -23,6 +23,7 @@
             :single-expand="false"
             :expanded.sync="expanded"
             show-expand
+            @item-expanded="handleItemExpanded"
         >
             <template v-slot:item.actions="{ item }">
                 <v-btn @click="addBank(item)" text>Add Bank</v-btn>
@@ -42,9 +43,29 @@
             </template>
 
             <template v-slot:expanded-item="{ headers, item }">
-            <td :colspan="headers.length">
-                More info about {{ item.name }}
-            </td>
+                <td :colspan="headers.length">
+                    <template v-if="item.withBank">
+                        <div class="d-flex">
+                            <template v-for="(payType, i) in item.withBank">
+                                <div class="d-flex flex-column" :key="i">
+                                    <p class="mt-2"><strong>{{ payType.name }}</strong></p>
+                                    <div class="d-flex">
+                                        <template v-for="(bank, j) in payType.bank">
+                                            <div class="d-flex flex-column mr-2 p-2 bank-item" :key="j">
+                                                <img class="mb-1" style="max-width: 150px; height: auto" :src="bank.image_path" :alt="bank.alt_image" />
+                                                <div class="d-flex">
+                                                    <p class="mb-0 flex">{{ bank.name }}</p>
+                                                    <v-btn icon x-small><v-icon>mdi-pencil</v-icon></v-btn>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+
+                            </template>
+                        </div>
+                    </template>
+                </td>
             </template>
         </v-data-table>
     </v-col>
@@ -84,6 +105,13 @@ export default {
         this.fetchPaymentTypes();
     },
     methods: {
+        handleItemExpanded (payload) {
+            console.log("this.handleItemExpanded", payload)
+            this.$store.dispatch('paymentType/fetchBankByPaymentType', payload.item.id)
+            .then(result => {
+                payload.item.withBank = result.data.results
+            })
+        },
         createItem() {
             this.dialogMode = 'create'
             this.dialog = true
@@ -116,11 +144,17 @@ export default {
         },
         fetchPaymentTypes() {
             this.$store.dispatch('paymentType/fetchPaymentTypes')
-        }
+        },
     }
 }
 </script>
 
-<style>
+<style scoped>
+    .bank-item {
+        border: 1px solid #d3d3d3;
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+</style>>
 
 </style>
