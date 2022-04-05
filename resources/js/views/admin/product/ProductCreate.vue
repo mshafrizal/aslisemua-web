@@ -378,7 +378,6 @@ export default {
         }
       }).catch(error => {
         this.$store.dispatch('showSnackbar', {
-          
           message: error,
           color: 'error'
         })
