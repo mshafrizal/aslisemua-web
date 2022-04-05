@@ -94,7 +94,7 @@ export default {
             formData.append("kondisi", this.form.kondisi)
             if (this.form.image) {
               this.form.image.forEach(image => {
-                formData.append("image[]", image, image.name)
+                formData.append("images[]", image, image.name)
               });
             }
             this.$axios({
@@ -104,13 +104,16 @@ export default {
                 data: formData,
                 headers: { "Content-Type": "multipart/form-data" },
             })
-            .then(({data}) => {
-                console.log("submit consginemtn", data)
-                this.$store.dispatch('showSnackbar', {
-                    message: "Thank you! Your form has been submitted",
-                    color: 'success'
-                })
-                this.$emit("success")
+            .then((response) => {
+                if (response.status < 400) {
+                  this.$store.dispatch('showSnackbar', {
+                      message: "Thank you! Your form has been submitted",
+                      color: 'success'
+                  })
+                  this.$emit("success")
+                } else {
+                  this.$emit("failed")
+                }
             })
             .catch(error => {
                 this.$store.dispatch('showSnackbar', {
@@ -118,7 +121,7 @@ export default {
                     color: 'error'
                 })
             })
-            .finally(() => this.form.loadin = false)
+            .finally(() => this.form.loading = false)
         }
     }
 }       
