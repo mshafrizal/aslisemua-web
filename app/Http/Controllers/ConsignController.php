@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ConsignModel;
+use App\Models\ConsignmentImageModel;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use ImageKit\ImageKit;
@@ -25,38 +26,46 @@ class ConsignController extends Controller
                 'data' => $this->validateConsignPayload($request)
             ], 200);
 
-            if (!$request->hasFile('image')) return response()->json([
+            if (!$request->hasFile('images')) return response()->json([
                 'status' => 400,
                 'message' => 'Images not found'
             ], 400);
 
-            $image = $request->file('image');
+            $images = $request->file('images');
             $imageKit = new ImageKit(
                 config('imagekit.IMAGEKIT_CDN_PUBLIC_KEY'),
                 config('imagekit.IMAGEKIT_CDN_PRIVATE_KEY'),
                 config('imagekit.IMAGEKIT_CDN_URL')
             );
 
-            $newFileName = 'CONSIGNMENT' . time() . $image->getClientOriginalName();
+            $arrImages = [];
+            $arrImagesUrl = [];
+            $arrImageIds = [];
 
-            try {
-                $uploadFile = $imageKit->upload(
-                    array(
-                        "file" => base64_encode(file_get_contents($image)), // required
-                        "fileName" => $newFileName, // required
-                        'folder' => "/Consignments", // optional
-                    )
-                );
-
-                $responseImageUrl = $uploadFile->success->url;
-                $responseImageId = $uploadFile->success->fileId;
-            } catch (\Exception $e) {
-                return response()->json([
-                    'status' => 500,
+            foreach($images as $image) {
+                $newFileName = 'CONSIGNMENT' . time() . $image->getClientOriginalName();
+                try {
+                    $uploadFile = $imageKit->upload(
+                        array(
+                            "file" => base64_encode(file_get_contents($image)), // required
+                            "fileName" => $newFileName, // required
+                            'folder' => "/Consignments"
+                        )
+                    );
+                    $arrImagesUrl[] = $uploadFile->success->url;
+                    $arrImageIds[] = $uploadFile->success->fileId;
+                } catch (\Exception $e) {
+                    return response()->json([
+                        'status' => 500,
                         'message' => 'Something Went Wrong',
                         'error' => $e->getMessage()
-                ], 500);
+                    ], 500);
+                }
+                $arrImages[] = $newFileName;
             }
+
+            $consignImage = [];
+            $newConsignImage = [];
 
             $newConsign = new ConsignModel([
                 'id' => Str::uuid(),
@@ -65,20 +74,35 @@ class ConsignController extends Controller
                 'email' => $request->email,
                 'goods_type' => ucwords($request->goods_type),
                 'kondisi' => ucfirst($request->kondisi),
-                'image_path' => $responseImageUrl,
-                'image_name' => $newFileName,
-                'filename' => $newFileName,
-                'file_id' => $responseImageId,
+                'image_path' => $arrImagesUrl[0],
+                'image_name' => $arrImages[0],
+                'filename' => $arrImages[0],
+                'file_id' => $arrImageIds[0],
                 'created_at' => $now,
                 'updated_at' => $now,
                 'customer_id' => $customer
             ]);
 
             if ($newConsign->save()) {
+                foreach($arrImagesUrl as $key => $imageUrl) {
+                    $consignmentImage = [
+                        'id' => Str::uuid(),
+                        'consignment_id' => $newConsign->id,
+                        'image_path' => $imageUrl,
+                        'image_name' => $arrImages[$key],
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                        'filename' => $arrImages[$key],
+                        'file_id' => $arrImageIds[$key]
+                    ];
+
+                    $newConsignImage[] = $consignmentImage;
+                }
+
+                ConsignmentImageModel::insert($newConsignImage);
                 return response()->json([
                     'status' => 201,
                     'message' => 'Consignment created',
-                    'data' => $newConsign
                 ], 201);
             } else {
                 return response()->json([
@@ -105,7 +129,7 @@ class ConsignController extends Controller
                 'message' => 'Fetched Successfully',
             ];
 
-            $consignments = ConsignModel::where('customer_id', $customer)->paginate(10);
+            $consignments = ConsignModel::with('consignImage')->where('customer_id', $customer)->paginate(10);
             if (!$consignments) return response()->json([
                 'status' => 200,
                 'message' => 'Consignments not found',
@@ -161,7 +185,7 @@ class ConsignController extends Controller
         if (!$consign->email) return $this->outputValidation(false, 'email');
         if (!$consign->goods_type) return $this->outputValidation(false, 'goods_type');
         if (!$consign->kondisi) return $this->outputValidation(false, 'kondisi');
-        if (!$consign->image) return $this->outputValidation(false, 'image');
+        if (!$consign->images) return $this->outputValidation(false, 'images');
 
         return (Object)[
             'response' => true,
