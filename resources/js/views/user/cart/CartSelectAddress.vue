@@ -251,7 +251,7 @@ export default {
         if (shouldUpdateDefault) {
           await this.$axios({
               url: '/api/v1/customer-address/address/status',
-              baseURL: process.env.APP_URL,
+              baseURL: process.env.MIX_APP_URL,
               method: 'PUT',
               data: {
                 customer_id: this.userInfo.id,

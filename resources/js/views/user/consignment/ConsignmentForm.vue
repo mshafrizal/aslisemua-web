@@ -99,7 +99,7 @@ export default {
             }
             this.$axios({
                 url: '/api/v1/consignments/public/',
-                baseURL: process.env.APP_URL,
+                baseURL: process.env.MIX_APP_URL,
                 method: "POST",
                 data: formData,
                 headers: { "Content-Type": "multipart/form-data" },
