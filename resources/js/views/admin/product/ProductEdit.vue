@@ -257,7 +257,6 @@ export default {
     fetchProduct () {
       this.product.loading = true
       this.$store.dispatch('product/adminFetchProduct', { product_id: this.id }).then(result => {
-        console.log(result)
         this.product.data = result.results.data
         this.formCreateProduct = {
           name: result.results.data.name,

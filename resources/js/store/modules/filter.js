@@ -49,7 +49,6 @@ const actions = {
     updateLimit: ({ commit }, limit) => commit('setLimit', limit),
     updateSale: ({ commit }, sale) => commit('setSale', sale),
     async fetchProductsByFilter ({ commit, state }, payload) {
-        console.log('called')
         commit('setResults', null)
         commit('setLoading', true)
         const params = {
@@ -66,7 +65,7 @@ const actions = {
         })
         .then(response => commit('setResults', response.data))
         .catch(error => {
-            console.log('error', error)
+            Promise.reject(error)
         }).finally(() => {
             commit('setLoading', false)
         })

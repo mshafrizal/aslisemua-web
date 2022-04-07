@@ -106,7 +106,6 @@ export default {
     },
     methods: {
         handleItemExpanded (payload) {
-            console.log("this.handleItemExpanded", payload)
             this.$store.dispatch('paymentType/fetchBankByPaymentType', payload.item.id)
             .then(result => {
                 payload.item.withBank = result.data.results
