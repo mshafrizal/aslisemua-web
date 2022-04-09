@@ -119,6 +119,11 @@ export default {
           icon: "mdi-currency-usd-circle-outline",
           title: "Orders",
           link: "/admin/order/list"
+        },
+        {
+          icon: "mdi-account-cash",
+          title: "Consignment",
+          link: "/admin/consignment/list"
         }
       ]
     };

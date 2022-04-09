@@ -88,7 +88,6 @@ export default {
           })
           this.close(true)
         }).catch(error => {
-          console.log(error)
           this.$store.dispatch('showSnackbar', {
             message: error.response && error.response.data && error.response.data.message ? error.response.data.message : error.message,
             color: 'error'

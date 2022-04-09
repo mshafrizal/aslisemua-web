@@ -175,9 +175,7 @@ export default {
         formData.append('file', this.formEditCategory.file, this.formEditCategory.file.name)
       } else {
         let blob = await fetch(this.thumbnail).then(res => res.blob())
-        console.log(blob)
         let file = new Blob([blob], { type: blob.type })
-        console.log(file)
         formData.append('file', file, this.formEditCategory.name)
         debugger
       }

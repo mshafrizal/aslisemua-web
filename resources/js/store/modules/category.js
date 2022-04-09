@@ -61,7 +61,6 @@ const actions = {
   async fetchCategories (context, query) {
     try {
       const response = await axios.get(`/api/v1/categories/public/${query}`)
-      console.log(response.data)
       return await Promise.resolve(response.data)
     } catch (error) {
       return await Promise.reject(error)

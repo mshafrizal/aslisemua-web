@@ -70,7 +70,6 @@ export default {
       this.$router.push("/cart/select-address")
     },
     handleRemove (product_id) {
-      console.log('handleRemove', product_id)
       this.carts.data = this.carts.data.filter(product => product.product_id !== product_id)
       this.$store.dispatch('cart/deleteProduct', product_id)
     },

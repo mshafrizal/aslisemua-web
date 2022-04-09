@@ -49,6 +49,7 @@
               </div>
             <template v-for="item in carts.data">
               <cart-item
+                  ref="cartItemRef"
                   :product="item.product"
                   :key="item.product_id"
                   @remove="handleRemove"
@@ -67,16 +68,45 @@
             </v-card>
             <!-- Payment Option -->
             <v-card class="mt-3">
-              <v-card-text>
-                <p><strong>Select payment options</strong></p>
-                <v-radio-group v-model="selectedPayOpt">
-                  <template v-for="(opt, index) in paymentOptions">
-                    <div class="mb-3" :key="index">
-                      <v-radio :value="opt.value" :label="opt.name"/>
-                    </div>
-                  </template>
-                </v-radio-group>
+              <v-card-text v-if="paymentTypes.loading" class="text-center">
+                <v-progress-circular indeterminate color="black" />
               </v-card-text>
+              <template v-else>
+                <v-card-text v-if="paymentTypes.error">
+                  <v-alert type="error" prominent>An error occured. Please refresh the page.</v-alert>
+                </v-card-text>
+                <template v-else>
+                  <v-card-text>
+                    <p><strong>Select payment options</strong></p>
+                    <v-radio-group v-model="selectedPayOpt" hide-details>
+                      <template v-for="(opt, index) in paymentTypes.data">
+                        <div class="mb-3" :key="index">
+                          <v-radio :value="opt.id" :label="opt.name"/>
+                        </div>
+                      </template>
+                    </v-radio-group>
+                  </v-card-text>
+                  <v-divider></v-divider>
+                  <v-card-text v-if="!banks.loading && banks.data && banks.data.length > 0">
+                    <p><strong>Select Bank</strong></p>
+                    <div class="d-flex">
+                      <div
+                        v-for="(bank, index) in banks.data[0].bank"
+                        :key="index"
+                        class="pa-2 bank-item"
+                        :class="{ 'bank-selected': bank.id === selectedBank }"
+                        @click="handleSelectBank(bank.id)"
+                      >
+                        <v-img
+                          :src="bank.image_path" 
+                          :alt="bank.alt_image" 
+                          max-width="100px" 
+                        />
+                      </div>
+                    </div>
+                  </v-card-text>
+                </template>
+              </template>
             </v-card>
             <!-- Note -->
             <v-card class="mt-3">
@@ -84,7 +114,8 @@
                 <v-textarea v-model="checkoutParams.note" label="Note" />
               </v-card-text>
             </v-card>
-            <v-btn color="black" :disabled="total === 0" class="white--text mt-4" block>Checkout</v-btn>
+            <v-btn @click="createOrder" color="black" :disabled="total === 0" :loading="isSubmitting" class="white--text mt-4" block>Checkout</v-btn>
+            <v-btn @click="callMidtrans" color="primary">Call Midtrans</v-btn>
           </v-col>
         </v-row>
       </v-col>
@@ -97,6 +128,12 @@ import CartItem from '../../../components/shared/CartItem.vue'
 export default {
   name: 'CartSelectAddress',
   components: {CartItem},
+  watch: {
+    selectedPayOpt(newVal, oldVal) {
+      this.getBanks(newVal)
+      this.selectedBank = null
+    }
+  },
   data: function () {
     return {
       paymentOptions: [
@@ -119,6 +156,17 @@ export default {
         data: [],
         loading: true,
       },
+      paymentTypes: {
+        data: null,
+        loading: true,
+        error: false,
+      },
+      banks: {
+        data: null,
+        loading: true,
+        error: false,
+      },
+      isSubmitting: false,
       shouldCreateAddress: false,
       dialog: false,
       form: {
@@ -130,6 +178,8 @@ export default {
         customer_id: "",
       },
       selectedAddress: null,
+      selectedPayOpt: null,
+      selectedBank: null,
       checkoutParams: {
         note: "",
         is_installment: false,
@@ -139,6 +189,10 @@ export default {
         total_final_price: 0,
         handling_fee: 0,
         products: [],
+      },
+      midtransPayload: {
+        snap_token: "03f705a7-5371-4e92-a85f-2f96f18a8463",
+        order_id: "INV/20220409/0000004",
       }
     }
   },
@@ -160,15 +214,93 @@ export default {
     },
     total () {
       return this.itemTotal - this.discount
+    },
+    isInstallment() {
+      const installmentType = this.paymentTypes.data.find(p => p.key_name === "installment")
+      return this.selectedPayOpt === installmentType.id
     }
   },
   mounted () {
     this.getProducts()
     this.getCustomerAddress()
+    this.getPaymentTypes()
   },
   methods: {
+    callMidtrans() {
+      window.snap.pay(this.midtransPayload.snap_token);
+    },
+    async createOrder() {
+      this.checkoutParams.is_installment = this.isInstallment ? true : false
+      this.checkoutParams.total_installment = this.isInstallment ? this.total : 0
+      this.checkoutParams.total_base_price = this.itemTotal
+      this.checkoutParams.discount_price = this.discount
+      this.checkoutParams.total_final_price = this.total
+      this.checkoutParams.handling_fee = 0
+      const producsWithDetail = this.carts.data.map(product => {
+        return {
+          ...product.product,
+          brand_name: product.detail_product.brand.name,
+          category_name: product.detail_product.category.name,
+          size: product.detail_product.size,
+          color: product.detail_product.color,
+          gender: product.detail_product.gender,
+          alt_image: `Picture of ${product.detail_product.image_name}`
+        }
+      })
+      this.checkoutParams.products = producsWithDetail
+      this.isSubmitting = true
+      await this.$axios({
+        url: `/api/v1/checkout/processed`,
+        baseURL: process.env.MIX_APP_URL,
+        method: 'POST',
+        data: this.checkoutParams,
+      })
+      .then(result => {
+        this.midtransPayload = result.data.data
+      })
+      .then(() => this.callMidtrans())
+      .finally(() => this.isSubmitting = false)
+    },
+    handleSelectBank(bankId) {
+      this.selectedBank = bankId
+    },
+    getBanks(paymentTypeId) {
+      this.banks.error = false
+      this.banks.loading = true
+      this.$axios({
+        url: `/api/v1/banks/private/${paymentTypeId}`,
+        baseURL: process.env.MIX_APP_URL,
+      })
+      .then(result => {
+        this.banks.data = result.data.results
+      })
+      .catch(error => {
+        this.banks.error = true
+        this.$store.dispatch('showSnackbar', {
+          message: error.toString(),
+          color: 'error'
+        })
+      })
+      .finally(() => this.banks.loading = false)
+    },
     openDialogCreateAddress() {
       this.dialog = true
+    },
+    getPaymentTypes() {
+      this.$axios({
+        url: `/api/v1/payments-types`,
+        baseURL: process.env.MIX_APP_URL,
+      })
+      .then(result => {
+        this.paymentTypes.data = result.data.results
+      })
+      .catch(error => {
+        this.$store.dispatch('showSnackbar', {
+          message: error.toString(),
+          color: 'error'
+        })
+      })
+      .finally(() => this.paymentTypes.loading = false)
     },
     async createAddress() {
       this.form.customer_id = this.userInfo.id
@@ -185,7 +317,6 @@ export default {
               message: result.message,
               color: "Customer not found"
             })
-            console.log(result)
           }
             this.dialog = false
             this.form = {
@@ -206,7 +337,6 @@ export default {
       })
     },
     handleRemove (product_id) {
-      console.log('handleRemove', product_id)
       this.carts.data = this.carts.data.filter(product => product.product_id !== product_id)
       this.$store.dispatch('cart/deleteProduct', product_id)
     },
@@ -214,7 +344,25 @@ export default {
       this.carts.loading = true
       this.$store.dispatch('cart/getProducts').then(result => {
         this.carts.data = result.data
-      }).catch(error => {
+        return result.data
+      })
+      .then(async (carts) => {
+        const details = carts.map(product => {
+          return this.$axios({
+            url: `/api/v1/products/public/detail/${product.product.slug}`,
+            baseURL: process.env.MIX_APP_URL,
+          })
+        })
+        return Promise.all(details)
+      })
+      .then((responses) => {
+        responses.forEach(response => {
+          const product = response.data.results.data
+          const productInCart = this.carts.data.find(pCart => pCart.product_id === product.id)
+          if (productInCart) productInCart.detail_product = product
+        })
+      })
+      .catch(error => {
         this.$store.dispatch('showSnackbar', {
           message: error.toString(),
           color: 'error'
@@ -251,7 +399,7 @@ export default {
         if (shouldUpdateDefault) {
           await this.$axios({
               url: '/api/v1/customer-address/address/status',
-              baseURL: process.env.APP_URL,
+              baseURL: process.env.MIX_APP_URL,
               method: 'PUT',
               data: {
                 customer_id: this.userInfo.id,
@@ -271,6 +419,13 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+  .bank-item {
+    border: 2px solid #fff;
+    border-radius: 2px;
+  }
+  .bank-selected {
+    border: 2px solid #ddd;
+    border-radius: 2px;
+  }
 </style>

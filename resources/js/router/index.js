@@ -24,6 +24,8 @@ import ProductDetail from "../views/admin/product/ProductDetail";
 import RegionList from "../views/admin/region/RegionList";
 
 import PaymentTypeList from "../views/admin/payment types/PaymentTypes";
+
+import ConsignmentList from "../views/admin/consignment/ConsignmentList";
 // user
 
 import UserLayout from "../views/UserLayout";
@@ -43,6 +45,7 @@ import AllCategories from '../views/user/AllCategories'
 import Cart from '../views/user/cart/Cart'
 import CartSelectAddress from '../views/user/cart/CartSelectAddress'
 import UserProducts from '../views/user/products/UserProducts'
+import UserConsignment from '../views/user/consignment/Consignment'
 // Demo
 
 import DemoCategoryShop from '../views/user/shop/DemoCategoryShop';
@@ -103,6 +106,9 @@ const routes = [
       },
       {
         path: 'payment-type/list', name: 'payment-type-list', component: PaymentTypeList, meta: { requiresAuth: true }
+      },
+      {
+        path: 'consignment/list', name: 'consignment-list', component: ConsignmentList, meta: { requiresAuth: true }
       },
     ]
   },
@@ -191,6 +197,12 @@ const routes = [
         path: '/sale',
         name: "sale",
         component: UserProducts,
+        meta: { requiresAuth: false, navbar: true }
+      },
+      {
+        path: '/consignment',
+        name: "consignment",
+        component: UserConsignment,
         meta: { requiresAuth: false, navbar: true }
       }
     ]

@@ -33,7 +33,6 @@ const mutations = {
 
 const actions = {
   async authLogin ({commit, state, dispatch}, payload) {
-    console.log('from', payload.from)
     return axios.post('/api/v1/sign-in/authenticate', payload).then(async (response) => {
       if (response.status === 200) {
         await commit('setAuth', response.data.data)
