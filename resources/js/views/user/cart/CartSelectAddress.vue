@@ -49,6 +49,7 @@
               </div>
             <template v-for="item in carts.data">
               <cart-item
+                  ref="cartItemRef"
                   :product="item.product"
                   :key="item.product_id"
                   @remove="handleRemove"
@@ -114,6 +115,7 @@
               </v-card-text>
             </v-card>
             <v-btn @click="createOrder" color="black" :disabled="total === 0" :loading="isSubmitting" class="white--text mt-4" block>Checkout</v-btn>
+            <v-btn @click="callMidtrans" color="primary">Call Midtrans</v-btn>
           </v-col>
         </v-row>
       </v-col>
@@ -187,6 +189,10 @@ export default {
         total_final_price: 0,
         handling_fee: 0,
         products: [],
+      },
+      midtransPayload: {
+        snap_token: "03f705a7-5371-4e92-a85f-2f96f18a8463",
+        order_id: "INV/20220409/0000004",
       }
     }
   },
@@ -220,26 +226,39 @@ export default {
     this.getPaymentTypes()
   },
   methods: {
-    createOrder() {
+    callMidtrans() {
+      window.snap.pay(this.midtransPayload.snap_token);
+    },
+    async createOrder() {
       this.checkoutParams.is_installment = this.isInstallment ? true : false
       this.checkoutParams.total_installment = this.isInstallment ? this.total : 0
       this.checkoutParams.total_base_price = this.itemTotal
       this.checkoutParams.discount_price = this.discount
       this.checkoutParams.total_final_price = this.total
       this.checkoutParams.handling_fee = 0
-      this.checkoutParams.products = this.carts.data.map(product => product.id)
-      debugger
+      const producsWithDetail = this.carts.data.map(product => {
+        return {
+          ...product.product,
+          brand_name: product.detail_product.brand.name,
+          category_name: product.detail_product.category.name,
+          size: product.detail_product.size,
+          color: product.detail_product.color,
+          gender: product.detail_product.gender,
+          alt_image: `Picture of ${product.detail_product.image_name}`
+        }
+      })
+      this.checkoutParams.products = producsWithDetail
       this.isSubmitting = true
-      this.$axios({
+      await this.$axios({
         url: `/api/v1/checkout/processed`,
         baseURL: process.env.MIX_APP_URL,
         method: 'POST',
         data: this.checkoutParams,
       })
       .then(result => {
-        console.log("scheckout", result)
-        debugger;
+        this.midtransPayload = result.data.data
       })
+      .then(() => this.callMidtrans())
       .finally(() => this.isSubmitting = false)
     },
     handleSelectBank(bankId) {
@@ -325,7 +344,25 @@ export default {
       this.carts.loading = true
       this.$store.dispatch('cart/getProducts').then(result => {
         this.carts.data = result.data
-      }).catch(error => {
+        return result.data
+      })
+      .then(async (carts) => {
+        const details = carts.map(product => {
+          return this.$axios({
+            url: `/api/v1/products/public/detail/${product.product.slug}`,
+            baseURL: process.env.MIX_APP_URL,
+          })
+        })
+        return Promise.all(details)
+      })
+      .then((responses) => {
+        responses.forEach(response => {
+          const product = response.data.results.data
+          const productInCart = this.carts.data.find(pCart => pCart.product_id === product.id)
+          if (productInCart) productInCart.detail_product = product
+        })
+      })
+      .catch(error => {
         this.$store.dispatch('showSnackbar', {
           message: error.toString(),
           color: 'error'
