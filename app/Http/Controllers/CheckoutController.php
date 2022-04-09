@@ -79,7 +79,7 @@ class CheckoutController extends Controller {
                 'payment_status' => 'unpaid',
                 'payment_method' => 'midtrans',
                 'order_status' => 'waiting_for_payment',
-                'shipping_status' => 'waiting',
+                'shipping_status' => 'waiting_for_processed',
                 'is_installment' => $request->is_installment ? '1' : '0',
                 'total_installment' => $request->is_installment ? $request->total_installment : 0,
                 'total_base_price' => $request->total_base_price,
@@ -113,7 +113,7 @@ class CheckoutController extends Controller {
                     'final_price' => $product['final_price'],
                     'image_path' => $product['image_path'],
                     'image_name' => $product['image_name'],
-                    'alt_image' => $product['alt_image'],
+                    'alt_image' => $product['alt_image'] || '',
                     'created_at' => now(),
                     'updated_at' => now()
                 ];
