@@ -286,7 +286,6 @@ export default {
       this.$store.dispatch('brand/fetchBrandsPublic').then(result => {
         if (result.status >= 400) throw new Error(result.message)
         else {
-          console.log(result)
           this.brands = result.results
           return true
         }
@@ -301,7 +300,7 @@ export default {
     },
     async searchBrands () {
       this.$store.dispatch('brand/searchBrands', this.brandSearch.query).then(result => {
-        console.log('search brands', result.results)
+        ('search brands', result.results)
         if (result.results.data) this.brands = result.results.data
       }).catch(error => {
         this.$store.dispatch('showSnackbar', {
@@ -378,7 +377,6 @@ export default {
         }
       }).catch(error => {
         this.$store.dispatch('showSnackbar', {
-          
           message: error,
           color: 'error'
         })

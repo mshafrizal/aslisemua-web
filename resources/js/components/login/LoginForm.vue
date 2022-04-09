@@ -60,7 +60,6 @@ export default {
       }
       this.loading = true
       this.$store.dispatch('auth/authLogin', { email: this.email, password: this.password, from: 'LoginForm.vue login()' }).then(result => {
-        console.log('login', result.resposne)
         if (result && result.status === 200) {
           this.$store.dispatch('showSnackbar', {
             message: result.message,

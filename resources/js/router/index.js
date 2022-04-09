@@ -7,10 +7,6 @@ Vue.use(VueRouter)
 
 import AdminLayout from "../views/AdminLayout";
 
-import Dashboard from '../views/admin/Dashboard.vue'
-import SignIn from '../views/admin/SignIn.vue'
-
-import CustomerList from '../views/admin/customer/CustomerList.vue'
 import CustomerDetail from '../views/admin/customer/CustomerDetail.vue'
 
 import BrandList from "../views/admin/brand/BrandList.vue"
@@ -27,6 +23,9 @@ import ProductDetail from "../views/admin/product/ProductDetail";
 
 import RegionList from "../views/admin/region/RegionList";
 
+import PaymentTypeList from "../views/admin/payment types/PaymentTypes";
+
+import ConsignmentList from "../views/admin/consignment/ConsignmentList";
 // user
 
 import UserLayout from "../views/UserLayout";
@@ -44,8 +43,9 @@ import VerifyEmail from "../views/user/VerifyEmail";
 
 import AllCategories from '../views/user/AllCategories'
 import Cart from '../views/user/cart/Cart'
-
+import CartSelectAddress from '../views/user/cart/CartSelectAddress'
 import UserProducts from '../views/user/products/UserProducts'
+import UserConsignment from '../views/user/consignment/Consignment'
 // Demo
 
 import DemoCategoryShop from '../views/user/shop/DemoCategoryShop';
@@ -54,36 +54,37 @@ const routes = [
     path: '/admin',
     component: AdminLayout,
     meta: { requiresAuth: false },
+    redirect: { name: 'dashboard' },
     children: [
       {
-        path: 'signin', name: 'sign-in', component: SignIn, meta: { requiresAuth: false }
+        path: 'signin', name: 'sign-in', component: () => import('../views/admin/SignIn.vue'), meta: { requiresAuth: false }
       },
       {
-        path: '', name: 'dashboard', component: Dashboard, meta: { requiresAuth: true }
+        path: '', name: 'dashboard', component: () => import('../views/admin/Dashboard.vue'), meta: { requiresAuth: true }
       },
       {
-        path: 'customer/list', name: 'customer-list', component: CustomerList, meta: { requiresAuth: true }
+        path: 'customer/list', name: 'customer-list', component: () => import('../views/admin/customer/CustomerList.vue'), meta: { requiresAuth: true }
       },
       {
-        path: 'customer/:id/detail', name: 'customer-detail', component: CustomerDetail, meta: { requiresAuth: true }
+        path: 'customer/:id/detail', name: 'customer-detail', component: () => import('../views/admin/customer/CustomerDetail.vue'), meta: { requiresAuth: true }
       },
       {
         path: 'customer/:id/edit', name: 'customer-edit', component: CustomerDetail, meta: { requiresAuth: true }
       },
       {
-        path: 'brand/list', name: 'brand-list', component: BrandList, meta: { requiresAuth: true }
+        path: 'brand/list', name: 'brand-list', component: () => import("../views/admin/brand/BrandList.vue"), meta: { requiresAuth: true }
       },
       {
-        path: 'brand/create', name: 'brand-create', component: BrandCreate, meta: { requiresAuth: true }
+        path: 'brand/create', name: 'brand-create', component: () => import("../views/admin/brand/BrandCreate.vue"), meta: { requiresAuth: true }
       },
       {
-        path: 'brand/:id/detail', name: 'brand-detail', component: BrandCreate, meta: { requiresAuth: true }
+        path: 'brand/:id/detail', name: 'brand-detail', component: () => import("../views/admin/brand/BrandCreate.vue"), meta: { requiresAuth: true }
       },
       {
-        path: 'brand/:id/edit', name: 'brand-edit', component: BrandEdit, meta: { requiresAuth: true }
+        path: 'brand/:id/edit', name: 'brand-edit', component: () => import("../views/admin/brand/BrandEdit"), meta: { requiresAuth: true }
       },
       {
-        path: 'category/list', name: 'category-list', component: CategoryList, meta: { requiresAuth: true }
+        path: 'category/list', name: 'category-list', component: () => import("../views/admin/category/CategoryList"), meta: { requiresAuth: true }
       },
       {
         path: 'category/create', name: 'category-create', component: CategoryCreate, meta: { requiresAuth: true }
@@ -102,7 +103,13 @@ const routes = [
       },
       {
         path: 'region/list', name: 'region-list', component: RegionList, meta: { requiresAuth: true }
-      }
+      },
+      {
+        path: 'payment-type/list', name: 'payment-type-list', component: PaymentTypeList, meta: { requiresAuth: true }
+      },
+      {
+        path: 'consignment/list', name: 'consignment-list', component: ConsignmentList, meta: { requiresAuth: true }
+      },
     ]
   },
   {
@@ -170,6 +177,12 @@ const routes = [
         meta: { requiresAuth: true, navbar: true }
       },
       {
+        path: '/cart/select-address',
+        component: CartSelectAddress,
+        name: 'CartSelectAddress',
+        meta: { requiresAuth: true, navbar: true }
+      },
+      {
         path: '/demo/shop/:cat_id',
         meta: { requiresAuth: false, navbar: true },
         component: DemoCategoryShop,
@@ -184,6 +197,12 @@ const routes = [
         path: '/sale',
         name: "sale",
         component: UserProducts,
+        meta: { requiresAuth: false, navbar: true }
+      },
+      {
+        path: '/consignment',
+        name: "consignment",
+        component: UserConsignment,
         meta: { requiresAuth: false, navbar: true }
       }
     ]

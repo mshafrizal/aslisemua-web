@@ -29,15 +29,15 @@ class CreateOrderTable extends Migration
             $table->text('shipping_address');
             $table->string('shipping_city');
             $table->string('shipping_district');
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
-            $table->timestamp('requested_at');
-            $table->timestamp('canceled_at');
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
+            $table->timestamp('requested_at')->nullable();
+            $table->timestamp('canceled_at')->nullable();
             $table->string('canceled_by');
-            $table->timestamp('expired_at');
-            $table->timestamp('delivered_at');
+            $table->timestamp('expired_at')->nullable();
+            $table->timestamp('delivered_at')->nullable();
             $table->string('delivered_by');
-            $table->timestamp('finished_at');
+            $table->timestamp('finished_at')->nullable();
             $table->string('finished_by');
             $table->string('note')->nullable();
             $table->string('payment_type');
@@ -45,9 +45,9 @@ class CreateOrderTable extends Migration
             $table->string('payment_status');
             $table->string('order_status');
             $table->string('shipping_status');
-            $table->timestamp('delivery_at');
+            $table->timestamp('delivery_at')->nullable();
             $table->string('delivery_by');
-            $table->timestamp('paid_at');
+            $table->timestamp('paid_at')->nullable();
             $table->string('paid_by');
             $table->string('processed_by');
             $table->enum('is_installment', [true, false]);
@@ -56,8 +56,8 @@ class CreateOrderTable extends Migration
             $table->float('total_final_price');
             $table->float('handling_fee')->nullable();
             $table->string('total_installment')->nullable();
-            $table->timestamp('pending_at');
-            $table->timestamp('processed_at');
+            $table->timestamp('pending_at')->nullable();
+            $table->timestamp('processed_at')->nullable();
         });
     }
 

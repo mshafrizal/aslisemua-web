@@ -32,7 +32,6 @@ export default {
     },
     getProducts (context, payload) {
       return axios.get(`/api/v1/carts/`).then(response => {
-        console.log('get carts', response.data)
         return Promise.resolve(response.data)
       }).catch(error => Promise.reject(error))
     }

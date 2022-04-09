@@ -137,7 +137,7 @@ class RegionCityController extends Controller
       ], 200);
     }
 
-    return resposne()->json([
+    return response()->json([
       'status' => 400,
       'message' => 'Failed to save city'
     ], 400);
@@ -172,6 +172,17 @@ class RegionCityController extends Controller
     return response()->json([
       'status' => 200,
       'message' => 'City deleted successfully'
+    ], 200);
+  }
+
+
+  public function getByProvinceId($province_id)
+  {
+    $cities = RegionCity::where('province_id', $province_id)->get();
+    return response()->json([
+      'status' => 200,
+      'message' => 'Cities successfully fetched',
+      'data' => $cities
     ], 200);
   }
 }

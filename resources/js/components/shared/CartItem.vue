@@ -36,7 +36,6 @@ export default {
   },
   methods: {
     remove () {
-      console.log('remove')
       this.$emit('remove', this.product.id)
     },
     getBrand (brand_id) {
