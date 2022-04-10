@@ -209,7 +209,32 @@ class CheckoutController extends Controller {
                 'error' => $e->getMessage()
             ], 500);
         }
-    } 
+    }
+
+    function getOrderHistory(Request $request) {
+        try {
+            $data = [
+                'status' => 200,
+                'message' => 'Fetched Successfully',
+            ];
+
+            $data['data'] = OrderHistoryModel::where('order_id', $request->order_id)->get();
+
+            if (!$data['data']) return response()->json([
+                'status' => 200,
+                'message' => 'Orders not found',
+                'data' => []
+            ], 200);
+
+            return response()->json($data, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 
     protected function validateUserBio($user) {
         if (!$user) return $this->outputValidation(false, (Object)[]);

@@ -209,8 +209,8 @@ Route::prefix('v1')->group(function () {
      */
     Route::prefix('orders')->group(function () {
         Route::prefix('public')->group(function () {
-            Route::middleware('modules:api')->get('/{limit?}', [CheckoutController::class, 'getOrdersByCustomer']);
-
+            Route::middleware('modules:api')->get('/limit/{limit?}', [CheckoutController::class, 'getOrdersByCustomer']);
+            Route::middleware('modules:api')->post('/history', [CheckoutController::class, 'getOrderHistory']);
         });
         Route::prefix('private')->group(function () {
             Route::middleware('modules:api')->post('/list/back-office', [CheckoutController::class, 'getOrdersByAdmin']);
