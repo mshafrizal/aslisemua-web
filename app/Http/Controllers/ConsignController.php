@@ -161,7 +161,7 @@ class ConsignController extends Controller
             if (!$consignments) return response()->json([
                 'status' => 200,
                 'message' => 'Consignments not found',
-                'message' => []
+                'data' => []
             ], 200);
 
             return response()->json([
