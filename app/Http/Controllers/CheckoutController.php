@@ -236,6 +236,31 @@ class CheckoutController extends Controller {
         }
     }
 
+    function getOrderItemsByOrderId(Request $request) {
+        try {
+            $data = [
+                'status' => 200,
+                'message' => 'Fetched Successfully',
+            ];
+
+            $data['data'] = Order::with('orderItem')->where('order_id', $request->order_id)->paginate($request->limit || 10);
+
+            if (!$data['data']) return response()->json([
+                'status' => 200,
+                'message' => 'Order details not found',
+                'data' => []
+            ], 200);
+
+            return response()->json($data, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     protected function validateUserBio($user) {
         if (!$user) return $this->outputValidation(false, (Object)[]);
         if (!$user->name) return $this->outputValidation(false, 'name');
