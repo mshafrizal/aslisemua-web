@@ -22,21 +22,33 @@
             <template v-for="order in orders.data.data">
               <tr :key="order.id">
                 <td>{{ order.order_id }}</td>
-                <td>{{ order.order_status }}</td>
-                <td>{{ order.payment_status }}</td>
-                <td>{{ order.shipping_status }}</td>
+                <td class="text-uppercase">
+                  <v-chip small label color="yellow" class="lighten-3 orange--text text--darken-2">
+                    <v-icon small left>mdi-receipt</v-icon> {{ removeUnderscore(order.order_status) }}
+                  </v-chip>
+                </td>
+                <td class="text-uppercase">
+                  <v-chip small label color="lime" class="lighten-3 green--text text--darken-2">
+                    <v-icon small left>mdi-currency-usd</v-icon>{{ order.payment_status }}
+                  </v-chip>
+                </td>
+                <td class="text-uppercase">
+                  <v-chip small label color="blue-grey" class="lighten-3 grey--text text--darken-3">
+                    <v-icon small left>mdi-truck</v-icon>{{ order.shipping_status }}
+                  </v-chip>
+                </td>
                 <td>{{ order.billing_name }}</td>
-                <td>{{ order.is_installment ? order.total_installment.toLocaleString('id') : order.total_final_price.toLocaleString('') }}</td>
+                <td>{{ order.is_installment ? order.total_installment.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) : order.total_final_price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) }}</td>
                 <td>{{ order.created_at }}</td>
               </tr>
             </template>
           </tbody>
         </template>
       </v-simple-table>
-      <v-col v-if="order.data && !order.loading">
+      <v-col v-if="orders.data && !orders.loading">
         <div class="mx-auto d-flex justify-between" style="max-width: 300px">
-          <template v-for="link in order.data.links">
-            <v-btn :disabled="!link.url" :color="link.active ? 'primary': ''" small depressed @click="fetchBrands(link.url)" v-html="link.label" :key="link.label"></v-btn>
+          <template v-for="link in orders.data.links">
+            <v-btn :disabled="!link.url" :color="link.active ? 'primary': ''" small depressed @click="getOrderList(link.url)" v-html="link.label" :key="link.label"></v-btn>
           </template>
         </div>
       </v-col>
@@ -50,11 +62,35 @@ export default {
         return {
             orders: {
                 data: null,
-                loading: false,
+                loading: true,
             }
         }
     },
+    mounted() {
+      this.getOrderList(`/api/v1/orders/private/list/back-office`)
+    },
     methods: {
+      removeUnderscore(text) {
+        if (text) return String(text).replaceAll('_', ' ')
+      },
+      getOrderList(link = `/api/v1/orders/private/list/back-office`) {
+        this.orders.loading = true
+        this.$axios({
+          url: link,
+          baseURL: process.env.MIX_APP_URL,
+          method: 'POST'
+        })
+        .then(response => {
+          this.orders.data = response.data.data
+        })
+        .catch(error => {
+          this.$store.dispatch('showSnackbar', {
+            type: 'error',
+            message: error
+          })
+        })
+        .finally(() => this.orders.loading = false)
+      }
     }
 }
 </script>
