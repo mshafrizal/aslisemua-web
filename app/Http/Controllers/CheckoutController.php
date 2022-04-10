@@ -10,6 +10,8 @@ use App\Models\OrderDetail;
 use App\Models\ProductModel;
 use Illuminate\Support\Str;
 use App\Services\Midtrans\CreateSnapTokenService;
+use App\Models\OrderHistoryModel;
+use Illuminate\Support\Arr;
 
 class CheckoutController extends Controller {
     function checkout(Request $request) {
@@ -73,6 +75,7 @@ class CheckoutController extends Controller {
                 'shipping_zip_code' => $isAddressChecked->postal_code || null,
                 'shipping_district' => $isAddressChecked->district || null,
                 'requested_at' => now(),
+                'requested_by' => $customer,
                 'created_at' => now(),
                 'updated_at' => now(),
                 'note' => $request->note,
@@ -126,6 +129,18 @@ class CheckoutController extends Controller {
                 $productExist->stock = $productExist->stock - 1;
                 $productExist->save();
             }
+
+            $orderHistory = [
+                'id' => Str::uuid(),
+                'order_id' => $order->order_id,
+                'status' => 'waiting_for_payment',
+                'created_at' => now(),
+                'updated_at' => now(),
+                'title' => 'Order berhasil di buat',
+                'description' => 'Order anda telah dibuat'
+            ];
+
+            OrderHistoryModel::create($orderHistory);
             
             return response()->json([
                 'status' => 201,
@@ -143,6 +158,58 @@ class CheckoutController extends Controller {
             ], 500);
         }
     }
+
+    function getOrdersByCustomer($limit = null) {
+        try {
+            $data = [
+                'status' => 200,
+                'message' => 'Fetched Successfully',
+            ];
+
+            if ($limit) $data['data'] = Order::where('requested_by', Auth::user()->id)->paginate($limit);
+            else $data['data'] = Order::where('requested_by', Auth::user()->id)->paginate(10);
+
+            if (!$data['data']) return response()->json([
+                'status' => 200,
+                'message' => 'Orders not found',
+                'data' => []
+            ], 200);
+
+            return response()->json($data, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    function getOrdersByAdmin(Request $request) {
+        try {
+            $data = [
+                'status' => 200,
+                'message' => 'Fetched Successfully',
+            ];
+
+            if ($request->order_id) $data['data'] = Order::where('order_id','LIKE','%'.$request->order_id.'%')->paginate(10);
+            else $data['data'] = Order::paginate(10);
+
+            if (!$data['data']) return response()->json([
+                'status' => 200,
+                'message' => 'Orders not found',
+                'data' => []
+            ], 200);
+
+            return response()->json($data, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    } 
 
     protected function validateUserBio($user) {
         if (!$user) return $this->outputValidation(false, (Object)[]);

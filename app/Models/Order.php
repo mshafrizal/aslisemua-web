@@ -37,6 +37,7 @@ class Order extends Model {
         'created_at',
         'updated_at',
         'requested_at',
+        'requested_by',
         'canceled_at',
         'canceled_by',
         'expired_at',
@@ -65,4 +66,12 @@ class Order extends Model {
         'handling_fee',
         'snap_token',
     ];
+
+    public function orderHistory() {
+        return $this->hasMany('App\Models\OrderHistory', 'order_id', 'order_id');
+    }
+
+    public function orderItem() {
+        return $this->hasMany('App\Models\OrderDetail', 'order_id', 'order_id');
+    }
 }

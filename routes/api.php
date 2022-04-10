@@ -208,7 +208,13 @@ Route::prefix('v1')->group(function () {
      * ==============================
      */
     Route::prefix('orders')->group(function () {
-        Route::middleware('modules:api')->get('/{order_id}', [OrderController::class, 'getOrders']);
+        Route::prefix('public')->group(function () {
+            Route::middleware('modules:api')->get('/{limit?}', [CheckoutController::class, 'getOrdersByCustomer']);
+
+        });
+        Route::prefix('private')->group(function () {
+            Route::middleware('modules:api')->post('/list/back-office', [CheckoutController::class, 'getOrdersByAdmin']);
+        });
     });
 
     /**
