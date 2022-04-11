@@ -212,8 +212,11 @@ Route::prefix('v1')->group(function () {
             Route::middleware('modules:api')->get('/limit/{limit?}', [CheckoutController::class, 'getOrdersByCustomer']);
             Route::middleware('modules:api')->post('/history', [CheckoutController::class, 'getOrderHistory']);
         });
+        
         Route::prefix('private')->group(function () {
             Route::middleware('modules:api')->post('/list/back-office', [CheckoutController::class, 'getOrdersByAdmin']);
+            Route::middleware('modules:api')->post('order-items', [CheckoutController::class, 'getOrderItemsByOrderId']);
+            Route::middleware('modules:api')->post('cancel-order', [CheckoutController::class, 'cancelOrder']);
         });
     });
 

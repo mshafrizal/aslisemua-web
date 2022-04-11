@@ -136,8 +136,8 @@ class CheckoutController extends Controller {
                 'status' => 'waiting_for_payment',
                 'created_at' => now(),
                 'updated_at' => now(),
-                'title' => 'Order berhasil di buat',
-                'description' => 'Order anda telah dibuat'
+                'title' => 'Pesanan berhasil di buat',
+                'description' => 'Pesanan kamu telah dibuat'
             ];
 
             OrderHistoryModel::create($orderHistory);
@@ -225,6 +225,76 @@ class CheckoutController extends Controller {
                 'message' => 'Orders not found',
                 'data' => []
             ], 200);
+
+            return response()->json($data, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    function getOrderItemsByOrderId(Request $request) {
+        try {
+            $data = [
+                'status' => 200,
+                'message' => 'Fetched Successfully',
+            ];
+
+            $data['data'] = Order::with('orderItem')->where('order_id', $request->order_id)->paginate($request->limit || 10);
+
+            if (!$data['data']) return response()->json([
+                'status' => 200,
+                'message' => 'Order details not found',
+                'data' => []
+            ], 200);
+
+            return response()->json($data, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    function cancelOrder(Request $request) {
+        try {
+            $data = [
+                'status' => 200,
+                'message' => 'Order Cancelled',
+            ];
+
+            $order = Order::where('order_id', $request->order_id)->first();
+            $order->order_status = 'cancelled';
+            $order->payment_status = 'cancelled';
+            $order->shipping_status = 'cancelled';
+            $order->canceled_at = now();
+            $order->canceled_by = Auth::user()->id;
+            $order->save();
+
+            $orderHistory = [
+                'id' => Str::uuid(),
+                'order_id' => $order->order_id,
+                'status' => 'cancelled',
+                'created_at' => now(),
+                'updated_at' => now(),
+                'title' => 'Pembatalan pemesanan',
+                'description' => 'Pesanan kamu telah dibatalkan'
+            ];
+
+            OrderHistoryModel::create($orderHistory);
+
+            $products = OrderDetail::where('order_id', $order->order_id)->get();
+
+            foreach ($products as $product) {
+                $productExist = ProductModel::find($product->product_id);
+                $productExist->stock = $productExist->stock + 1;
+                $productExist->save();
+            }
 
             return response()->json($data, 200);
         } catch (\Exception $e) {
