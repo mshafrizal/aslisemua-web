@@ -1,8 +1,11 @@
 <template>
   <v-app id="user">
-    <v-snackbar top v-if="snackbar" v-model="snackbar.value" :color="snackbar.type">
-      {{snackbar ? snackbar.message : '-'}}
-    </v-snackbar>
+    <v-snackbar-queue
+      :items="snackbarItems"
+      @remove="removeItem"
+      close-button-icon="mdi-close"
+      top
+      next-button-count-text="More"></v-snackbar-queue>
     <user-navigation />
     <v-divider />
     <v-main>
@@ -50,8 +53,13 @@ export default {
     ...mapGetters([
       'getSnackbar'
     ]),
-    snackbar () {
+    snackbarItems () {
       return this.$store.getters.getSnackbar
+    }
+  },
+  methods: {
+    removeItem (id) {
+      this.$store.dispatch('removeSnackbarMessage', id)
     }
   }
 }
