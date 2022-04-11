@@ -115,7 +115,7 @@
               </v-card-text>
             </v-card>
             <v-btn @click="createOrder" color="black" :disabled="total === 0" :loading="isSubmitting" class="white--text mt-4" block>Checkout</v-btn>
-            <!-- <v-btn @click="callMidtrans" color="primary">Call Midtrans</v-btn> -->
+            <v-btn @click="callMidtrans" color="primary">Call Midtrans</v-btn>
           </v-col>
         </v-row>
       </v-col>
@@ -191,8 +191,8 @@ export default {
         products: [],
       },
       midtransPayload: {
-        snap_token: "",
-        order_id: "",
+        snap_token: "03f705a7-5371-4e92-a85f-2f96f18a8463",
+        order_id: "INV/20220409/0000004",
       }
     }
   },
@@ -227,28 +227,7 @@ export default {
   },
   methods: {
     callMidtrans() {
-      let self = this
-      window.snap.pay(this.midtransPayload.snap_token, {
-        onSuccess: function(result) {
-          self.$store.dispatch('showSnackbar', {
-            message: result.status_message.toString(),
-            color: 'success'
-          })
-          self.$router.push('/profile')
-        },
-        onPending: function(result) {
-          self.$router.push('/profile')
-        },
-        onError: function(result) {
-          self.$store.dispatch('showSnackbar', {
-            message: result.status_message.toString(),
-            color: 'error'
-          })
-        },
-        onClose: function(result) {
-          console.log("onClose", result)
-        }
-      });
+      window.snap.pay(this.midtransPayload.snap_token);
     },
     async createOrder() {
       this.checkoutParams.is_installment = this.isInstallment ? true : false
@@ -270,8 +249,6 @@ export default {
       })
       this.checkoutParams.products = producsWithDetail
       this.isSubmitting = true
-      console.log(this.checkoutParams)
-      debugger
       await this.$axios({
         url: `/api/v1/checkout/processed`,
         baseURL: process.env.MIX_APP_URL,

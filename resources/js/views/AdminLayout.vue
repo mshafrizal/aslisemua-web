@@ -7,7 +7,7 @@
       top
       next-button-count-text="More"
     ></v-snackbar-queue>
-    <v-navigation-drawer v-if="renderDrawer" v-model="drawer" app width="215px">
+    <v-navigation-drawer v-if="renderDrawer" v-model="drawer" app>
       <v-list-item>
         <v-list-item-content><h1>Hi, Admin</h1></v-list-item-content>
       </v-list-item>
