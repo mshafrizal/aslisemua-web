@@ -4,7 +4,7 @@
     <div class="d-flex flex-col">
       <template v-for="brand in items">
         <v-checkbox
-          v-model="selectedBrand"
+          v-model="selected"
           :key="brand.id"
           :label="brand.name"
           hide-details
@@ -20,30 +20,21 @@
 
 <script>
 export default {
-  name: "BrandsFilter",
-  props: ["items"],
-  data: function() {
+  name: 'BrandsFilter',
+  props: ['items'],
+  data: function () {
     return {
       selected: []
-    };
+    }
   },
   methods: {
-    handleChange(val) {
-      this.$emit("brand-selected", val);
-    }
-  },
-  computed: {
-    selectedBrand: {
-      get() {
-        return this.$store.getters["filter/getBrand"];
-      },
-      set(value) {
-        this.$store.dispatch("filter/updateBrand", value);
-        this.$store.dispatch("filter/fetchProductsByFilter");
-      }
+    handleChange (val) {
+      this.$emit('brand-selected', val)
     }
   }
-};
+}
 </script>
 
-<style></style>
+<style>
+
+</style>

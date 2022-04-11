@@ -1,11 +1,6 @@
 <template>
   <div>
-    <div
-      class="text-lg font-weight-bold mb-3 cursor-pointer"
-      @click="toAllProducts"
-    >
-      All Categories
-    </div>
+    <div class="text-lg font-weight-bold mb-3 cursor-pointer" @click="toAllProducts">Categories</div>
     <div class="d-flex flex-col">
       <ul class="pl-2">
         <li v-for="item in items" :key="item.id">
@@ -13,18 +8,18 @@
             v-if="item.children.length === 0"
             :class="{
               'black--text category__item': true,
-              'category--active': category.id === item.id
+              'category--active': categories.selected === item.id,
             }"
-            @click="selectCategory(item)"
+            @click="selectCategory(item.id)"
           >
             {{ item.name }}
           </div>
           <div class="d-flex flex-col" v-else>
-            <div
-              @click="selectCategory(item)"
+            <div 
+              @click="selectCategory(item.id)"
               :class="{
                 'black--text category__item': true,
-                'category--active': category.id === item.id
+                'category--active': categories.selected === item.id,
               }"
             >
               {{ item.name }}
@@ -32,10 +27,10 @@
             <ul class="pl-2">
               <li v-for="child in item.children" :key="child.id">
                 <div
-                  @click="selectCategory(child)"
+                  @click="selectCategory(child.id)"
                   :class="{
                     'black--text category__item': true,
-                    'category--active': category.id === child.id
+                    'category--active': categories.selected === child.id,
                   }"
                 >
                   {{ child.name }}
@@ -51,57 +46,47 @@
 
 <script>
 export default {
-  name: "CategoriesFilter",
-  props: ["items"],
-  data: function() {
+  name: 'CategoriesFilter',
+  props: ['items'],
+  data: function () {
     return {
       categories: {
         active: [],
         selected: null
       }
-    };
-  },
-  computed: {
-    category: {
-      get() {
-        return this.$store.getters["filter/getCategory"];
-      },
-      set(value) {
-        this.$store.commit("updateCategory", value);
-        // this.fetchProducts()
-      }
     }
   },
-  mounted() {
-    // if (this.$route.query.c_id) {
-    //   this.categories.selected = this.$route.query.c_id;
-    // }
+  mounted () {
+    if (this.$route.query.c_id) {
+      this.categories.selected = this.$route.query.c_id
+    }
   },
   methods: {
     toAllProducts() {
       this.$store.dispatch("filter/updateCategory", "");
       this.$store.dispatch("filter/fetchProductsByFilter");
     },
-    selectCategory(item) {
-      this.$store.dispatch("filter/updateCategory", item);
-      this.$emit("selected", item);
-      this.$store.dispatch("filter/fetchProductsByFilter");
+    selectCategory (id) {
+      if (this.categories.selected !== id) {
+        this.categories.selected = id
+        this.$emit('selected', id)
+      }
     },
-    getActiveValue(val) {
-      this.$emit("selected", val[0]);
+    getActiveValue (val) {
+      this.$emit('selected', val[0])
     }
   }
-};
+}
 </script>
 
 <style scoped>
-.category__item {
-  padding: 8px 12px;
-}
-.category__item:hover {
-  background-color: #fafafa;
-}
-.category__item.category--active {
-  background-color: #e6e6e6;
-}
+  .category__item {
+    padding: 8px 12px;
+  }
+  .category__item:hover {
+    background-color: #fafafa
+  }
+  .category__item.category--active {
+    background-color: #e6e6e6;
+  }
 </style>
