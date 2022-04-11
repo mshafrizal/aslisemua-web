@@ -6,7 +6,10 @@ import customer from "./modules/customer"
 import category from "./modules/category"
 import product from './modules/product'
 import cart from './modules/cart'
-// import createPersistedState from 'vuex-persistedstate'
+import customerAddress from './modules/customerAddress'
+import filter from './modules/filter'
+import paymentType from './modules/paymentType'
+import consignments from './modules/consignment'
 Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
@@ -58,7 +61,11 @@ export default new Vuex.Store({
     customer,
     category,
     product,
-    cart
+    cart,
+    customerAddress,
+    filter,
+    paymentType,
+    consignments,
   }
 })
 

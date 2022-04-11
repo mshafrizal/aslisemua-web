@@ -64,7 +64,6 @@ export default {
   methods: {
     getProducts () {
       this.$axios.get(`/api/v1/products/public/main?limit=8`).then(response => {
-        console.log('getproducts', response)
         if (response.status === 200) {
           this.products.data = response.data.data
         }

@@ -246,7 +246,7 @@ export default {
       gender: [
         { text: 'Male', value: 'male' },
         { text: 'Female', value: 'female' },
-        { text: 'None', value: '' }
+        { text: 'Unisex', value: 'unisex' }
       ],
       genderRules: [
         v => !!v || 'Gender is required'
@@ -286,7 +286,6 @@ export default {
       this.$store.dispatch('brand/fetchBrandsPublic').then(result => {
         if (result.status >= 400) throw new Error(result.message)
         else {
-          console.log(result)
           this.brands = result.results
           return true
         }
@@ -301,7 +300,7 @@ export default {
     },
     async searchBrands () {
       this.$store.dispatch('brand/searchBrands', this.brandSearch.query).then(result => {
-        console.log('search brands', result.results)
+        ('search brands', result.results)
         if (result.results.data) this.brands = result.results.data
       }).catch(error => {
         this.$store.dispatch('showSnackbar', {
@@ -362,7 +361,7 @@ export default {
       params.append('base_price', this.formCreateProduct.base_price)
       params.append('final_price', this.formCreateProduct.final_price)
       params.append('stock', 1)
-      params.append('alt_image', '')
+      params.append('alt_image', `Picture of ${this.formCreateProduct.name}`)
       this.formCreateProduct.images.forEach(img => {
         params.append('images[]', img, img.name)
       })
@@ -370,37 +369,35 @@ export default {
         if (result.status >= 400) throw new Error(result.message)
         else {
           this.$store.dispatch('showSnackbar', {
-            
             color: 'success',
             message: result.message
           })
+          this.formCreateProduct = {
+            name: '',
+            brand_id: '',
+            category_id: '',
+            size: '',
+            gender: '',
+            color: '',
+            condition: '',
+            description: '',
+            detail: '',
+            discount_price: 0,
+            alt_image: '',
+            base_price: 0,
+            final_price: 0,
+            images: []
+          }
           this.$emit('createSuccess')
+          this.handleClose()
         }
       }).catch(error => {
         this.$store.dispatch('showSnackbar', {
-          
           message: error,
           color: 'error'
         })
       }).finally(() => {
         this.isSubmitting = false
-        this.handleClose()
-        this.formCreateProduct = {
-          name: '',
-          brand_id: '',
-          category_id: '',
-          size: '',
-          gender: '',
-          color: '',
-          condition: '',
-          description: '',
-          detail: '',
-          discount_price: 0,
-          alt_image: '',
-          base_price: 0,
-          final_price: 0,
-          images: []
-        }
       })
     }
   }

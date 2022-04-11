@@ -62,8 +62,9 @@ export default {
     }
   },
   methods: {
-    toAllProducts () {
-      this.$router.push('/products').catch(() => {})
+    toAllProducts() {
+      this.$store.dispatch("filter/updateCategory", "");
+      this.$store.dispatch("filter/fetchProductsByFilter");
     },
     selectCategory (id) {
       if (this.categories.selected !== id) {

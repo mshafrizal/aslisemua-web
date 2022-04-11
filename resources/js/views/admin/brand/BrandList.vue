@@ -205,7 +205,6 @@ export default {
         baseURL: '',
         method: 'get'
       }).then(response => {
-        console.log('asxios', response)
         if (response.status === 200) {
           this.brands = response.data.results.data
           this.page = response.data.results.current_page

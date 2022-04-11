@@ -34,7 +34,6 @@ const actions = {
     }).catch(error => Promise.reject(error))
   },
   searchBrands (context, keyword) {
-    console.log('keyword', keyword)
     return axios.get(`/api/v1/brands/search`, {keyword: keyword}).then(response => {
       return Promise.resolve(response.data)
     }).catch(error => Promise.reject(error))

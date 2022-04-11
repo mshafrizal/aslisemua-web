@@ -92,7 +92,6 @@ export default {
   },
   methods: {
     checkout () {
-      console.log('checkout,')
       this.$router.push('/cart')
     },
     insertProduct () {

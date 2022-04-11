@@ -51,9 +51,6 @@ export default {
       valid: true
     }
   },
-  mounted () {
-    console.log()
-  },
   methods: {
     signIn () {
       this.formLogin.loading = true
@@ -64,7 +61,6 @@ export default {
             from: 'Signin.vue siginin()'
           }
         this.$store.dispatch('auth/authLogin', params).then(result => {
-          console.log(result)
           if (result.status === 200) {
             this.$store.dispatch('showSnackbar', {
               message: result.message,

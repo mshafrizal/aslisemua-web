@@ -11,15 +11,19 @@ use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\CustomerAddressController;
 use App\Models\CustomerAddress;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaymentTypeController;
+use App\Http\Controllers\BankController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\RegionProvinceController;
+use App\Http\Controllers\RegionCityController;
+use App\Http\Controllers\RegionDistrictController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ConsignController;
 
 //Access-Control-Allow-Origin: *
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods:  POST, GET, OPTIONS, PUT, DELETE');
 header('Access-Control-Allow-Headers:  Content-Type, X-Auth-Token, Origin, Authorization');
-
-// Route::middleware('modules:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
 
 Route::prefix('v1')->group(function () {
     /**
@@ -153,9 +157,99 @@ Route::prefix('v1')->group(function () {
      * Carts
      * ==============================
      */
-    Route::prefix('carts')->group(function() {
+    Route::prefix('carts')->group(function () {
         Route::middleware('modules:api')->post('/store', [CartController::class, 'insertProduct']);
         Route::middleware('modules:api')->delete('/delete', [CartController::class, 'removeProduct']);
-        Route::middleware('modules:api')->get('/', [CartController::class, 'getCarts']);    
+        Route::middleware('modules:api')->get('/', [CartController::class, 'getCarts']);
+    });
+
+    /**
+     * ==============================
+     * Checkout
+     * ==============================
+     */
+    Route::prefix('checkout')->group(function () {
+        Route::middleware('modules:api')->post('processed', [CheckoutController::class, 'checkout']);
+    });
+    
+    /**
+     * ==============================
+     * Orders
+     * ==============================
+     */
+    Route::prefix('orders')->group(function () {
+        Route::prefix('public')->group(function () {
+            Route::middleware('modules:api')->get('/limit/{limit?}', [CheckoutController::class, 'getOrdersByCustomer']);
+            Route::middleware('modules:api')->post('/history', [CheckoutController::class, 'getOrderHistory']);
+        });
+        
+        Route::prefix('private')->group(function () {
+            Route::middleware('modules:api')->post('/list/back-office', [CheckoutController::class, 'getOrdersByAdmin']);
+            Route::middleware('modules:api')->post('order-items', [CheckoutController::class, 'getOrderItemsByOrderId']);
+            Route::middleware('modules:api')->post('cancel-order', [CheckoutController::class, 'cancelOrder']);
+        });
+    });
+
+    /**
+     * ==============================
+     * Wishlists
+     * ==============================
+     */
+    Route::prefix('wishlists')->group(function() {
+        Route::middleware('modules:api')->post('/store', [CartController::class, 'insertProduct']);
+        Route::middleware('modules:api')->delete('/delete', [CartController::class, 'removeProduct']);
+        Route::middleware('modules:api')->get('/', [CartController::class, 'getWishlists']);
+    });
+
+    /**
+     * ==============================
+     * Regions
+     * ==============================
+     */
+    Route::prefix('regions')->group(function() {
+        Route::prefix('private')->group(function () {
+            Route::prefix('province')->group(function () {
+                Route::middleware('modules:api')->post('/', [RegionProvinceController::class, 'store']);
+                Route::middleware('modules:api')->put('/{id}', [RegionProvinceController::class, 'update']);
+                Route::middleware('modules:api')->delete('/{id}', [RegionProvinceController::class, 'delete']);
+            });
+            Route::prefix('city')->group(function () {
+              Route::middleware('modules:api')->post('/', [RegionCityController::class, 'store']);
+              Route::middleware('modules:api')->put('/{id}', [RegionCityController::class, 'update']);
+              Route::middleware('modules:api')->delete('/{id}', [RegionCityController::class, 'delete']);
+            });
+            Route::prefix('district')->group(function () {
+              Route::middleware('modules:api')->post('/', [RegionDistrictController::class, 'store']);
+              Route::middleware('modules:api')->put('/{id}', [RegionDistrictController::class, 'update']);
+              Route::middleware('modules:api')->delete('/{id}', [RegionDistrictController::class, 'delete']);
+            });
+        });
+        Route::prefix('public')->group(function() {
+            Route::prefix('province')->group(function() {
+                Route::get('/', [RegionProvinceController::class, 'index']);
+            });
+            Route::prefix('city')->group(function() {
+                Route::get('/', [RegionCityController::class, 'index']);
+            });
+            Route::prefix('district')->group(function() {
+                Route::get('/', [RegionDistrictController::class, 'index']);
+            });
+        });
+    });
+
+    /**
+     * ==============================
+     * Consignments
+     * ==============================
+     */
+    Route::prefix('consignments')->group(function() {
+        Route::prefix('public')->group(function() {
+            Route::middleware('modules:api')->post('/', [ConsignController::class, 'storeConsignment']);
+            Route::middleware('modules:api')->get('/', [ConsignController::class, 'getListConsignments']);
+        });
+
+        Route::prefix('private')->group(function() {
+            Route::middleware('modules:api')->get('/', [ConsignController::class, 'getAllConsignments']);
+        });
     });
 });
