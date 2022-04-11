@@ -82,7 +82,7 @@ export default {
   },
   methods: {
     getCategories () {
-      return this.$axios.get(`${process.env.MIX_APP_URL}/api/v1/categories/public/main?limit=0`).then(response => {
+      return this.$axios.get(`/api/v1/categories/public/main?limit=0`).then(response => {
         if (response.status === 200){
           this.categories = response.data.data.filter(item => item.parent === null || item.parent === 'null')
         }
