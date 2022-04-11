@@ -30,26 +30,60 @@
     </v-col>
     <v-col cols="12">
       <v-skeleton-loader v-if="loading" type="table" />
-      <v-data-table
-        v-else
-        :headers="headerProducts"
-        :items="products.data"
-        :server-items-length="products.meta.total"
-        class="elevation-1"
-        :items-per-page="10"
-      >
-        <template v-slot:item.base_price="{item}">
-          Rp {{item.base_price ? item.base_price.toLocaleString('id') : ''}}
+      <v-simple-table v-else>
+        <template v-slot:default>
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Brand</th>
+              <th>Price</th>
+              <th>Discount</th>
+              <th>Final Price</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="product in products.data">
+              <tr :key="product.id">
+                <td>{{ product.name }}</td>
+                <td class="text-uppercase">
+                  {{ product.brand.name }}
+                </td>
+                <td class="text-uppercase">
+                  {{ product.base_price}}
+                </td>
+                <td class="text-uppercase">
+                  {{ product.discount_price }}
+                </td>
+                <td>{{ product.final_price }}</td>
+                <td>
+                  <div class="d-flex">
+                    <v-btn color="primary" icon>
+                      <v-icon>mdi-eye</v-icon>
+                    </v-btn>
+                    <v-btn color="warning" icon class="ml-2">
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                    <v-btn color="error" icon class="ml-2">
+                      <v-icon>mdi-trash</v-icon>
+                    </v-btn>
+                  </div>
+                </td>
+              </tr>
+            </template>
+          </tbody>
         </template>
-        <template v-slot:item.discount_price="{item}">
-          {{ item.discount_price && parseInt(item.discount_price) > 0 ? 'Rp': '' }} {{item.discount_price ? item.discount_price.toLocaleString('id') : ''}}
-        </template>
-        <template v-slot:item.actions="{item}">
-          <v-icon color="primary" class="mr-3" @click="toDetailProduct(item.id)">mdi-eye</v-icon>
-          <v-icon color="warning" class="mr-3" @click="toEditProduct(item.id)">mdi-pencil</v-icon>
-          <v-icon color="error" class="mr-3" @click="toggleDialogDelete(item)">mdi-trash-can</v-icon>
-        </template>
-      </v-data-table>
+      </v-simple-table>
+      <v-col v-if="products && !loading">
+        <div class="d-flex flex-grow-1 justify-space-between">
+          <v-btn :disabled="!products.links.prev" icon @click="fetchAdminProducts(products.links.prev)">
+            <v-icon>mdi-chevron-left</v-icon>
+          </v-btn>
+          <v-btn :disabled="!products.links.next" icon @click="fetchAdminProducts(products.links.next)">
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-btn>
+        </div>
+      </v-col>
     </v-col>
   </v-row>
 </template>
@@ -62,11 +96,7 @@ export default {
   components: {ProductCreate, ProductEdit},
   data: function () {
     return {
-      products: {
-        data: [],
-        links: '',
-        meta: null
-      },
+      products: null,
       dialogDelete: false,
       dialogUpdateStatus: false,
       headerProducts: [
@@ -99,25 +129,23 @@ export default {
     handleSuccess () {
       this.fetchAdminProducts()
     },
-    fetchAdminProducts () {
+    fetchAdminProducts (link = `/api/v1/products/private`) {
       this.loading = true
-      this.$store.dispatch("product/adminFetchProducts", `main?${this.limit}`).then(result => {
-        if (result.status >= 400) throw new Error(result.message)
-        else {
-          this.products.data = result.data
-          this.products.meta = result.meta
-          this.products.links = result.links
+      this.$axios({
+        url: link,
+        baseURL: process.env.MIX_APP_URL
+      }).then(({ data }) => {
+        this.products = {
+          data: data.data,
+          links: data.links,
+          meta: data.meta
         }
       }).catch(error => {
         this.$store.dispatch('showSnackbar', {
-          value: true,
           type: 'error',
           message: error
         })
       }).finally(() => this.loading = false)
-    },
-    resolveImagePath (path) {
-      return '../storage/' + path
     },
     submitDelete () {
       this.isSubmitting = true
