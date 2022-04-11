@@ -5,20 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentMethod extends Model
+class PaymentTypeBank extends Model
 {
     use HasFactory;
 
-    protected $table = 'payment_methods';
-    protected $primaryKey = 'id';
+    protected $table = 'payment_types_banks';
     public $incrementing = false;
     protected $fillable = [
-        'id', 
-        'image_path', 
-        'image_name', 
+        'bank_id',
         'created_at',
         'updated_at',
-        'alt_image'
+        'payment_type_id',
     ];
-
 }
