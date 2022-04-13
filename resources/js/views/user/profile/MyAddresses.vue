@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row justify="center">
     <v-dialog
       v-model="dialog"
       persistent
@@ -67,11 +67,11 @@
         </v-form>
       </v-card>
     </v-dialog>
-    <v-col cols="12">
+    <v-col cols="12" md="8">
       <v-btn @click="openDialog" :disabled="isSubmitting" color="black" class="white--text" depressed>Add Address</v-btn>
     </v-col>
     <v-col cols="12" md="8">
-      <v-card flat :loading="loading || isSubmitting">
+      <v-card :loading="loading || isSubmitting">
         <template slot="progress">
           <v-progress-linear
             color="black"
