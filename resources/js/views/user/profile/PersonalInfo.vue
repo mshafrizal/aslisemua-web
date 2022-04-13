@@ -1,7 +1,7 @@
 <template>
-  <v-row>
+  <v-row justify="center">
     <v-col cols="12" md="6">
-      <v-card flat :loading="loading || isSubmitting">
+      <v-card :loading="loading || isSubmitting">
         <template slot="progress">
           <v-progress-linear
             color="black"
@@ -14,42 +14,42 @@
           v-if="loading"
         ></v-skeleton-loader>
         <v-card-text v-if="!loading && personalInfo">
-          <v-row>
+          <v-row dense>
             <v-col cols="12" md="6">
               <span>Name</span>
-              <v-text-field v-model="personalInfo.name" color="black" :disabled="!isEditing" outlined dense></v-text-field>
+              <v-text-field v-model="personalInfo.name" color="black" :disabled="!isEditing" :hide-details="!isEditing" outlined dense></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <span>Email</span>
-              <v-text-field v-model="personalInfo.email" color="black" :disabled="!isEditing" outlined dense></v-text-field>
+              <v-text-field v-model="personalInfo.email" color="black" :disabled="!isEditing" :hide-details="!isEditing" outlined dense></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <span>Gender</span>
-              <v-text-field v-model="personalInfo.gender" color="black" :disabled="!isEditing" outlined dense></v-text-field>
+              <v-text-field v-model="personalInfo.gender" color="black" :disabled="!isEditing" :hide-details="!isEditing" outlined dense></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <span>Phone Number</span>
-              <v-text-field v-model="personalInfo.phone_number" color="black" :disabled="!isEditing" outlined dense></v-text-field>
+              <v-text-field v-model="personalInfo.phone_number" color="black" :disabled="!isEditing" :hide-details="!isEditing" outlined dense></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <span>Postal Code</span>
-              <v-text-field v-model="personalInfo.postal_code" color="black" :disabled="!isEditing" outlined dense></v-text-field>
+              <v-text-field v-model="personalInfo.postal_code" color="black" :disabled="!isEditing" :hide-details="!isEditing" outlined dense></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <span>City</span>
-              <v-text-field v-model="personalInfo.city" color="black" :disabled="!isEditing" outlined dense></v-text-field>
+              <v-text-field v-model="personalInfo.city" color="black" :disabled="!isEditing" :hide-details="!isEditing" outlined dense></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <span>District</span>
-              <v-text-field v-model="personalInfo.district" color="black" :disabled="!isEditing" outlined dense></v-text-field>
+              <v-text-field v-model="personalInfo.district" color="black" :disabled="!isEditing" :hide-details="!isEditing" outlined dense></v-text-field>
             </v-col>
             <v-col cols="12">
               <span>Address</span>
-              <v-textarea v-model="personalInfo.address" color="black" :disabled="!isEditing" outlined></v-textarea>
+              <v-textarea v-model="personalInfo.address" color="black" :disabled="!isEditing" :hide-details="!isEditing" outlined></v-textarea>
             </v-col>
-<!--            <v-col cols="12">-->
-<!--              <v-btn v-if="!isEditing" @click="isEditing = !isEditing" color="black" outlined block>Edit</v-btn>-->
-<!--            </v-col>-->
+           <!-- <v-col cols="12">
+             <v-btn v-if="!isEditing" @click="isEditing = !isEditing" color="black" outlined block>Edit</v-btn>
+           </v-col> -->
           </v-row>
         </v-card-text>
       </v-card>
