@@ -147,14 +147,14 @@ export default {
         },
         {
           title: "Profile",
-          link: "/profile",
+          link: "/profile/detail",
           requiresAuth: true,
           method: null,
           icon: "mdi-account-outline"
         },
         {
           title: "Transactions",
-          link: "/profile",
+          link: "/profile/transaction",
           requiresAuth: true,
           method: null,
           icon: "mdi-receipt"
