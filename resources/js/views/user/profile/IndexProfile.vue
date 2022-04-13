@@ -2,87 +2,53 @@
   <v-container>
     <v-row class="mt-5">
       <v-col cols="12">
-        <h1 class="text-5xl">Hello, {{ username }}</h1>
-      </v-col>
-      <v-col cols="12">
-        <v-divider />
+        <h1 class="text-5xl text-center">Hello, {{ username }}</h1>
       </v-col>
     </v-row>
-    <v-row class="mt-5">
+    <v-row class="mt-5" justify="center">
+      <v-col cols="12" md="8">
+          <v-row dense>
+            <v-col cols="12" sm="3">
+              <v-btn to="/profile/detail" color="black" outlined exact-path block>
+                <v-icon left>mdi-account</v-icon>
+                PERSONAL INFO
+              </v-btn>
+            </v-col>
+            <v-col cols="12" sm="3">
+              <v-btn to="/profile/transaction" color="black" outlined exact-path block>
+                <v-icon left>mdi-receipt</v-icon>
+                MY PURCHASES
+              </v-btn>
+            </v-col>
+            <v-col cols="12" sm="3">
+              <v-btn to="/profile/shipment" color="black" outlined exact-path block>
+                <v-icon left>mdi-truck</v-icon>
+                SHIPMENT
+              </v-btn>
+            </v-col>
+            <v-col cols="12" sm="3">
+              <v-btn to="/profile/my-address" color="black" outlined exact-path block>
+                <v-icon left>mdi-map-marker</v-icon>
+                MY ADDRESSES
+              </v-btn>
+            </v-col>
+          </v-row>
+      </v-col>
       <v-col cols="12">
-        <v-tabs :vertical="viewport === 'xs' ? false : true" show-arrows>
-          <v-tab class="justify-start">
-            <v-icon left>
-              mdi-account
-            </v-icon>
-            <span>
-              Personal Info
-            </span>
-          </v-tab>
-          <v-tab class="justify-start">
-            <v-icon left>
-              mdi-receipt
-            </v-icon>
-            <span>
-              My Purchases
-            </span>
-          </v-tab>
-          <v-tab class="justify-start">
-            <v-icon left>
-              mdi-truck-outline
-            </v-icon>
-            <span>
-              Track Shipment
-            </span>
-          </v-tab>
-          <v-tab class="justify-start">
-            <v-icon left>
-              mdi-google-maps
-            </v-icon>
-            <span>
-              Address
-            </span>
-          </v-tab>
-
-          <v-tab-item>
-            <personal-info />
-          </v-tab-item>
-          <v-tab-item>
-            <my-purchases />
-          </v-tab-item>
-          <v-tab-item>
-<!--            <TrackShipment />-->
-          </v-tab-item>
-          <v-tab-item>
-            <my-addresses />
-          </v-tab-item>
-        </v-tabs>
+          <router-view :key="$route.fullPath">
+          </router-view>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import PersonalInfo from "./PersonalInfo";
-import MyPurchases from "./MyPurchases";
-import MyAddresses from "./MyAddresses";
-// import TrackShipment from "./TrackShipment";
 export default {
   name: "IndexProfile",
-  components: {MyAddresses, MyPurchases, PersonalInfo},
   data: function () {
     return {
-      address: null,
-      loadingAddress: false,
-      loadingMyPurchases: false,
-      loadingShipment: false,
-      personalInfo: null,
-      myPurchases: null,
-      shipment: null,
+      activeTab: 0,
     }
-  },
-  
-  methods:{
   },
   computed: {
     viewport () {

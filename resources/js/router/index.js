@@ -37,6 +37,8 @@ import Login from "../views/user/Login";
 import Register from "../views/user/Register";
 import ForgotPassword from "../views/user/ForgotPassword";
 import IndexProfile from "../views/user/profile/IndexProfile";
+import MyPurchases from "../views/user/profile/MyPurchases";
+import MyAddresses from "../views/user/profile/MyAddresses";
 import PersonalInfo from "../views/user/profile/PersonalInfo";
 import ShopLayout from "../views/user/shop/ShopLayout";
 import NewArrivals from "../views/user/shop/NewArrivals";
@@ -161,7 +163,24 @@ const routes = [
       {
         path: '/profile',
         component: IndexProfile,
-        meta: { requiresAuth: true, navbar: true }
+        meta: { requiresAuth: true, navbar: true },
+        children: [
+          {
+            path: 'detail',
+            component: PersonalInfo,
+            meta: { requiresAuth: true, navbar: true }
+          },
+          {
+            path: 'transaction',
+            component: MyPurchases,
+            meta: { requiresAuth: true, navbar: true }
+          },
+          {
+            path: 'my-address',
+            component: MyAddresses,
+            meta: { requiresAuth: true, navbar: true }
+          },
+        ]
       },
       {
         path: '/product/:slug',
