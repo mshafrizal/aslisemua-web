@@ -38,7 +38,7 @@ const actions = {
     storePaymentType({ commit }, payload) {
         commit('setPaymentTypeIsSubmitting', true)
         return new Promise((resolve, reject) => {
-            axios.post('/api/v1/payments-types/', payload)
+            axios.post('/api/v1/payments-types', payload)
                 .then(response => resolve(response))
                 .catch(error => reject(error))
                 .finally(() => commit('setPaymentTypeIsSubmitting', false))
