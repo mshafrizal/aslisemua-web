@@ -27,7 +27,6 @@
       const email = document.getElementById('email').value;
 
       axios.get('{{ url('/customers/forgot-password/{id}/edit') }}', { email }).then(response => {
-        debugger
         if (response.status === 200) {
           document.location.href = '{{ route('forgot-password-sent') }}';
         } else {
