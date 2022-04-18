@@ -39,7 +39,7 @@ const actions = {
         await commit('setIsLoggedIn')
       }
       return Promise.resolve(response.data)
-    }).catch(error => error)
+    }).catch(error => Promise.reject(error))
   },
   authLogout ({commit}) {
     commit('removeAuth')

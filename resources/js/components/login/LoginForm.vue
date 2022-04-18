@@ -60,13 +60,8 @@ export default {
       }
       this.loading = true
       this.$store.dispatch('auth/authLogin', { email: this.email, password: this.password, from: 'LoginForm.vue login()' }).then(result => {
-        if (result && result.status === 200) {
-          this.$store.dispatch('showSnackbar', {
-            message: result.message,
-            type: 'success'
-          })
-          this.$router.push({name: 'Homepage'})
-        }
+        this.$axios.defaults.headers.common = { 'Authorization': `Bearer ${localStorage.getItem('token')}` };
+        this.$router.push('/')
       }).catch(error => {
         this.$store.dispatch('showSnackbar', {
           message: error,
