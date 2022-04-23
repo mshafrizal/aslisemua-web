@@ -6,6 +6,16 @@
       hide-overlay 
       transition="dialog-bottom-transition"
     >
+      <v-dialog v-model="dialogCancel" max-width="300">
+        <v-card>
+          <v-card-title>Cancel Order</v-card-title>
+          <v-card-text>Are you sure to cancel this order?</v-card-text>
+          <v-card-actions>
+            <v-btn text @click="dialogCancel = false" :disabled="isSubmitting">No</v-btn>
+            <v-btn depressed color="error" @click="cancelOrder" :loading="isSubmitting">Yes</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <v-card v-if="orderDetail.data">
         <v-toolbar dark color="primary">
           <v-btn icon dark @click="dialog = false"><v-icon>mdi-close</v-icon></v-btn>
@@ -50,8 +60,14 @@
                     </v-col>
                     <v-col cols="9" class="text-left">
                       <p class="mb-1">{{orderDetail.data.data[0].order_status}}</p>
-                      <v-btn outlined x-small>Change Status</v-btn>
-                      <v-btn color="error" outlined x-small>Cancel Order</v-btn>
+                      <!-- <v-btn outlined x-small>Change Status</v-btn> -->
+                      <v-btn 
+                        color="error" 
+                        outlined
+                        x-small
+                        @click="confirmCancelOrder(orderDetail.data.data[0].order_id)"
+                        v-if="orderDetail.data.data[0].order_status != 'cancelled'"
+                        >Cancel Order</v-btn>
                     </v-col>
                     <v-col cols="3" class="text-right caption">
                       <strong>Payment Status</strong>
@@ -276,16 +292,47 @@ export default {
                 loading: true,
             },
             dialog: false,
+            dialogCancel: false,
+            isSubmitting: false,
             orderDetail: {
                 data: null,
                 loading: false,
-            }
+            },
+            selectedOrderId: "",
         }
     },
     mounted() {
       this.getOrderList(`/api/v1/orders/private/list/back-office`)
     },
     methods: {
+      cancelOrder() {
+        this.isSubmitting = true
+        this.$axios({
+          url: '/api/v1/orders/private/cancel-order',
+          method: 'POST',
+          data: {
+            order_id: this.selectedOrderId,
+          }
+        }).then(response => {
+          this.$store.dispatch('showSnackbar', {
+            type: 'success',
+            message: response.data.message
+          })
+        }).catch(error => {
+          this.$store.dispatch('showSnackbar', {
+            type: 'error',
+            message: error.response.data.message
+          })
+        }).finally(() => {
+          this.isSubmitting = false
+          this.selectedOrderId = ""
+          this.dialogCancel = false
+        })
+      },
+      confirmCancelOrder(order_id) {
+        this.selectedOrderId = order_id
+        this.dialogCancel = true
+      },
       viewOrderDetail(order_id) {
         this.loading = true
         this.dialog = true
@@ -333,4 +380,4 @@ export default {
   #ordersTable > .v-data-table__wrapper > table > tbody > tr > td {
     font-size: 11px;
   }
-</style> 
+</style>
