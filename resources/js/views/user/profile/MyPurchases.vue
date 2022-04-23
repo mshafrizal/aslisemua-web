@@ -76,8 +76,8 @@
             <v-col cols="12" sm="5" class="text-right">
               {{ 
                 purchaseDetail.data[0].is_installment ? 
-                purchaseDetail.data[0].total_installment.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) :
-                purchaseDetail.data[0].total_final_price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
+                parseInt(purchaseDetail.data[0].total_installment).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) :
+                parseInt(purchaseDetail.data[0].total_final_price).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
               }}
             </v-col>
           </v-row>
@@ -294,7 +294,7 @@ export default {
       this.myPurchases.error = false
       this.$axios({
         url: link,
-        baseURL: process.env.MIX_APP_URL,
+        
       })
       .then(response => {
         if (this.myPurchases.data) {
