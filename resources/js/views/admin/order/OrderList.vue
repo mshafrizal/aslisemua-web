@@ -260,7 +260,7 @@
                   </v-chip>
                 </td>
                 <td>{{ order.billing_name }}</td>
-                <td>{{ order.is_installment ? order.total_installment.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) : order.total_final_price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) }}</td>
+                <td>{{ order.is_installment ? parseInt(order.total_installment).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) : parseInt(order.total_final_price).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) }}</td>
                 <td>{{ order.created_at }}</td>
                 <td>
                   <v-btn @click="viewOrderDetail(order.order_id)" icon color="primary">
