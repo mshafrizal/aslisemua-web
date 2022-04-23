@@ -114,7 +114,7 @@
                 <v-textarea v-model="checkoutParams.note" label="Note" />
               </v-card-text>
             </v-card>
-            <v-btn @click="createOrder" color="black" :disabled="total === 0" :loading="isSubmitting" class="white--text mt-4" block>Checkout</v-btn>
+            <v-btn @click="createOrder" color="black" :disabled="total === 0 || shouldCreateAddress" :loading="isSubmitting" class="white--text mt-4" block>Checkout</v-btn>
             <!-- <v-btn @click="callMidtrans" color="primary">Call Midtrans</v-btn> -->
           </v-col>
         </v-row>
@@ -250,7 +250,21 @@ export default {
         }
       });
     },
+    async getProductCategory(category_id) {
+      return await this.$axios({
+        url: `/api/v1/categories/private/${category_id}`
+      })
+      .then(response => Promise.resolve(response.data))
+      .catch(error => Promise.reject(error))
+    },
     async createOrder() {
+      if (!this.selectedPayOpt) {
+        this.$store.dispatch('showSnackbar', {
+          message: 'Please select payment option',
+          color: 'info'
+        })
+        return 
+      }
       this.checkoutParams.is_installment = this.isInstallment ? true : false
       this.checkoutParams.total_installment = this.isInstallment ? this.total : 0
       this.checkoutParams.total_base_price = this.itemTotal
@@ -274,7 +288,7 @@ export default {
       debugger
       await this.$axios({
         url: `/api/v1/checkout/processed`,
-        baseURL: process.env.MIX_APP_URL,
+        
         method: 'POST',
         data: this.checkoutParams,
       })
@@ -292,7 +306,7 @@ export default {
       this.banks.loading = true
       this.$axios({
         url: `/api/v1/banks/private/${paymentTypeId}`,
-        baseURL: process.env.MIX_APP_URL,
+        
       })
       .then(result => {
         this.banks.data = result.data.results
@@ -312,7 +326,7 @@ export default {
     getPaymentTypes() {
       this.$axios({
         url: `/api/v1/payments-types`,
-        baseURL: process.env.MIX_APP_URL,
+        
       })
       .then(result => {
         this.paymentTypes.data = result.data.results
@@ -373,7 +387,7 @@ export default {
         const details = carts.map(product => {
           return this.$axios({
             url: `/api/v1/products/public/detail/${product.product.slug}`,
-            baseURL: process.env.MIX_APP_URL,
+            
           })
         })
         return Promise.all(details)
@@ -383,6 +397,18 @@ export default {
           const product = response.data.results.data
           const productInCart = this.carts.data.find(pCart => pCart.product_id === product.id)
           if (productInCart) productInCart.detail_product = product
+        })
+        const getCategories = this.carts.data.map(item => this.getProductCategory(item.product.category_id))
+        return Promise.all(getCategories)
+      })
+      .then(ctgResponses => {
+        ctgResponses.forEach(res => {
+          console.log(res.data)
+          this.carts.data.forEach((item, index) => {
+            if (item.product.category_id === res.data.id) {
+              this.$set(this.carts.data[index].detail_product, 'category', res.data)
+            }
+          })
         })
       })
       .catch(error => {
@@ -422,7 +448,7 @@ export default {
         if (shouldUpdateDefault) {
           await this.$axios({
               url: '/api/v1/customer-address/address/status',
-              baseURL: process.env.MIX_APP_URL,
+              
               method: 'PUT',
               data: {
                 customer_id: this.userInfo.id,
