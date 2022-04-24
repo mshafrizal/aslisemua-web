@@ -132,8 +132,7 @@ export default {
     fetchAdminProducts (link = `/api/v1/products/private`) {
       this.loading = true
       this.$axios({
-        url: link,
-        baseURL: process.env.MIX_APP_URL
+        url: link
       }).then(({ data }) => {
         this.products = {
           data: data.data,

@@ -86,7 +86,6 @@ export default {
             this.$store.dispatch('consignments/updateConsignmentLoading', true)
             this.$axios({
                 url: url,
-                baseURL: process.env.MIX_APP_URL,
             })
             .then((response) => {
                 if (response.status === 200) {
