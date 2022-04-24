@@ -234,10 +234,10 @@ export default {
             message: result.status_message.toString(),
             color: 'success'
           })
-          self.$router.push('/profile')
+          self.$router.push('/profile/transaction')
         },
         onPending: function(result) {
-          self.$router.push('/profile')
+          self.$router.push('/profile/transaction')
         },
         onError: function(result) {
           self.$store.dispatch('showSnackbar', {
@@ -284,8 +284,6 @@ export default {
       })
       this.checkoutParams.products = producsWithDetail
       this.isSubmitting = true
-      console.log(this.checkoutParams)
-      debugger
       await this.$axios({
         url: `/api/v1/checkout/processed`,
         
@@ -403,7 +401,6 @@ export default {
       })
       .then(ctgResponses => {
         ctgResponses.forEach(res => {
-          console.log(res.data)
           this.carts.data.forEach((item, index) => {
             if (item.product.category_id === res.data.id) {
               this.$set(this.carts.data[index].detail_product, 'category', res.data)
