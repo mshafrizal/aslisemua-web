@@ -306,6 +306,62 @@ class CheckoutController extends Controller {
         }
     }
 
+    function updateOrderStatus(Request $request) {
+        try {
+            $data = [
+                'status' => 200,
+                'message' => 'Order Status Updated',
+            ];
+
+            $order = Order::where('order_id', $request->order_id)->first();
+            $order->order_status = $request->order_status;
+            $order->shipping_status = $request->shipping_status;
+
+            $title = '';
+            $message = '';
+            if ($request->order_status === 'on_delivery') {
+                $order->delivery_at = now();
+                $order->delivery_by = Auth::user()->id;
+
+                $title = 'Pesanan sedang dikirim';
+                $message = 'Pesanan kamu sedang dikirim';
+            } else if ($request->order_status === 'delivered') {
+                $order->delivered_at = now();
+                $order->delivered_by = Auth::user()->id;
+
+                $title = 'Pesanan telah diterima';
+                $message = 'Pesanan kamu telah diterima';
+            }
+
+            if ($order->save()) {
+                $orderHistory = [
+                    'id' => Str::uuid(),
+                    'order_id' => $order->order_id,
+                    'status' => $request->order_status,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'title' => $title,
+                    'description' => $message
+                ];
+    
+                OrderHistoryModel::create($orderHistory);
+    
+                return response()->json($data, 200);
+            }
+
+            return response()->json([
+                'status' => 400,
+                'message' => 'Order Status Not Updated',
+            ], 400);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     protected function validateUserBio($user) {
         if (!$user) return $this->outputValidation(false, (Object)[]);
         if (!$user->name) return $this->outputValidation(false, 'name');
