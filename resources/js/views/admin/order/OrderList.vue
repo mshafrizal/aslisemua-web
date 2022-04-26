@@ -6,6 +6,32 @@
       hide-overlay 
       transition="dialog-bottom-transition"
     >
+      <v-dialog v-model="dialogChangeOrderStatus" max-width="300">
+        <v-card>
+          <v-card-title>Change Order Status</v-card-title>
+          <v-card-text>
+            Are you sure to change order status?
+            <v-select color="primary" class="white--text" :items="formattedOrderStatus" v-model="selectedOrderStatus" outlined></v-select>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn outlined @click="dialogChangeOrderStatus = false">Cancel</v-btn>
+            <v-btn color="primary" depressed @click="updateOrderStatus">Update</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog v-model="dialogChangeShippingStatus" max-width="300">
+        <v-card>
+          <v-card-title>Change Shipping Status</v-card-title>
+          <v-card-text>
+            Are you sure to change shipping status?
+            <v-select color="primary" class="white--text" :items="formattedShippingStatus" v-model="selectedShippingStatus" outlined></v-select>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn outlined @click="dialogChangeShippingStatus = false">Cancel</v-btn>
+            <v-btn color="primary" depressed @click="updateOrderStatus">Update</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <v-dialog v-model="dialogCancel" max-width="300">
         <v-card>
           <v-card-title>Cancel Order</v-card-title>
@@ -60,14 +86,17 @@
                     </v-col>
                     <v-col cols="9" class="text-left">
                       <p class="mb-1">{{orderDetail.data.data[0].order_status}}</p>
-                      <!-- <v-btn outlined x-small>Change Status</v-btn> -->
-                      <v-btn 
-                        color="error" 
-                        outlined
-                        x-small
-                        @click="confirmCancelOrder(orderDetail.data.data[0].order_id)"
-                        v-if="orderDetail.data.data[0].order_status != 'cancelled'"
-                        >Cancel Order</v-btn>
+                      <template v-if="orderDetail.data.data[0].order_status != 'cancelled'">
+                        <v-btn outlined x-small @click="changeStatus(orderDetail.data.data[0].order_id, 'order')">Change Status</v-btn>
+                        <v-btn 
+                          color="error" 
+                          outlined
+                          x-small
+                          @click="confirmCancelOrder(orderDetail.data.data[0].order_id)"
+                          
+                          >Cancel Order
+                        </v-btn>
+                      </template>
                     </v-col>
                     <v-col cols="3" class="text-right caption">
                       <strong>Payment Status</strong>
@@ -80,7 +109,14 @@
                     </v-col>
                     <v-col cols="9" class="text-left">
                       <p class="mb-1">{{orderDetail.data.data[0].shipping_status}}</p>
-                      <v-btn outlined x-small>Change Status</v-btn>
+                      <v-btn 
+                        outlined
+                        x-small
+                        v-if="orderDetail.data.data[0].shipping_status !== 'cancelled'"
+                        @click="changeStatus(orderDetail.data.data[0].order_id, 'shipping')"
+                      >
+                        Change Status
+                      </v-btn>
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -293,18 +329,67 @@ export default {
             },
             dialog: false,
             dialogCancel: false,
+            dialogChangeOrderStatus: false,
+            dialogChangeShippingStatus: false,
             isSubmitting: false,
             orderDetail: {
                 data: null,
                 loading: false,
             },
+            orderStatus: ['waiting_for_processed', 'on_delivery', 'delivered', 'cancelled'],
             selectedOrderId: "",
+            selectedOrderStatus: null,
+            selectedShippingStatus: null,
         }
+    },
+    computed: {
+      formattedOrderStatus() {
+        if (!this.orderDetail.data) return []
+        const filteredByCurrentStatus = this.orderStatus.filter(status => status !== this.orderDetail.data.data[0].order_status)
+        return filteredByCurrentStatus.map(status => status.replaceAll('_', ' ').toUpperCase())
+      },
+      formattedShippingStatus() {
+        if (!this.orderDetail.data) return []
+        const filteredByCurrentStatus = this.orderStatus.filter(status => status !== this.orderDetail.data.data[0].shipping_status)
+        return filteredByCurrentStatus.map(status => status.replaceAll('_', ' ').toUpperCase())
+      }
     },
     mounted() {
       this.getOrderList(`/api/v1/orders/private/list/back-office`)
     },
     methods: {
+      updateOrderStatus () {
+        this.isSubmitting = true
+        const newShippingStatus = this.selectedShippingStatus ? this.selectedShippingStatus : this.orderDetail.data.data[0].shipping_status
+        const newOrderStatus = this.selectedOrderStatus ? this.selectedOrderStatus : this.orderDetail.data.data[0].order_status
+        this.$axios({
+          url: '/api/v1/orders/private/update/order-status',
+          method: 'PUT',
+          data: {
+            order_id: this.selectedOrderId,
+            shipping_status: newShippingStatus.replaceAll(' ', '_').toLowerCase(),
+            order_status: newOrderStatus.replaceAll(' ', '_').toLowerCase(),
+          }
+        }).then(() => {
+          this.dialogChangeOrderStatus = false
+          this.dialogChangeShippingStatus = false
+          this.selectedShippingStatus = null
+          this.selectedOrderStatus = null
+          this.viewOrderDetail(this.selectedOrderId)
+        }).catch(error => {
+          this.$store.dispatch('showSnackbar', {
+            type: 'error',
+            message: error.response.data.message
+          })
+        }).finally(() => this.isSubmitting = false)
+      },
+      changeStatus(order_id, targetStatus = 'order') {
+        this.selectedOrderId = order_id
+        this.selectedOrderStatus = null
+        this.selectedShippingStatus = null
+        if (targetStatus === 'order') this.dialogChangeOrderStatus = true
+        if (targetStatus === 'shipping') this.dialogChangeShippingStatus = true
+      },
       cancelOrder() {
         this.isSubmitting = true
         this.$axios({
@@ -343,7 +428,7 @@ export default {
           },
           method: 'POST'
         }).then(response => {
-          this.orderDetail.data = response.data.data
+          this.$set(this.orderDetail, 'data', response.data.data)
         }).catch(error => {
           this.$store.dispatch('showSnackbar', {
             type: 'error',
