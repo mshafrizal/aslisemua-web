@@ -556,6 +556,50 @@ class ProductController extends Controller
         }
     }
 
+    function setPrimaryProductImage(Request $request) {
+        try {
+            if (!$request->has('product_id')) return response()->json([
+                'status' => 400,
+                'message' => 'Product id not found'
+            ]);
+
+            if (!$request->has('product_image_id')) return response()->json([
+                'status' => 400,
+                'message' => 'Image id not found'
+            ]);
+
+            $isProductExist = ProductModel::find($request->product_id);
+
+            if (empty($isProductExist)) return response()->json([
+                'status' => 400,
+                'message' => 'Product not found'
+            ]);
+
+            $isImageExist = ProductImageModel::where('product_id', $request->product_id)->where('id', $request->product_image_id)->first();
+
+            if (empty($isImageExist)) return response()->json([
+                'status' => 400,
+                'message' => 'Image not found'
+            ]);
+
+            ProductImageModel::where('product_id', $request->product_id)->update(['is_primary_image' => false]);
+
+            $isImageExist->is_primary_image = true;
+
+            if ($isImageExist->save()) return response()->json([
+                'status' => 200,
+                'message' => 'Image set as primary'
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     private function unlinkImage ($fileName) {
         Storage::delete('/public/products/' . $fileName);
     }

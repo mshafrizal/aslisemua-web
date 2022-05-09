@@ -22,7 +22,8 @@ class ProductImageModel extends Model
         'created_at',
         'updated_at',
         'file_id',
-        'filename'
+        'filename',
+        'is_primary_image'
     ];
 
     /**
