@@ -104,6 +104,7 @@ Route::prefix('v1')->group(function () {
             Route::middleware('modules:api')->post('/create', [ProductController::class, 'createProduct']);
             Route::middleware('modules:api')->delete('/{product_id}/delete', [ProductController::class, 'deleteProduct']);
             Route::middleware('modules:api')->post('/{product_id}/update', [ProductController::class, 'updateProduct']);
+            Route::middleware('modules:api')->put('/primary/image', [ProductController::class, 'setPrimaryProductImage']);
         });
 
         // Users
