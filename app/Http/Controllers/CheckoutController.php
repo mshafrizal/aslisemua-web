@@ -362,6 +362,24 @@ class CheckoutController extends Controller {
         }
     }
 
+    function getOrderRevenue() {
+        try {
+            $data = [
+                'status' => 200,
+                'message' => 'Fetched Successfully',
+            ];
+
+            $data['data'] = Order::selectRaw('sum(total_final_price) as total_price, count(order_status) as order_status')->where('order_status', 'delivered')->first();
+            return response()->json($data, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     protected function validateUserBio($user) {
         if (!$user) return $this->outputValidation(false, (Object)[]);
         if (!$user->name) return $this->outputValidation(false, 'name');
