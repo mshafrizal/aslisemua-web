@@ -218,6 +218,7 @@ Route::prefix('v1')->group(function () {
             Route::middleware('modules:api')->post('order-items', [CheckoutController::class, 'getOrderItemsByOrderId']);
             Route::middleware('modules:api')->post('cancel-order', [CheckoutController::class, 'cancelOrder']);
             Route::middleware('modules:api')->put('/update/order-status', [CheckoutController::class, 'updateOrderStatus']);
+            Route::middleware('modules:api')->get('/revenue/total', [CheckoutController::class, 'getOrderRevenue']);
         });
 
         Route::post('/callback/notification/handler', [OrderController::class, 'callbackNotificationPG']);
