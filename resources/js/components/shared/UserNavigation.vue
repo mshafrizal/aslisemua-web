@@ -224,5 +224,6 @@ export default {
 .logo {
   font-size: 2.5rem;
   font-family: "Belleza-Regular";
+  text-decoration: none;
 }
 </style>
