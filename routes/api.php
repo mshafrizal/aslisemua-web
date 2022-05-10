@@ -12,6 +12,7 @@ use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentTypeController;
 use App\Http\Controllers\BankController;
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\RegionProvinceController;
 use App\Http\Controllers\RegionCityController;
@@ -124,6 +125,16 @@ Route::prefix('v1')->group(function () {
      */
     Route::prefix('banners')->group(function () {
         Route::prefix('carousel')->group(function () {
+            Route::prefix('public')->group(function () {
+                
+            });
+
+            Route::prefix('private')->group(function () {
+                Route::middleware('modules:api')->get('/', [BannerController::class, 'fetchCarouselBanners']);
+                Route::middleware('modules:api')->post('/store', [BannerController::class, 'createCarouselBanner']);
+                Route::middleware('modules:api')->post('/update', [BannerController::class, 'updateCarouselBanner']);
+                Route::middleware('modules:api')->delete('/destroy', [BannerController::class, 'deleteCarouselBanner']);
+            });
         });
     });
 
