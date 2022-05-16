@@ -98,6 +98,7 @@ export default {
 .categories-filter__list-item,
 .categories-filter__sub-list-item {
   list-style: none;
+  cursor: pointer;
 }
 .category__item {
   padding: 8px 12px;
