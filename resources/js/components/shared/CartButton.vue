@@ -1,14 +1,15 @@
 <template>
   <v-badge 
+    v-if="products.length > 0" 
     color="black"
     overlap
   >
-    <template v-if="products.length > 0" v-slot:badge>
+    <template v-slot:badge>
       {{ products.length }}
     </template>
     <v-btn @click="toCartPage" icon><v-icon>mdi-cart-outline</v-icon></v-btn>
   </v-badge>
-  
+  <v-btn v-else @click="toCartPage" icon><v-icon>mdi-cart-outline</v-icon></v-btn>
 </template>
 
 <script>
