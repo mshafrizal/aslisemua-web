@@ -6,9 +6,9 @@
     >
       All Categories
     </div>
-    <div class="d-flex flex-col">
+    <div class="d-flex flex-column">
       <ul class="pl-2">
-        <li v-for="item in items" :key="item.id">
+        <li class="categories-filter__list-item" v-for="item in items" :key="item.id">
           <div
             v-if="item.children.length === 0"
             :class="{
@@ -19,7 +19,7 @@
           >
             {{ item.name }}
           </div>
-          <div class="d-flex flex-col" v-else>
+          <div class="d-flex flex-column" v-else>
             <div
               @click="selectCategory(item)"
               :class="{
@@ -30,7 +30,7 @@
               {{ item.name }}
             </div>
             <ul class="pl-2">
-              <li v-for="child in item.children" :key="child.id">
+              <li class="categories-filter__sub-list-item" v-for="child in item.children" :key="child.id">
                 <div
                   @click="selectCategory(child)"
                   :class="{
@@ -95,6 +95,10 @@ export default {
 </script>
 
 <style scoped>
+.categories-filter__list-item,
+.categories-filter__sub-list-item {
+  list-style: none;
+}
 .category__item {
   padding: 8px 12px;
 }
