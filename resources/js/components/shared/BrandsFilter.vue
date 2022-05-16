@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex flex-column">
     <div class="text-lg font-weight-bold mb-2">Brands</div>
-    <div class="d-flex flex-col">
+    <div class="d-flex flex-column">
       <template v-for="brand in items">
         <v-checkbox
           v-model="selectedBrand"
