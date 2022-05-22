@@ -194,7 +194,7 @@ class CheckoutController extends Controller {
             ]);
             
             $order_id = $request->order_id;
-            $order = Order::where('id', $order_id)->first();
+            $order = Order::with('orderItem')->where('id', $order_id)->first();
 
             if (!$order) return response()->json([
                 'status' => 200,
