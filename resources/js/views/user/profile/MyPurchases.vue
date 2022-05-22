@@ -5,7 +5,17 @@
       max-width="500px"
     >
       <v-card v-if="purchaseDetail" >
-        <v-card-title>Transaction Detail</v-card-title>
+        <v-card-title>
+          Transaction Detail
+          <v-btn 
+            v-if="purchaseDetail.data[0].order_status !== 'cancelled'"
+            @click="printInvoice(purchaseDetail.data[0].id)"
+            class="ml-2"
+            icon
+          >
+            <v-icon>mdi-printer</v-icon>
+          </v-btn>
+          </v-card-title>
         <v-card-text>
           <v-row justify="space-between" dense>
             <v-col cols="12" sm="4">
@@ -115,14 +125,16 @@
           </v-row>
         </v-card-text>
         <v-card-text>
-          <template v-for="product in purchaseDetail.data[0].order_item">
-            <div :key="product.id">
-              <v-img class="mb-1" :src="product.image_path" :alt="product.alt_image" aspect-ratio="1" max-width="150px"></v-img>
-              <p class="mb-0"><strong>{{product.brand_name}}</strong></p>
-              <p class="mb-0">{{product.product_name}}</p>
-              <p class="mb-0">{{product.final_price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}}</p>
-            </div>
-          </template>
+          <v-row>
+            <template v-for="product in purchaseDetail.data[0].order_item">
+              <v-col cols="6" :key="product.id">
+                <v-img class="mb-1" :src="product.image_path" :alt="product.alt_image" aspect-ratio="1" max-width="150px"></v-img>
+                <p class="mb-0"><strong>{{product.brand_name}}</strong></p>
+                <p class="mb-0">{{product.product_name}}</p>
+                <p class="mb-0">{{product.final_price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}}</p>
+              </v-col>
+            </template>
+          </v-row>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -184,11 +196,11 @@
             <v-divider />
             <v-card-text>
               <v-row>
-                <v-col cols="12" sm="4" class="d-flex flex-column">
+                <v-col cols="12" sm="3" class="d-flex flex-column">
                   <div class="font-weight-bold black--text">Invoice Number</div>
                   <div>{{purchase.order_id}}</div>
                 </v-col>
-                <v-col cols="12" sm="2" class="d-flex flex-column">
+                <v-col cols="12" sm="3" class="d-flex flex-column">
                   <div class="font-weight-bold black--text">Payment Status</div>
                   <div class="text-uppercase">
                     <v-chip small label color="lime" class="lighten-3 green--text text--darken-2">
@@ -250,6 +262,9 @@ export default {
     this.getMyPurchases(`/api/v1/orders/public/limit/5`)
   },
   methods: {
+    printInvoice(orderId) {
+      window.open(this.$route.path + `/detail/${orderId}`)
+    },
     viewTransaction(orderId, limit = 5, link = "/api/v1/orders/private/order-items/") {
       this.$axios({
         url: link,
@@ -294,7 +309,6 @@ export default {
       this.myPurchases.error = false
       this.$axios({
         url: link,
-        
       })
       .then(response => {
         if (this.myPurchases.data) {
