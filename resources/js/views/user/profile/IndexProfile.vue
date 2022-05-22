@@ -8,25 +8,19 @@
     <v-row class="mt-5" justify="center">
       <v-col cols="12" md="8">
           <v-row dense>
-            <v-col cols="12" sm="3">
+            <v-col cols="12" sm="4">
               <v-btn to="/profile/detail" color="black" outlined exact-path block>
                 <v-icon left>mdi-account</v-icon>
                 PERSONAL INFO
               </v-btn>
             </v-col>
-            <v-col cols="12" sm="3">
+            <v-col cols="12" sm="4">
               <v-btn to="/profile/transaction" color="black" outlined exact-path block>
                 <v-icon left>mdi-receipt</v-icon>
                 MY PURCHASES
               </v-btn>
             </v-col>
-            <v-col cols="12" sm="3">
-              <v-btn to="/profile/shipment" color="black" outlined exact-path block>
-                <v-icon left>mdi-truck</v-icon>
-                SHIPMENT
-              </v-btn>
-            </v-col>
-            <v-col cols="12" sm="3">
+            <v-col cols="12" sm="4">
               <v-btn to="/profile/my-address" color="black" outlined exact-path block>
                 <v-icon left>mdi-map-marker</v-icon>
                 MY ADDRESSES

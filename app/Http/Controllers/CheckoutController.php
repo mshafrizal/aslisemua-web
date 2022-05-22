@@ -185,6 +185,37 @@ class CheckoutController extends Controller {
         }
     }
 
+    function getOrderDetailByCustomer(Request $request) {
+        try {
+            if (!isset($request->order_id)) return response()->json([
+                'status' => 400,
+                'message' => 'Please specify order id',
+                'data' => []
+            ]);
+            
+            $order_id = $request->order_id;
+            $order = Order::with('orderItem')->where('id', $order_id)->first();
+
+            if (!$order) return response()->json([
+                'status' => 200,
+                'message' => 'Order not found '.$order_id,
+                'data' => []
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Order found',
+                'data' => $order
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     function getOrdersByAdmin(Request $request) {
         try {
             $data = [
