@@ -40,6 +40,7 @@ import IndexProfile from "../views/user/profile/IndexProfile";
 import MyPurchases from "../views/user/profile/MyPurchases";
 import MyAddresses from "../views/user/profile/MyAddresses";
 import PersonalInfo from "../views/user/profile/PersonalInfo";
+import PrintInvoice from "../views/user/profile/PrintInvoice";
 import ShopLayout from "../views/user/shop/ShopLayout";
 import NewArrivals from "../views/user/shop/NewArrivals";
 import UserProductDetail from "../views/user/product/UserProductDetail";
@@ -230,7 +231,12 @@ const routes = [
         meta: { requiresAuth: false, navbar: true }
       }
     ]
-  }
+  },
+  {
+    path: '/profile/transaction/detail/:order_id',
+    component: PrintInvoice,
+    meta: { requiresAuth: true, navbar: true }
+  },
 ]
 
 const router = new VueRouter({

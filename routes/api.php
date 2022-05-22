@@ -12,6 +12,7 @@ use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentTypeController;
 use App\Http\Controllers\BankController;
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\RegionProvinceController;
 use App\Http\Controllers\RegionCityController;
@@ -104,6 +105,7 @@ Route::prefix('v1')->group(function () {
             Route::middleware('modules:api')->post('/create', [ProductController::class, 'createProduct']);
             Route::middleware('modules:api')->delete('/{product_id}/delete', [ProductController::class, 'deleteProduct']);
             Route::middleware('modules:api')->post('/{product_id}/update', [ProductController::class, 'updateProduct']);
+            Route::middleware('modules:api')->put('/primary/image', [ProductController::class, 'setPrimaryProductImage']);
         });
 
         // Users
@@ -123,6 +125,16 @@ Route::prefix('v1')->group(function () {
      */
     Route::prefix('banners')->group(function () {
         Route::prefix('carousel')->group(function () {
+            Route::prefix('public')->group(function () {
+                Route::get('/', [BannerController::class, 'fetchCarouselBanners']);
+            });
+
+            Route::prefix('private')->group(function () {
+                Route::middleware('modules:api')->get('/', [BannerController::class, 'fetchCarouselBanners']);
+                Route::middleware('modules:api')->post('/store', [BannerController::class, 'createCarouselBanner']);
+                Route::middleware('modules:api')->post('/update', [BannerController::class, 'updateCarouselBanner']);
+                Route::middleware('modules:api')->delete('/destroy/{id}', [BannerController::class, 'deleteCarouselBanner']);
+            });
         });
     });
 
@@ -211,6 +223,7 @@ Route::prefix('v1')->group(function () {
         Route::prefix('public')->group(function () {
             Route::middleware('modules:api')->get('/limit/{limit?}', [CheckoutController::class, 'getOrdersByCustomer']);
             Route::middleware('modules:api')->post('/history', [CheckoutController::class, 'getOrderHistory']);
+            Route::middleware('modules:api')->get('/order-items/{order_id}', [CheckoutController::class, 'getOrderDetailByCustomer']);
         });
         
         Route::prefix('private')->group(function () {
@@ -218,6 +231,7 @@ Route::prefix('v1')->group(function () {
             Route::middleware('modules:api')->post('order-items', [CheckoutController::class, 'getOrderItemsByOrderId']);
             Route::middleware('modules:api')->post('cancel-order', [CheckoutController::class, 'cancelOrder']);
             Route::middleware('modules:api')->put('/update/order-status', [CheckoutController::class, 'updateOrderStatus']);
+            Route::middleware('modules:api')->get('/revenue/total', [CheckoutController::class, 'getOrderRevenue']);
         });
 
         Route::post('/callback/notification/handler', [OrderController::class, 'callbackNotificationPG']);

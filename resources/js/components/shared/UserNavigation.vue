@@ -7,8 +7,8 @@
           ><v-icon>mdi-menu</v-icon></v-btn
         >
       </v-col>
-      <v-col>
-        <h1 class="text-center logo" @click="$router.push('/')">ASLISEMUA</h1>
+      <v-col class="text-center">
+        <router-link class="black--text logo" to="/">ASLISEMUA</router-link>
       </v-col>
       <v-col class="hidden-sm-and-up"></v-col>
       <v-col class="justify-end hidden-sm-and-down">
@@ -224,5 +224,6 @@ export default {
 .logo {
   font-size: 2.5rem;
   font-family: "Belleza-Regular";
+  text-decoration: none;
 }
 </style>

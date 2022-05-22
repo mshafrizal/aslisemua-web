@@ -90,7 +90,7 @@
               </template>
             </v-row>
             <v-divider class="my-5"></v-divider>
-            <div class="d-flex justify-between">
+            <div class="d-flex justify-space-between">
               <v-btn icon outlined>
                 <v-icon>mdi-chevron-left</v-icon>
               </v-btn>

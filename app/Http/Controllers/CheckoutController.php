@@ -185,6 +185,37 @@ class CheckoutController extends Controller {
         }
     }
 
+    function getOrderDetailByCustomer(Request $request) {
+        try {
+            if (!isset($request->order_id)) return response()->json([
+                'status' => 400,
+                'message' => 'Please specify order id',
+                'data' => []
+            ]);
+            
+            $order_id = $request->order_id;
+            $order = Order::with('orderItem')->where('id', $order_id)->first();
+
+            if (!$order) return response()->json([
+                'status' => 200,
+                'message' => 'Order not found '.$order_id,
+                'data' => []
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Order found',
+                'data' => $order
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     function getOrdersByAdmin(Request $request) {
         try {
             $data = [
@@ -353,6 +384,24 @@ class CheckoutController extends Controller {
                 'status' => 400,
                 'message' => 'Order Status Not Updated',
             ], 400);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something Went Wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    function getOrderRevenue() {
+        try {
+            $data = [
+                'status' => 200,
+                'message' => 'Fetched Successfully',
+            ];
+
+            $data['data'] = Order::selectRaw('sum(total_final_price) as total_price, count(order_status) as order_status')->where('order_status', 'delivered')->first();
+            return response()->json($data, 200);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 500,
