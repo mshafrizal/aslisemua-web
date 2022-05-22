@@ -223,6 +223,7 @@ Route::prefix('v1')->group(function () {
         Route::prefix('public')->group(function () {
             Route::middleware('modules:api')->get('/limit/{limit?}', [CheckoutController::class, 'getOrdersByCustomer']);
             Route::middleware('modules:api')->post('/history', [CheckoutController::class, 'getOrderHistory']);
+            Route::middleware('modules:api')->get('/order-items/{order_id}', [CheckoutController::class, 'getOrderDetailByCustomer']);
         });
         
         Route::prefix('private')->group(function () {
