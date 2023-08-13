@@ -46,6 +46,7 @@ class CustomersController extends Controller
                 'address' => Request()->address,
                 'status' => 'active',
                 'is_verified' => 0,
+                'is_first_time' => 'yes',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ];
