@@ -258,7 +258,7 @@ Route::prefix('v1')->group(function () {
             Route::prefix('province')->group(function () {
                 Route::middleware('modules:api')->post('/', [RegionProvinceController::class, 'store']);
                 Route::middleware('modules:api')->put('/{id}', [RegionProvinceController::class, 'update']);
-                Route::middleware('modules:api')->delete('/{id}', [RegionProvinceController::class, 'delete']);
+                Route::middleware('modules:api')->delete('/{id}', [RegionProvinceController::class, 'destroy']);
             });
             Route::prefix('city')->group(function () {
               Route::middleware('modules:api')->post('/', [RegionCityController::class, 'store']);
