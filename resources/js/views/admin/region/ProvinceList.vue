@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div class="d-flex justify-space-between">
+      <h3>Province</h3>
+      <v-btn @click="open.create = true" icon><v-icon>mdi-plus</v-icon></v-btn>
+    </div>
+    <province-create :open="open.create" @close="open.create = false" @saved="getProvinces" />
     <v-dialog v-model="open.edit">
       <v-card>
         <v-card-title>
@@ -14,6 +19,20 @@
             <v-btn color="primary" :loading="isSubmitting" :disabled="!form.valid" @click="submit">Submit</v-btn>
           </v-card-actions>
         </v-form>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="open.delete" max-width="400">
+      <v-card>
+        <v-card-title>
+          Delete Province
+        </v-card-title>
+        <v-card-text>
+          <p>Are you sure to delete {{ form.name }}?</p>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="error" @click="closeDialog" :disabled="isSubmitting">No</v-btn>
+          <v-btn color="primary" :loading="isSubmitting" @click="onDelete">Yes</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <v-simple-table>
@@ -32,8 +51,8 @@
           <tr v-for="(province, index) in provinces.data" :key="index">
             <td>{{ province.name }}</td>
             <td class="text-right">
-              <v-btn color="warning" icon plain @click="openDialog(province)"><v-icon>mdi-pencil</v-icon></v-btn>
-              <v-btn color="error" icon plain><v-icon>mdi-trash-can</v-icon></v-btn>
+              <v-btn color="warning" icon plain @click="openDialog('edit', province)"><v-icon>mdi-pencil</v-icon></v-btn>
+              <v-btn color="error" icon plain @click="openDialog('delete', province)"><v-icon>mdi-trash-can</v-icon></v-btn>
             </td>
           </tr>
         </tbody>
@@ -51,8 +70,10 @@
 </template>
 
 <script>
+import ProvinceCreate from './ProvinceCreate.vue';
 export default {
   name: "ProvinceList",
+  components: { ProvinceCreate },
   data: function () {
     return {
       provinces: null,
@@ -68,6 +89,7 @@ export default {
       open: {
         edit: false,
         delete: false,
+        create: false,
       },
     }
   },
@@ -131,24 +153,44 @@ export default {
         name: this.form.name
       }
       this.isSubmitting = true
-      return axios.post(`/api/v1/regions/private/province`, params).then(response => {
+      return axios.put(`/api/v1/regions/private/province/${this.form.id}`, params).then(response => {
         if (response.status === 200) {
           this.$store.dispatch("showSnackbar", {
             message: "Success update province",
             color: "success"
           })
         }
-      }).catch(() => {
+      })
+      .then(() => this.getProvinces())
+      .catch(() => {
         this.$store.dispatch("showSnackbar", {
           message: "Failed to update province",
           color: "error"
         })
       }).finally(() => {
         this.isSubmitting = false
+        this.closeDialog();
+      })
+    },
+    onDelete () {
+      this.isSubmitting = true;
+      return axios.delete(`/api/v1/regions/private/province/${this.form.id}`).then(response => {
+        this.$store.dispatch("showSnackbar", {
+          message: "Success update province",
+          color: "success"
+        })
+      })
+      .then(() => this.getProvinces())
+      .catch(() => {
+        this.$store.dispatch("showSnackbar", {
+          message: "Failed to delete province",
+          color: "error"
+        })
+      }).finally(() => {
+        this.isSubmitting = false
+        this.closeDialog();
       })
     }
   }
 };
 </script>
-
-<style></style>
