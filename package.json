@@ -1,13 +1,13 @@
 {
     "private": true,
     "scripts": {
-        "dev": "npm run development",
+        "dev": "npm run development --MIX_APP_URL=http://localhost:8000",
         "development": "mix",
-        "watch": "mix watch",
+        "watch": "mix watch -- --env --MIX_APP_URL=http://localhost:8000",
         "watch-poll": "mix watch -- --watch-options-poll=1000",
-        "hot": "mix watch --hot",
-        "prod": "npm run production",
-        "production": "mix --production"
+        "hot": "mix watch --hot -- --env --MIX_APP_URL=http://localhost:8000",
+        "prod": "npm run production -- --env --MIX_APP_URL=http://localhost:8000",
+        "production": "mix --production -- --env --MIX_APP_URL=http://localhost:8000"
     },
     "devDependencies": {
         "autoprefixer": "^10.2.4",
