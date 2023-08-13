@@ -82,7 +82,7 @@ export default {
         {
           icon: "mdi-view-dashboard",
           title: "Dashboard",
-          link: "/admin/dashboard"
+          link: "/admin"
         },
         {
           icon: "mdi-account-group",
