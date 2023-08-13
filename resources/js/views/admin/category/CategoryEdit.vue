@@ -55,7 +55,7 @@
           ></v-select>
           <v-text-field v-model="formEditCategory.updated_at" label="Last Updated at" prepend-icon="mdi-calendar" readonly></v-text-field>
           <v-text-field v-model="formEditCategory.updated_by" label="Last Updated by" prepend-icon="mdi-account" readonly></v-text-field>
-          <v-checkbox v-model="formEditCategory.is_published" label="Publish" color="primary"></v-checkbox>
+          <v-checkbox v-model="formEditCategory.is_published" label="Publish" color="primary" @change="updateStatus"></v-checkbox>
           <v-checkbox v-model="formEditCategory.is_navbar" label="Shown at Navbar" color="primary"></v-checkbox>
         </v-card-text>
         <v-divider></v-divider>
@@ -118,7 +118,7 @@ export default {
           is_navbar: false
         }
       }
-    }
+    },
   },
   created () {
     this.fetchParentCategories()
@@ -137,8 +137,8 @@ export default {
           this.formEditCategory.parent = result.data.parent
           this.formEditCategory.updated_at = new Date(result.data.updated_at).toLocaleDateString('id-ID')
           this.formEditCategory.updated_by = result.data.updated_by
-          this.formEditCategory.is_published = result.data.is_published === 1 ? true : false
-          this.formEditCategory.is_navbar = result.data.is_navbar === 1 ? true : false
+          this.formEditCategory.is_published = result.data.is_published
+          this.formEditCategory.is_navbar = result.data.is_navbar
           this.thumbnail = result.data.file_path
         }
       }).catch(error => {
@@ -189,6 +189,40 @@ export default {
       this.$store.dispatch('category/adminUpdateCategory', {
         category_id: this.id,
         data: formData
+      }).then(result => {
+        if (result.status >= 400) throw new Error(result.message)
+        else {
+          this.$store.dispatch('showSnackbar', {
+            value: true,
+            type: 'success',
+            message: result.message
+          })
+        }
+      }).catch(error => {
+        this.$store.dispatch('showSnackbar', {
+          value: true,
+          type: 'error',
+          message: error
+        })
+      }).finally(() => {
+        this.loading = false
+        this.formEditCategory = {
+          name: '',
+          file: null,
+          description: '',
+          parent: null,
+          updated_at: '',
+          updated_by: ''
+        }
+        this.thumbnail = ''
+        this.handleClose()
+      })
+    },
+    async updateStatus(value) {
+      this.loading = true;
+      this.$store.dispatch('category/adminUpdateCategoryStatus', {
+        category_id: this.id,
+        status: value
       }).then(result => {
         if (result.status >= 400) throw new Error(result.message)
         else {

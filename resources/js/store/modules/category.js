@@ -36,7 +36,7 @@ const actions = {
   },
   async adminUpdateCategoryStatus (context, payload) {
     try {
-      const response = await axios.post(`/api/v1/categories/private/update/status/${payload.category_id}`)
+      const response = await axios.put(`/api/v1/categories/private/update/status/${payload.category_id}`, { status: payload.status })
       return await Promise.resolve(response.data)
     } catch (error) {
       return await Promise.reject(error)
