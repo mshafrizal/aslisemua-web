@@ -51,11 +51,12 @@ class CustomersController extends Controller
                 'updated_at' => Carbon::now(),
             ];
             $this->CustomersModel->create($dataValidated);
-
             $details = [
-                'sender' => 'Asli Semua',
-                'title' => 'Please verify your email',
-                'body' => URL::to('registration/verify-account/' . $dataValidated['id'])
+                'sender' => 'Aslisemua',
+                'title' => 'Aslisemua E-mail Verification',
+                'name' => Request()->name,
+                'body' => URL::to('registration/verify-account/' . $dataValidated['id']),
+                'url' => URL::to('registration/verify-account/' . $dataValidated['id']),
             ];
 
             Mail::to(Request()->email)->send(new RegisterMail($details));
